@@ -1,10 +1,10 @@
 // const utils = require('./utils');
 const webpack = require('webpack');
-const config = require('../config');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
+const config = require('../config');
 const commonWebpackConfig = require('./webpack.common');
 
 // add hot-reload related code to entry chunks

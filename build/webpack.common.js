@@ -24,6 +24,10 @@ module.exports = {
                 }
             },
             {
+                test: /\.scss$/,
+                loader: 'sass-loader' // compiles Sass to CSS
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 exclude: /node_modules/
@@ -36,13 +40,11 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.vue'],
         alias: {
-            'vue$': 'vue/dist/vue.esm.js' // vue.esm include template compiler; without it all templates need to be pre-compiled
+            'vue$': 'vue/dist/vue.esm.js', // vue.esm include template compiler; without it all templates need to be pre-compiled,
+            'highcharts': 'highcharts/highcharts.src.js'
         }
     },
     output: {
-        filename: 'main.js',
-        path: config.build.assetsRoot,
-        publicPath: config.build.assetsPublicPath,
         library: 'DQV'
     }
 };

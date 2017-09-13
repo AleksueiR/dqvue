@@ -1,7 +1,11 @@
 <template>
     <div id="app">
-        Hello, reloaded; ! -1-1- l --
+        Hello, reloaded; ! -1-6-- l --
         <span>{{ msg }} {{ count }}</span>
+        <div>
+            <span class="test">green</span>
+            <span class="test2">orange</span>
+        </div>
     </div>
 </template>
 
@@ -29,11 +33,25 @@ export default class App extends Vue {
 
 </script>
 
-<style>
+<style lang="scss" scoped>
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+
+    span {
+        color: red;
+    }
+
+    div .test {
+        color: green;
+    }
+
+    .test2 {
+        color: orange;
+    }
 }
+
+
 </style>
