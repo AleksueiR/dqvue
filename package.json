@@ -1,0 +1,38 @@
+{
+  "name": "dqv-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vuetype": "vuetype src",
+    "dev": "node build/dev-server.js",
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/highcharts": "^5.0.5",
+    "clean-webpack-plugin": "^0.1.16",
+    "connect-history-api-fallback": "^1.3.0",
+    "css-loader": "^0.28.7",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.15.4",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "highcharts": "^5.0.14",
+    "html-webpack-plugin": "^2.30.1",
+    "http-proxy-middleware": "^0.17.4",
+    "ts-loader": "^2.3.7",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2",
+    "vue": "^2.4.2",
+    "vue-class-component": "^5.0.2",
+    "vue-loader": "^13.0.4",
+    "vue-template-compiler": "^2.4.2",
+    "vuetype": "^0.2.2",
+    "webpack": "^3.5.6",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-hot-middleware": "^2.19.1",
+    "webpack-merge": "^4.1.0"
+  }
+}

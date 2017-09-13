@@ -1,0 +1,19 @@
+logs/*
+!.gitkeep
+.vscode/
+node_modules/
+lib/
+bower_components/
+dist/
+docbuild/
+tmp/
+.tmp/
+report/
+.DS_Store
+.idea
+.vagrant/
+# VIM files
+*~
+*.swp
+*.swo
+npm-debug.log
