@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        Hello, reloaded; ! -1-6-- l --
+        Hello, reloaded!
         <span>{{ msg }} {{ count }}</span>
         <div>
             <span class="test">green</span>
@@ -11,8 +11,8 @@
 
 <script lang='ts'>
 
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
 @Component({
     props: {
@@ -29,7 +29,7 @@ export default class App extends Vue {
             (this.count += 3),
             1000);
     }
-}
+};
 
 </script>
 
@@ -52,6 +52,5 @@ export default class App extends Vue {
         color: orange;
     }
 }
-
 
 </style>

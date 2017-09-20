@@ -1,7 +1,9 @@
 import Vue from 'vue';
-import app from './app.vue';
+import app from './components/app.vue';
 
 import * as Highcharts from 'highcharts';
+
+const a = new app();
 
 new Vue({
   el: '#app',
@@ -9,8 +11,6 @@ new Vue({
   components: { app }
 });
 
-// console.log('main', Highcharts);
-
 export {
     Highcharts
-}
+};
