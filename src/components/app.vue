@@ -24,6 +24,11 @@ export default class App extends Vue {
     msg = 'Hello world!!';
     count = 0;
 
+    /**
+     * Does stuff.
+     *
+     * @function mounted
+     */
     mounted() {
         const handle = setInterval(() =>
             (this.count += 3),
