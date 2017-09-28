@@ -1,4 +1,11 @@
+const pkg = require("./package.json");
+
 module.exports = {
+    html: {
+        title: pkg.productName || pkg.name,
+        description: pkg.description,
+        template: 'src/index.ejs'
+    },
     presets: [
         require('poi-preset-typescript')({}),
         require('poi-preset-karma')({
