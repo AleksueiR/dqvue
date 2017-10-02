@@ -16,11 +16,7 @@
             message: 'hello from global JS object!'
         };
 
-        dv2testData = () => ({
-            message: 'hello from global JS function!'
-        });
-
-        dv3testData = new Promise(resolve => {
+        dv2testData = new Promise(resolve => {
             resolve({message: 'hello from global JS promise!'})
         });
     </script>
@@ -28,23 +24,19 @@
 </head>
 
 <body>
-    <div id="app1">
-    --> {{ message }}
+    <div id="app1" dv-section dv-data="dv1testData">
+    --> {{ message }} 123
 
     </div>
-    <div id="app2">
-    --> {{ message }}
-
-    </div>
-    <div id="app3">
-    --> {{ message }}
+    <div id="app2" dv-section dv-data="dv2testData">
+    --> {{ message }} 456
 
     </div>
 
 
-    <div dv-root dv-id="dv1test" dv-data="dv1testData">
+    <!--div dv-root dv-id="dv1test" dv-data="dv1testData">
         {{ message }}
-    </div>
+    </div-->
 </body>
 
 </html>

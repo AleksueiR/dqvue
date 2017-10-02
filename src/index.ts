@@ -4,7 +4,7 @@ import app from './components/app.vue';
 import * as Highcharts from 'highcharts';
 
 import './bootstrap';
-import DVInstance from './dv.class';
+import DVSection from './classes/section';
 
 const a = new app();
 
@@ -19,5 +19,5 @@ const a = new app();
 
 export {
     Highcharts,
-    DVInstance
+    DVSection
 };
