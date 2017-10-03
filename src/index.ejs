@@ -19,24 +19,50 @@
         dv2testData = new Promise(resolve => {
             resolve({message: 'hello from global JS promise!'})
         });
+
+        // testing programmatic bootstrap
+        window.addEventListener('load', function() {
+            const testTemplate = `
+                <div>
+                    ---- {{ message }} ---- [{{ count }}]
+                </div>
+            `;
+
+            const data = {
+                message: 'programmatic',
+                count: 0
+            };
+
+            window.setInterval(() => data.count++, 1000);
+
+            const dvp = new DQV.Section({ data, template: testTemplate });
+            dvp.mount(document.getElementById('target1'));
+        })
     </script>
+
+    <style>
+        [dv-section] {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid black;
+        }
+    </style>
 
 </head>
 
 <body>
-    <div id="app1" dv-section dv-data="dv1testData">
-    --> {{ message }} 123
-
-    </div>
-    <div id="app2" dv-section dv-data="dv2testData">
-    --> {{ message }} 456
-
+    <div id="app2" dv-section dv-data="dv1testData">
+        --> {{ message }} 123
     </div>
 
+    <div dv-section dv-data="dv2testData">
+        --> {{ message }} 456
+    </div>
 
-    <!--div dv-root dv-id="dv1test" dv-data="dv1testData">
-        {{ message }}
-    </div-->
+    <div id="target1"></div>
+
+    <div id="target2"></div>
+
 </body>
 
 </html>

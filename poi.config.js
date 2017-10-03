@@ -19,7 +19,8 @@ module.exports = {
             .set('highcharts', 'highcharts/highcharts.src.js'); // include non-minified highcharts into the dev build
 
         config.output
-            .set('library', 'DQV');
+            .set('library', 'DQV')
+            .set('libraryExport', 'default'); // exposes the default export directly on the global library variable: https://webpack.js.org/configuration/output/#output-libraryexport
     },
     karma: {
         mime: {

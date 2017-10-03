@@ -1,6 +1,9 @@
 import Vue from 'vue';
+import uniqid from 'uniqid';
 
-import { isPromise, isFunction, isString, isObject, nextId } from './../utils';
+import { EventBus, SECTION_CREATED } from './../event-bus';
+
+import { isPromise, isFunction, isString, isObject } from './../utils';
 
 interface DVSectionOptions {
     id?: string,
@@ -73,22 +76,20 @@ console.log('---', a);
 */
 
 class DVSection {
+
+    readonly id: string;
+
+    private _mount: HTMLElement | null = null;
     private _isMounted: boolean = false;
 
     private _vm: Vue;
-
-    ///
-
-    readonly id: string;
 
     private _template: string | null = null;
     private _templatePromise: Promise<string> | null = null;
     private _data: object | null = null;
     private _dataPromise: Promise<object> | null = null;
 
-    private _mount: HTMLElement;
-
-    constructor({ id = nextId(), template = null, data = null, charts = [], automount }: DVSectionOptions = {}) {
+    constructor({ id = uniqid.time(), template = null, data = null, charts = [], automount }: DVSectionOptions = {}) {
         this.id = id;
 
         if (isString(template)) {
@@ -102,6 +103,8 @@ class DVSection {
         } else if (data !== null) {
             this.data = data;
         }
+
+        EventBus.$emit(SECTION_CREATED, this);
 
         if (automount) {
             this.mount(automount);
@@ -169,25 +172,25 @@ class DVSection {
         return true;
     }
 
-    private get _isPromised():boolean {
-        if (!this.template && !this._isInlineTemplate && !this._templatePromise) {
-            return false;
-        }
-
-        if (!this.data && !this._dataPromise) {
-            return false;
-        }
-
-        return true;
-    }
-
     mount(element: HTMLElement): DVSection {
+        if (!element) {
+            // TODO: complain in the console that a mount element needs to be provided
+
+            return this;
+        }
+
+        if (this._isMounted) {
+            // TODO: complain in the console that instance is already mounted; dismount first
+
+            return this;
+        }
+
         if (this._mount !== element) {
             this._mount = element;
         }
 
         if (!this._isMountable) {
-            // TODO:  complain in the console
+            // TODO: complain in the console that it's not possible to mount the section because either data or template is missing.
 
             return this;
         }
@@ -198,22 +201,61 @@ class DVSection {
         });
 
         this._vm.$mount(this._mount);
+        this._mount = this._vm.$el; // the mount element has been replaced by the _vm.$el, reassign
+        this._isMounted = true;
+
+        this._vm.$el.setAttribute('id', this.id);
+
+        if (this.template) {
+            this._vm.$el.setAttribute('dv-section', '');
+        }
 
         return this;
     }
 
-    dismount(): DVSection {
-        // TODO: implement
+    destroy(): DVSection {
+        if (!this._mount) {
+            // TODO: complain in the console that you can't destroy a not yet mounted instance
+
+            return this;
+        }
+
+        this.dismount();
+
+        this._mount.remove();
+        this._mount = null;
+
+        return this;
+    }
+
+    dismount(clear: boolean = true): DVSection {
+        if (!this._mount) {
+            // TODO: complain in the console that you can't dismount a not yet mounted instance
+
+            return this;
+        }
+
+        this._vm.$destroy();
+        this._isMounted = false;
+
+        // removing guts of the section but leaving the mount element
+        while (this._mount.firstChild) {
+            this._mount.removeChild(this._mount.firstChild);
+        }
+
         return this;
     }
 
     remount(): DVSection {
         if (!this._mount) {
+            // TODO: complain in the console that you can't remount a not yet mounted instance
+
             return this;
         }
 
+        // if not yet mounted but having mount element specified means the instance was waiting for `template` or `data` to be resolved
+        // try to mount normally
         if (!this._isMounted) {
-            // was waiting to be mounted
             this.mount(this._mount);
 
             return this;
@@ -226,8 +268,12 @@ class DVSection {
 
     duplicate(): DVSection {
         // TODO: implement
+
         return this;
     }
 }
 
-export default DVSection;
+export {
+    DVSection,
+    DVSectionOptions
+};

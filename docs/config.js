@@ -1,7 +1,7 @@
 docute.init({
     landing: 'landing.html',
     debug: true,
-    repo: 'AleksueiR/dqv-starter',
+    repo: 'AleksueiR/dqvue',
     tocVisibleDepth: 3,
     nav: {
         default: [

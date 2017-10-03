@@ -15,6 +15,7 @@
     "@types/highcharts": "^5.0.5",
     "@types/mocha": "^2.2.43",
     "@types/node": "^8.0.28",
+    "@types/uniqid": "^4.1.2",
     "highcharts": "^5.0.14",
     "node-sass": "^4.5.3",
     "poi": "^9.3.7",
@@ -22,6 +23,7 @@
     "poi-preset-typescript": "^9.0.2",
     "sass-loader": "^6.0.6",
     "typescript": "^2.5.3",
+    "uniqid": "^4.1.1",
     "vue-class-component": "^5.0.2",
     "vuetype": "^0.2.2"
   }

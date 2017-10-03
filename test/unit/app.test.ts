@@ -2,7 +2,7 @@ import Vue from 'vue';
 import app from '../../src/components/app.vue';
 import assert from 'assert';
 
-import DVInstance from '../../src/dv.class';
+import { DVSection } from '../../src/classes/section';
 
 it('ok', () => {
     const vm = new app().$mount();
@@ -13,7 +13,7 @@ it('ok', () => {
 
 it('ok', () => {
     const data: object = { a: 'test'};
-    const dv3 = new DVInstance({ data });
+    const dv3 = new DVSection({ data });
 
     console.log(dv3);
     console.log(dv3.data);

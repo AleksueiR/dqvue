@@ -1,31 +1,45 @@
 import Vue from 'vue';
 
-import DVSection from './classes/section';
+import { DVSection, DVSectionOptions } from './classes/section';
+import { contains } from './store/main';
 
-window.addEventListener("load", event => {
-    console.log('page loaded');
+const ID_ATTR = 'id';
+const DV_DATA_ATTR = 'dv-data';
+const DV_SECTION_ATTR = 'dv-section'
 
-    const dvs = [];
-    const nodes: NodeListOf<Element> = document.querySelectorAll('[dv-section]');
+window.addEventListener('load', parsePage);
 
-    const testTemplate =`
-        <div id="app1" dv-section dv-data="dv1testData">
-        >>> {{ message }} <<<
+function parsePage(): void {
+    const nodes: NodeListOf<Element> = document.querySelectorAll(`[${DV_SECTION_ATTR}]`);
 
-        </div>
-    `;
+    for (let i = 0; i < nodes.length; i++) {
+        const element: HTMLElement = nodes[i] as HTMLElement;
 
-    for (var i = 0; i < nodes.length; i++) {
-        var element: HTMLElement = nodes[i] as HTMLElement;
-
-        const dataAttr: string = element.attributes.getNamedItem('dv-data').value;
-        const data: object = (<any>window)[dataAttr as string];
-
-        const dv = new DVSection({ data, automount: element/* , template: testTemplate */ });
-
-        console.log(element.attributes);
-        console.log(element.attributes.getNamedItem('id').value);
-        console.log(element.attributes.getNamedItem('dv-data').value);
-        console.log(element.innerHTML);
+        bootSectionDeclaration(element);
     }
-});
+}
+
+function bootSectionDeclaration(element: HTMLElement): void {
+    const sectionOptions: DVSectionOptions = {
+        automount: element
+    };
+
+    const attributes: NamedNodeMap = element.attributes;
+
+    // get data from the global scope
+    const dataAttr: Attr = attributes.getNamedItem(DV_DATA_ATTR);
+    if (dataAttr !== null) {
+        sectionOptions.data = (<any>window)[dataAttr.value];
+    }
+
+    const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
+    if (idAttr !== null) {
+        if (contains(idAttr.value)) {
+            return;
+        }
+
+        sectionOptions.id = idAttr.value;
+    }
+
+    const dvsection: DVSection = new DVSection(sectionOptions);
+}
