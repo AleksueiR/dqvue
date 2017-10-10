@@ -6,7 +6,7 @@ import { contains, sections } from './store/main';
 
 const ID_ATTR = 'id';
 const DV_DATA_ATTR = 'dv-data';
-const DV_SECTION_ATTR = 'dv-section'
+const DV_SECTION_ELEMENT = 'dv-section'
 
 const DV_CHART_ELEMENT ='dv-chart';
 
@@ -15,7 +15,7 @@ const DV_CHART_ELEMENT ='dv-chart';
 window.addEventListener('load', parsePage);
 
 function parsePage(): void {
-    const sectionNodes: NodeListOf<Element> = document.querySelectorAll(`[${DV_SECTION_ATTR}]`);
+    const sectionNodes: NodeListOf<Element> = document.querySelectorAll(DV_SECTION_ELEMENT);
 
     for (let i = 0; i < sectionNodes.length; i++) {
         const sectionNode: HTMLElement = sectionNodes[i] as HTMLElement;

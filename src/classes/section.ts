@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import uniqid from 'uniqid';
 
+import Section from './../components/section.vue';
 import { DVChart } from './chart';
 import Chart from './../components/chart.vue';
 import { EventBus, SECTION_CREATED } from './../event-bus';
@@ -163,7 +164,10 @@ class DVSection {
             template: <string>this.template,
             computed: { charts: () => this.charts },
             data: <object>this.data,
-            components: { 'dv-chart': Chart }
+            components: {
+                'dv-section': Section,
+                'dv-chart': Chart
+            }
         });
 
         this._vm.$mount(this._mount);

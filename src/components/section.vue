@@ -1,6 +1,6 @@
 <template>
-    <div dv-chart>
-        charts !!!
+    <div dv-section>
+        <slot></slot>
     </div>
 </template>
 
@@ -14,7 +14,7 @@ import Component from 'vue-class-component';
         propMessage: String
     }
 })
-export default class Chart extends Vue {
+export default class Section extends Vue {
     msg = 'Hello world!!';
     count = 0;
 

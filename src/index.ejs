@@ -55,15 +55,17 @@
 </head>
 
 <body>
-    <div id="app1" dv-section dv-data="dv1data">
+    <dv-section id="app1" dv-section dv-data="dv1data">
         --> {{ message }} 123
 
         <dv-chart id="app1chart1" dv-config="dvchart1config"></dv-chart>
-    </div>
+    </dv-section>
 
-    <div dv-section dv-data="dv2data">
+    <dv-section dv-section dv-data="dv2data">
         --> {{ message }} 456
-    </div>
+
+        <dv-chart></dv-chart>
+    </dv-section>
 
     <div id="target1"></div>
 
