@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import uniqid from 'uniqid';
 
+import { DVChart } from './chart';
+import Chart from './../components/chart.vue';
 import { EventBus, SECTION_CREATED } from './../event-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
@@ -9,71 +11,9 @@ interface DVSectionOptions {
     id?: string,
     template?: string | Promise<string>,
     data?: object | Promise<object>,
-    charts?: DVChart[],
+    charts?: { [ name: string ]: DVChart },
     automount?: HTMLElement
 };
-
-class DVChart {}
-
-/* interface DVChartOptions {
-    id?: string,
-    config?: StObFuPr
-    data?: StObFuPr
-};
-
-
-class DVChart {
-    readonly id: string;
-    private _config: object | null = null;
-    private _data: object | null = null;
-
-    constructor({ id = nextId(), config = null, data = null }: DVChartOptions = {}) {
-        this.id = id;
-
-        this.config = config;
-        this.data = data;
-    }
-
-    set config(value: StObFuPr | null) {
-        if (value === null) {
-            return;
-        }
-
-        this._config = value as object;
-    }
-
-    get config(): object {
-        return this._config;
-    }
-
-    set data(value: StObFuPr | null) {
-        this._data = value as object;
-    }
-
-    private get isConfigDataComplete(): boolean {
-        if (!this.config) {
-            return false;
-        }
-
-        return this.config.series.some(series => !series.data);
-    }
-
-    private get isMountable(): boolean {
-        if (!this.config) {
-            return false;
-        }
-
-        if (!this.isConfigDataComplete && !this.data) {
-            return false;
-        }
-
-        return true;
-    }
-}
-
-const a = new DVChart();
-console.log('---', a);
-*/
 
 class DVSection {
 
@@ -88,6 +28,8 @@ class DVSection {
     private _templatePromise: Promise<string> | null = null;
     private _data: object | null = null;
     private _dataPromise: Promise<object> | null = null;
+
+    private _charts: { [name: string]: DVChart } = {};
 
     constructor({ id = uniqid.time(), template = null, data = null, charts = [], automount }: DVSectionOptions = {}) {
         this.id = id;
@@ -109,6 +51,28 @@ class DVSection {
         if (automount) {
             this.mount(automount);
         }
+    }
+
+    addChart(items: DVChart):void;
+    addChart(items: DVChart[]):void;
+    addChart(items: any):void {
+
+        if (!Array.isArray(items)) {
+            items = [items];
+        }
+
+        // TODO: do we ever need to remove charts?
+        // Do we care if we override an already existing chart
+        items.forEach((item: DVChart) =>
+            this._charts[item.id] = item);
+    }
+
+    set charts(items: { [name: string]: DVChart }) {
+        this._charts = items;
+    }
+
+    get charts(): { [name: string]: DVChart } {
+        return this.charts;
     }
 
     set template(value: string | null) {
@@ -197,7 +161,9 @@ class DVSection {
 
         this._vm = new Vue({
             template: <string>this.template,
-            data: <object>this.data
+            computed: { charts: () => this.charts },
+            data: <object>this.data,
+            components: { 'dv-chart': Chart }
         });
 
         this._vm.$mount(this._mount);

@@ -1,11 +1,14 @@
 import { DVSection } from './../classes/section';
 import { EventBus, SECTION_CREATED } from './../event-bus';
 
-const sections: DVSection[] = [];
+import { isString } from './../utils';
+
+const sections: { [ name: string ]: DVSection } = {};
 
 function addSection(section: DVSection):void {
-    console.log(section);
-    sections.push(section);
+    if (!contains(section)) {
+        sections[section.id] = section;
+    }
 }
 
 function removeSection(value: DVSection): void;
@@ -17,7 +20,7 @@ function removeSection(value: any):void {
 function contains(value: DVSection): boolean
 function contains(value: string): boolean
 function contains(value: any): boolean {
-    return sections.some(item => item === value || item.id === value);
+    return typeof sections[isString(value) ? value : value.id] !== 'undefined';
 }
 
 EventBus.$on(SECTION_CREATED, (section: DVSection) => addSection(section));

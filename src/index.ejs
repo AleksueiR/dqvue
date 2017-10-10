@@ -12,11 +12,15 @@
         <meta name="description" content="<%= htmlWebpackPlugin.options.description %>" />
     <% } %>
     <script>
-        dv1testData = {
+        dv1data = {
             message: 'hello from global JS object!'
         };
 
-        dv2testData = new Promise(resolve => {
+        dvchart1config = {
+            title: 'hi'
+        };
+
+        dv2data = new Promise(resolve => {
             resolve({message: 'hello from global JS promise!'})
         });
 
@@ -51,11 +55,13 @@
 </head>
 
 <body>
-    <div id="app2" dv-section dv-data="dv1testData">
+    <div id="app1" dv-section dv-data="dv1data">
         --> {{ message }} 123
+
+        <dv-chart id="app1chart1" dv-config="dvchart1config"></dv-chart>
     </div>
 
-    <div dv-section dv-data="dv2testData">
+    <div dv-section dv-data="dv2data">
         --> {{ message }} 456
     </div>
 

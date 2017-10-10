@@ -1,5 +1,5 @@
 import Vue from 'vue';
-export default class App extends Vue {
+export default class Chart extends Vue {
     msg: string;
     count: number;
     mounted(): void;
