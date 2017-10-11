@@ -5,10 +5,12 @@ import { DVChart, DVChartOptions } from './classes/chart';
 import { contains, sections } from './store/main';
 
 const ID_ATTR = 'id';
-const DV_DATA_ATTR = 'dv-data';
+const DV_SECTION_DATA_ATTR = 'dv-data';
 const DV_SECTION_ELEMENT = 'dv-section'
 
 const DV_CHART_ELEMENT ='dv-chart';
+const DV_CHART_CONFIG_ATTR ='dv-config';
+const DV_CHART_DATA_ATTR ='dv-data';
 
 // wait for the page to load; the dqv script can be placed at the top of the page and
 // it won't find any sections declared below if executed immediately
@@ -47,7 +49,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: stri
     const attributes: NamedNodeMap = sectionNode.attributes;
 
     // get data from the global scope
-    const dataAttr: Attr = attributes.getNamedItem(DV_DATA_ATTR);
+    const dataAttr: Attr = attributes.getNamedItem(DV_SECTION_DATA_ATTR);
     if (dataAttr !== null) {
         sectionOptions.data = (<any>window)[dataAttr.value];
     }
@@ -63,13 +65,39 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: stri
 
     const dvsection: DVSection = new DVSection(sectionOptions);
 
+    if (idAttr === null) {
+        sectionNode.setAttribute(ID_ATTR, dvsection.id);
+    }
+
     return dvsection;
 }
 
 function bootChartDeclaration(chartNode: HTMLElement): DVChart {
     const chartOptions: DVChartOptions = {};
+
+    const attributes: NamedNodeMap = chartNode.attributes;
+
+    // get data from the global scope
+    const configAttr: Attr = attributes.getNamedItem(DV_CHART_CONFIG_ATTR);
+    if (configAttr !== null) {
+        chartOptions.config = (<any>window)[configAttr.value];
+    }
+
+    const dataAttr: Attr = attributes.getNamedItem(DV_CHART_DATA_ATTR);
+    if (dataAttr !== null) {
+        chartOptions.data = (<any>window)[dataAttr.value];
+    }
+
+    const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
+    if (idAttr !== null) {
+        chartOptions.id = idAttr.value;
+    }
+
     const dvchart: DVChart = new DVChart(chartOptions);
 
+    if (idAttr === null) {
+        chartNode.setAttribute(ID_ATTR, dvchart.id);
+    }
 
     return dvchart;
 }

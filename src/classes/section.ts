@@ -32,7 +32,7 @@ class DVSection {
 
     private _charts: { [name: string]: DVChart } = {};
 
-    constructor({ id = uniqid.time(), template = null, data = null, charts = [], automount }: DVSectionOptions = {}) {
+    constructor({ id = uniqid.time(), template = null, data = null, charts = {}, automount }: DVSectionOptions = {}) {
         this.id = id;
 
         if (isString(template)) {
@@ -46,6 +46,8 @@ class DVSection {
         } else if (data !== null) {
             this.data = data;
         }
+
+        this.charts = charts;
 
         EventBus.$emit(SECTION_CREATED, this);
 
@@ -73,7 +75,7 @@ class DVSection {
     }
 
     get charts(): { [name: string]: DVChart } {
-        return this.charts;
+        return this._charts;
     }
 
     set template(value: string | null) {
@@ -164,6 +166,9 @@ class DVSection {
             template: <string>this.template,
             computed: { charts: () => this.charts },
             data: <object>this.data,
+            provide: {
+                charts: this.charts
+            },
             components: {
                 'dv-section': Section,
                 'dv-chart': Chart
@@ -174,11 +179,11 @@ class DVSection {
         this._mount = this._vm.$el; // the mount element has been replaced by the _vm.$el, reassign
         this._isMounted = true;
 
-        this._vm.$el.setAttribute('id', this.id);
+        // this._vm.$el.setAttribute('id', this.id);
 
-        if (this.template) {
+        /* if (this.template) {
             this._vm.$el.setAttribute('dv-section', '');
-        }
+        } */
 
         return this;
     }

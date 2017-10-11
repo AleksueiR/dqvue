@@ -71,9 +71,9 @@ class DVChart {
     }
 }
 
-const a = new DVChart();
+/* const a = new DVChart();
 console.log('---', a);
-
+ */
 export {
     DVChart,
     DVChartOptions

@@ -21,8 +21,34 @@
         };
 
         dv2data = new Promise(resolve => {
-            resolve({message: 'hello from global JS promise!'})
+            resolve({ message: 'hello from global JS promise!' })
         });
+
+        dvchart2config = new Promise(resolve =>
+            resolve({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Fruit Consumption'
+                },
+                xAxis: {
+                    categories: ['Apples', 'Bananas', 'Oranges']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Fruit eaten'
+                    }
+                },
+                series: [{
+                    name: 'Jane',
+                    data: [1, 0, 4]
+                }, {
+                    name: 'John',
+                    data: [5, 7, 3]
+                }]
+            })
+        );
 
         // testing programmatic bootstrap
         window.addEventListener('load', function() {
@@ -37,7 +63,7 @@
                 count: 0
             };
 
-            window.setInterval(() => data.count++, 1000);
+            window.setInterval(() => data.count++, 6000);
 
             const dvp = new DQV.Section({ data, template: testTemplate });
             dvp.mount(document.getElementById('target1'));
@@ -55,16 +81,16 @@
 </head>
 
 <body>
-    <dv-section id="app1" dv-section dv-data="dv1data">
+    <dv-section id="app1" dv-data="dv1data">
         --> {{ message }} 123
 
-        <dv-chart id="app1chart1" dv-config="dvchart1config"></dv-chart>
+        <dv-chart id="app1chart1" dv-id='dfsdf' dv-config="dvchart1config"></dv-chart>
     </dv-section>
 
-    <dv-section dv-section dv-data="dv2data">
+    <dv-section dv-data="dv2data">
         --> {{ message }} 456
 
-        <dv-chart></dv-chart>
+        <dv-chart dv-config="dvchart2config"></dv-chart>
     </dv-section>
 
     <div id="target1"></div>

@@ -7,13 +7,9 @@
 <script lang='ts'>
 
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Emit, Inject, Model, Prop, Provide, Watch } from 'vue-property-decorator';
 
-@Component({
-    props: {
-        propMessage: String
-    }
-})
+@Component
 export default class Section extends Vue {
     msg = 'Hello world!!';
     count = 0;
@@ -24,6 +20,8 @@ export default class Section extends Vue {
      * @function mounted
      */
     mounted() {
+        // console.log('section', this.$data);
+
         const handle = setInterval(() =>
             (this.count += 3),
             1000);
