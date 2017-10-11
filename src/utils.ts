@@ -12,7 +12,7 @@ function isObject(x: any): x is object {
     return x === Object(x);
 }
 
-function isPromise(x: any): x is Promise<object> {
+function isPromise<T>(x: any): x is Promise<T> {
     return !!x && (typeof x === 'object' || typeof x === 'function') && typeof x.then === 'function';
   }
 

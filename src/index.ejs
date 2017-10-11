@@ -17,45 +17,110 @@
         };
 
         dvchart1config = {
-            title: 'hi'
+
+            title: {
+                text: 'Solar Employment Growth by Sector, 2010-2016'
+            },
+
+            subtitle: {
+                text: 'Source: thesolarfoundation.com'
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Number of Employees'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 2010
+                }
+            },
+
+            series: [{
+                name: 'Installation'
+            }, {
+                name: 'Manufacturing'
+            }, {
+                name: 'Sales & Distribution'
+            }, {
+                name: 'Project Development'
+            }, {
+                name: 'Other'
+            }],
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
         };
+
+        dvchart1data = [
+            [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175],
+            [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434],
+            [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387],
+            [null, null, 7988, 12169, 15112, 22452, 34400, 34227],
+            [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111],
+        ];
 
         dv2data = new Promise(resolve => {
             resolve({ message: 'hello from global JS promise!' })
         });
 
         dvchart2config = new Promise(resolve =>
-            resolve({
-                chart: {
-                    type: 'bar'
-                },
-                title: {
-                    text: 'Fruit Consumption'
-                },
-                xAxis: {
-                    categories: ['Apples', 'Bananas', 'Oranges']
-                },
-                yAxis: {
+            setTimeout(() => {
+                resolve({
+                    chart: {
+                        type: 'bar'
+                    },
                     title: {
-                        text: 'Fruit eaten'
-                    }
-                },
-                series: [{
-                    name: 'Jane',
-                    data: [1, 0, 4]
-                }, {
-                    name: 'John',
-                    data: [5, 7, 3]
-                }]
-            })
+                        text: 'Fruit Consumption'
+                    },
+                    xAxis: {
+                        categories: ['Apples', 'Bananas', 'Oranges']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Fruit eaten'
+                        }
+                    },
+                    series: [{
+                        name: 'Jane',
+                        data: [1, 0, 4]
+                    }, {
+                        name: 'John',
+                        data: [5, 7, 3]
+                    }]
+                })
+            }, 3000)
         );
 
         // testing programmatic bootstrap
         window.addEventListener('load', function() {
             const testTemplate = `
-                <div>
+                <dv-section>
                     ---- {{ message }} ---- [{{ count }}]
-                </div>
+                </dv-section>
             `;
 
             const data = {
@@ -84,7 +149,7 @@
     <dv-section id="app1" dv-data="dv1data">
         --> {{ message }} 123
 
-        <dv-chart id="app1chart1" dv-id='dfsdf' dv-config="dvchart1config"></dv-chart>
+        <dv-chart id="app1chart1" dv-data='dvchart1data' dv-config="dvchart1config"></dv-chart>
     </dv-section>
 
     <dv-section dv-data="dv2data">

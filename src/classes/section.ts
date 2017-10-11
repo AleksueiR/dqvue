@@ -125,7 +125,7 @@ class DVSection {
         return this._mount.innerHTML.trim() !== '';
     }
 
-    private get _isMountable():boolean {
+    private get _isMountable(): boolean {
         if (!this.template && !this._isInlineTemplate) {
             return false;
         }
@@ -179,12 +179,11 @@ class DVSection {
         this._mount = this._vm.$el; // the mount element has been replaced by the _vm.$el, reassign
         this._isMounted = true;
 
-        // this._vm.$el.setAttribute('id', this.id);
-
-        /* if (this.template) {
+        // when the template is supplied as a string, need to manually set `id` and `dv-section` attributes
+        if (this.template) {
+            this._vm.$el.setAttribute('id', this.id);
             this._vm.$el.setAttribute('dv-section', '');
-        } */
-
+        }
         return this;
     }
 
