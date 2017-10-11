@@ -9,6 +9,7 @@ module.exports = {
     presets: [
         require('poi-preset-typescript')({}),
         require('poi-preset-karma')({
+            // browsers: ['IE'], default is ['Chrome']
             port: 5001, // default
             files: ['test/unit/*.test.ts'], // default,
         })

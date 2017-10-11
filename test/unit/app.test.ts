@@ -3,20 +3,69 @@ import Vue from 'vue';
 import assert from 'assert';
 
 import { DVSection } from '../../src/classes/section';
+import { parsePage } from './../../src/bootstrap';
+import api from './../../src/api/main';
 
-it('ok', () => {
-    // const vm = new app().$mount();
-    // assert(vm.msg === 'Hello world!!');
+interface EnhancedWindow extends Window {
+    DQV: {
+        Section: any,
+        Chart: any,
+        sections: { [name: string]: DVSection }
+    },
 
-    //console.log('--', vm.msg, vm.$el.textContent);
+    dvdata1: object
+};
+
+// the following can be used to prep the page before running tests
+/* beforeEach(function () {
+    window.addEventListener('load', () => {
+        console.log('loaded');
+    });
+
+    var fixture = `
+        <div id="fixture">
+            <dv-section>
+                {{ message }}
+            </dv-section>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML(
+        'afterbegin',
+        fixture);
 });
 
+// remove the html fixture from the DOM
+afterEach(function () {
+    const node = document.getElementById('fixture');
+    console.log(node);
+
+    document.body.removeChild(node as HTMLElement);
+}); */
+
 it('ok', () => {
-    const data: object = { a: 'test'};
-    const dv3 = new DVSection({ data });
+    const id = 'dv1';
+    const dvtemplate1 = `
+        <dv-section dv-data="dvdata1" id="${id}">
+            {{ message }}
+        </dv-section>
+    `;
+    const dvdata1 = {
+        message: 'hello there'
+    };
 
-    console.log(dv3);
-    console.log(dv3.data);
+    // inject html into the page
+    document.body.insertAdjacentHTML('afterbegin', dvtemplate1);
 
-    // assert(dv3.data.a === 'test');
+    // inject data into global scope
+    (<EnhancedWindow>window).dvdata1 = dvdata1;
+
+    // since the page has already loaded, trigger the page parse manually
+    parsePage();
+
+    // get the section by id
+    const dvsection = api.sections[id];
+
+    assert(dvsection.id === id);
+    assert(document.getElementById(id)!.innerHTML.trim() === dvdata1.message);
 });

@@ -101,3 +101,7 @@ function bootChartDeclaration(chartNode: HTMLElement): DVChart {
 
     return dvchart;
 }
+
+export {
+    parsePage
+};
