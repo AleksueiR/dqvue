@@ -6,9 +6,12 @@ import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
 
+const version = require('./../../package.json').version;
+
 export default {
     Highcharts,
     log,
+    version,
 
     Section: DVSection,
     Chart: DVChart,
