@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "declaration": true,
+        "declarationDir": "@types",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "lib": [
