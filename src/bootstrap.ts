@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import { DVSection, DVSectionOptions } from './classes/section';
 import { DVChart, DVChartOptions } from './classes/chart';
-import { contains, sections } from './store/main';
+import { sections, charts } from './store/main';
 
 const ID_ATTR = 'id';
 const DV_SECTION_DATA_ATTR = 'dv-data';
@@ -16,13 +16,17 @@ const DV_CHART_DATA_ATTR ='dv-data';
 // it won't find any sections declared below if executed immediately
 window.addEventListener('load', parsePage);
 
+/**
+ * Reads the page and instantiates any DV Sections declared on the page which are not yet present in `DQV.sections`.
+ */
 function parsePage(): void {
+    // find all the `dv-section` nodes
     const sectionNodes: NodeListOf<Element> = document.querySelectorAll(DV_SECTION_ELEMENT);
 
     for (let i = 0; i < sectionNodes.length; i++) {
         const sectionNode: HTMLElement = sectionNodes[i] as HTMLElement;
 
-        // find all the charts declared inside a section and boot them first
+        // find all the `dv-chart` nodes declared inside a section and boot them first
         const chartNodes: NodeListOf<Element> = sectionNode.querySelectorAll(DV_CHART_ELEMENT);
         let charts: { [name: string]: DVChart } | undefined = undefined;
         if (chartNodes.length > 0) {
@@ -36,27 +40,35 @@ function parsePage(): void {
             }
         }
 
+        // boot the section itself using already booted charts
         bootSectionDeclaration(sectionNode, charts);
     }
 }
 
+/**
+ * Creates and returns a DV Section from the DOM node provided and a collection of DV Chart objects.
+ * If the DV Section on the supplied node is already initialized (it's present on `DQV.sections`), no new sections will be created, and the existing object will be returned instead.
+ */
 function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: string]: DVChart }): DVSection {
     const sectionOptions: DVSectionOptions = {
         automount: sectionNode,
         charts
     };
 
+    // scrape all attributes from the node
     const attributes: NamedNodeMap = sectionNode.attributes;
 
     // get data from the global scope
     const dataAttr: Attr = attributes.getNamedItem(DV_SECTION_DATA_ATTR);
     if (dataAttr !== null) {
+        // TODO: enforce data being either an object or a Promise; no functions allowed
         sectionOptions.data = (<any>window)[dataAttr.value];
     }
 
+    // get section id; if not provided, it will be auto-generated
     const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
     if (idAttr !== null) {
-        if (contains(idAttr.value)) {
+        if (sections[idAttr.value]) {
             return sections[idAttr.value];
         }
 
@@ -65,6 +77,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: stri
 
     const dvsection: DVSection = new DVSection(sectionOptions);
 
+    // if id was not provided, set the id attribute to the generated value for future reference
     if (idAttr === null) {
         sectionNode.setAttribute(ID_ATTR, dvsection.id);
     }
@@ -72,29 +85,43 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: stri
     return dvsection;
 }
 
+/**
+ * Creates and returns a DV Chart from the DOM node provided.
+ * If the DV Chart on the supplied node is already initialized (it's present on `DQV.charts`), no new charts will be created, and the existing object will be returned instead.
+ */
 function bootChartDeclaration(chartNode: HTMLElement): DVChart {
     const chartOptions: DVChartOptions = {};
 
+    // scrape all attributes from the node
     const attributes: NamedNodeMap = chartNode.attributes;
 
-    // get data from the global scope
+    // get config from the global scope
     const configAttr: Attr = attributes.getNamedItem(DV_CHART_CONFIG_ATTR);
     if (configAttr !== null) {
+        // TODO: enforce config being either an object or a Promise; no functions allowed
         chartOptions.config = (<any>window)[configAttr.value];
     }
 
+    // get data from the global scope
     const dataAttr: Attr = attributes.getNamedItem(DV_CHART_DATA_ATTR);
     if (dataAttr !== null) {
+        // TODO: enforce data being either an object or a Promise; no functions allowed
         chartOptions.data = (<any>window)[dataAttr.value];
     }
 
+    // get section id; if not provided, it will be auto-generated
     const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
     if (idAttr !== null) {
+        if (charts[idAttr.value]) {
+            return charts[idAttr.value];
+        }
+
         chartOptions.id = idAttr.value;
     }
 
     const dvchart: DVChart = new DVChart(chartOptions);
 
+    // if id was not provided, set the id attribute to the generated value for future reference
     if (idAttr === null) {
         chartNode.setAttribute(ID_ATTR, dvchart.id);
     }

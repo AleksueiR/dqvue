@@ -1,19 +1,19 @@
 import uniqid from 'uniqid';
 import * as Highcharts from 'highcharts';
 
-import { EventBus, CHART_CONFIG_UPDATED } from './../event-bus';
+import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED } from './../event-bus';
 
 import { isPromise } from './../utils';
 
-type SeriesData = (number | [number, number] | [string, number] | Highcharts.DataPoint)[] | undefined;
+export type SeriesData = (number | [number, number] | [string, number] | Highcharts.DataPoint)[] | undefined;
 
-interface DVChartOptions {
+export interface DVChartOptions {
     id?: string,
     config?: Highcharts.Options | Promise<Highcharts.Options>,
     data?: SeriesData | Promise<SeriesData>
 };
 
-class DVChart {
+export class DVChart {
     readonly id: string;
 
     private _isConfigValid: boolean = false;
@@ -37,6 +37,8 @@ class DVChart {
         } else  {
             this.data = data;
         }
+
+        EventBus.$emit(CHART_CREATED, this);
     }
 
     set config(value: Highcharts.Options | null) {
@@ -130,9 +132,4 @@ class DVChart {
     get isConfigValid(): boolean {
         return this._isConfigValid;
     }
-}
-
-export {
-    DVChart,
-    DVChartOptions
-}
+};

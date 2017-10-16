@@ -4,8 +4,7 @@
 
 <script lang='ts'>
 
-import Vue from 'vue';
-import { Component, Emit, Inject, Model, Prop, Provide, Watch } from 'vue-property-decorator';
+import { Vue, Component, Emit, Inject, Model, Prop, Provide, Watch } from 'vue-property-decorator';
 
 import * as Highcharts from 'highcharts';
 

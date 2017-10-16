@@ -8,7 +8,7 @@ import { EventBus, SECTION_CREATED } from './../event-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
 
-interface DVSectionOptions {
+export interface DVSectionOptions {
     id?: string,
     template?: string | Promise<string>,
     data?: object | Promise<object>,
@@ -16,7 +16,7 @@ interface DVSectionOptions {
     automount?: HTMLElement
 };
 
-class DVSection {
+export class DVSection {
 
     readonly id: string;
 
@@ -245,9 +245,4 @@ class DVSection {
 
         return this;
     }
-}
-
-export {
-    DVSection,
-    DVSectionOptions
 };
