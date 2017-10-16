@@ -1,6 +1,6 @@
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
-import { EventBus, SECTION_CREATED } from './../event-bus';
+import { EventBus, SECTION_CREATED, CHART_CREATED } from './../event-bus';
 
 import { isString } from './../utils';
 
@@ -30,7 +30,7 @@ function addChart(chart: DVChart): void {
 }
 
 EventBus.$on(SECTION_CREATED, (section: DVSection) => addSection(section));
-EventBus.$on(SECTION_CREATED, (chart: DVChart) => addChart(chart));
+EventBus.$on(CHART_CREATED, (chart: DVChart) => addChart(chart));
 
 export {
     sections,

@@ -2,7 +2,7 @@ import uniqid from 'uniqid';
 import * as loglevel from 'loglevel';
 import * as Highcharts from 'highcharts';
 
-import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED } from './../event-bus';
+import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED } from './../event-bus';
 
 import { isPromise } from './../utils';
 
@@ -26,6 +26,8 @@ export class DVChart {
     private _data: SeriesData | null = null;
     private _dataPromise: Promise<SeriesData> | null = null;
 
+    private _highchartObject: Highcharts.ChartObject | null = null;
+
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
 
@@ -44,6 +46,16 @@ export class DVChart {
         }
 
         EventBus.$emit(CHART_CREATED, this);
+        EventBus.$on(CHART_RENDERED, (highchartObject: Highcharts.ChartObject) =>
+            (this._highchartObject = highchartObject));
+    }
+
+    get highchart(): Highcharts.ChartObject | null {
+        if (!this._highchartObject) {
+            log.warn(`[chart='${this.id}'] chart has not been rendered yet`);
+        }
+
+        return this._highchartObject;
     }
 
     set config(value: Highcharts.Options | null) {
@@ -52,6 +64,7 @@ export class DVChart {
 
         log.debug(`[chart='${this.id}'] config value is set successfully`);
 
+        this._isConfigValid = false;
         this._validateConfig();
     }
 
@@ -76,6 +89,7 @@ export class DVChart {
 
         log.debug(`[chart='${this.id}'] data value is set successfully`);
 
+        this._isConfigValid = false;
         this._validateConfig();
     }
 
@@ -100,8 +114,6 @@ export class DVChart {
 
     private _validateConfig(): void {
         log.debug(`[chart='${this.id}'] attempting to validate config`);
-
-        this._isConfigValid = false;
 
         if (!this.config) {
             // TODO: complain that chart config is missing

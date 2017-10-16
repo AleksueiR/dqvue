@@ -202,6 +202,11 @@ export class DVSection {
             return this;
         }
 
+        // TODO: if the section is created with an explicit template and is not provided DV chart object, mounting such sections will result in errors as there will be no DV Chart object for corresponding markup in the template
+        // it possible to add some checks to ensure the DV Chart objects are supplied before mounting the section
+        // as an alternative, the template can be parsed and all missing DV Chart object can be created and stored on this DV Section; they will be accessible through the API and this will not cause any errors when mounting - the charts will not be rendered until their config data is supplied
+        // the easiest way to parse the chart is to not use regex, but `insertAdjacentHTML` and then `bootChartDeclaration` from the bootstrap module
+        // el = document.createElement('div'); el.insertAdjacentHTML('afterbegin', '<div></div>'); el.querySelectorAll('dv-section')
         this._vm = new Vue({
             template: <string>this.template,
             computed: { charts: () => this.charts },

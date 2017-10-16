@@ -9,7 +9,7 @@ import * as loglevel from 'loglevel';
 import * as Highcharts from 'highcharts';
 
 import { DVChart } from './../classes/chart';
-import { EventBus, CHART_CONFIG_UPDATED } from './../event-bus';
+import { EventBus, CHART_CONFIG_UPDATED, CHART_RENDERED } from './../event-bus';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -17,6 +17,8 @@ const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 export default class Chart extends Vue {
     dvchart: DVChart;
     isLoading: boolean = true;
+
+    highchartObject: Highcharts.ChartObject;
 
     @Inject() charts: { [name: string]: object }
 
@@ -45,8 +47,10 @@ export default class Chart extends Vue {
     renderChart(): void {
         log.debug(`[chart='${this.id}'] rendering chart`);
 
-        Highcharts.chart(this.$el, this.dvchart.config as Highcharts.Options);
+        this.highchartObject = Highcharts.chart(this.$el, this.dvchart.config as Highcharts.Options);
         this.isLoading = false;
+
+        EventBus.$emit(CHART_RENDERED, this.highchartObject);
     }
 };
 
