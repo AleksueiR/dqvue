@@ -1,9 +1,12 @@
 import uniqid from 'uniqid';
+import * as loglevel from 'loglevel';
 import * as Highcharts from 'highcharts';
 
 import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED } from './../event-bus';
 
 import { isPromise } from './../utils';
+
+const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
 export type SeriesData = (number | [number, number] | [string, number] | Highcharts.DataPoint)[] | undefined;
 
@@ -26,6 +29,8 @@ export class DVChart {
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
 
+        log.debug(`[chart='${this.id}'] new chart is created`);
+
         if (isPromise<Highcharts.Options>(config)) {
             this.setConfig(config);
         } else {
@@ -45,12 +50,15 @@ export class DVChart {
         this._config = value;
         this._configPromise = null;
 
+        log.debug(`[chart='${this.id}'] config value is set successfully`);
+
         this._validateConfig();
     }
 
     setConfig(value: Promise<Highcharts.Options>): void {
-        this._configPromise = value;
+        log.debug(`[chart='${this.id}'] waiting for config promise to resolve`);
 
+        this._configPromise = value;
         value.then(config => {
             if (value === this._configPromise) {
                 this.config = config;
@@ -66,12 +74,15 @@ export class DVChart {
         this._data = value;
         this._dataPromise = null;
 
+        log.debug(`[chart='${this.id}'] data value is set successfully`);
+
         this._validateConfig();
     }
 
     setData(value: Promise<SeriesData>): void {
-        this._dataPromise = value;
+        log.debug(`[chart='${this.id}'] waiting for data promise to resolve`);
 
+        this._dataPromise = value;
         value.then(data => {
             if (value === this._dataPromise) {
                 this.data = data;
@@ -88,12 +99,14 @@ export class DVChart {
     }
 
     private _validateConfig(): void {
+        log.debug(`[chart='${this.id}'] attempting to validate config`);
+
         this._isConfigValid = false;
 
         if (!this.config) {
             // TODO: complain that chart config is missing
 
-            console.log('chart config is missing', this.id);
+            log.warn(`[chart='${this.id}'] chart config is missing`);
 
             return;
         }
@@ -101,7 +114,7 @@ export class DVChart {
         if (!this.config.series) {
             // TODO: complain that chart config is incomplete and some of the data is missing
 
-            console.log('series are missing for chart', this.id);
+            log.warn(`[chart='${this.id}'] charts series are missing`);
 
             return;
         }
@@ -111,7 +124,8 @@ export class DVChart {
             if (this.data.length !== this.config.series.length) {
                 // TODO: complain that series data supplied does not match chart config provided
 
-                console.log('provided data does not match chart series', this.id);
+                log.warn(`[chart='${this.id}'] provided data does not match chart series`);
+
                 return;
             } else {
                 // TODO: can we assume here that series data provided is of correct type
@@ -127,12 +141,13 @@ export class DVChart {
         if (!isSeriesValid) {
             // TODO: complain that chart config is incomplete and some of the data is missing
 
-            console.log('data is missing for chart', this.id);
+            log.warn(`[chart='${this.id}'] chart data is missing`);
 
             return;
         }
 
-        console.log('chart ready', this.id);
+        log.debug(`[chart='${this.id}'] chart config is valid`);
+
         this._isConfigValid = true;
         EventBus.$emit(CHART_CONFIG_UPDATED, this);
     }

@@ -5,11 +5,13 @@
 <script lang='ts'>
 
 import { Vue, Component, Emit, Inject, Model, Prop, Provide, Watch } from 'vue-property-decorator';
-
+import * as loglevel from 'loglevel';
 import * as Highcharts from 'highcharts';
 
 import { DVChart } from './../classes/chart';
 import { EventBus, CHART_CONFIG_UPDATED } from './../event-bus';
+
+const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
 @Component
 export default class Chart extends Vue {
@@ -41,7 +43,7 @@ export default class Chart extends Vue {
     }
 
     renderChart(): void {
-        console.log('chart booting', this.id);
+        log.debug(`[chart='${this.id}'] rendering chart`);
 
         Highcharts.chart(this.$el, this.dvchart.config as Highcharts.Options);
         this.isLoading = false;

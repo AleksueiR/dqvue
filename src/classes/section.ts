@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as loglevel from 'loglevel';
 import uniqid from 'uniqid';
 
 import Section from './../components/section.vue';
@@ -7,6 +8,10 @@ import Chart from './../components/chart.vue';
 import { EventBus, SECTION_CREATED } from './../event-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
+// TODO: constrain logging to 'warn' in production builds
+// TODO: add a runtime `debug` switch to enable full logging
+
+const log: loglevel.Logger = loglevel.getLogger('dv-section');
 
 export interface DVSectionOptions {
     id?: string,
@@ -35,6 +40,8 @@ export class DVSection {
     constructor({ id = uniqid.time(), template = null, data = null, charts = {}, automount }: DVSectionOptions = {}) {
         this.id = id;
 
+        log.debug(`[section='${this.id}'] new section is created`);
+
         if (isString(template)) {
             this.template = template;
         } else if (template !== null) {
@@ -52,6 +59,7 @@ export class DVSection {
         EventBus.$emit(SECTION_CREATED, this);
 
         if (automount) {
+            log.debug(`[section='${this.id}'] attempting automount`);
             this.mount(automount);
         }
     }
@@ -82,12 +90,17 @@ export class DVSection {
         this._template = value;
         this._templatePromise = null;
 
+        log.debug(`[section='${this.id}'] template value is set successfully`);
+
+        // only attempt to remount if the mount element is already specified
         if (this._mount) {
             this.remount();
         }
     }
 
-    setTemplate(value: Promise<string>):void {
+    setTemplate(value: Promise<string>): void {
+        log.debug(`[section='${this.id}'] waiting for template promise to resolve`);
+
         this._templatePromise = value;
         value.then(template => {
             if (value === this._templatePromise) {
@@ -104,14 +117,18 @@ export class DVSection {
         this._data = value;
         this._dataPromise = null;
 
+        log.debug(`[section='${this.id}'] data value is set successfully`);
+
+        // only attempt to remount if the mount element is already specified
         if (this._mount) {
             this.remount();
         }
     }
 
     setData(value: Promise<object>): void {
-        this._dataPromise = value;
+        log.debug(`[section='${this.id}'] waiting for data promise to resolve`);
 
+        this._dataPromise = value;
         value.then(data => {
             if (value === this._dataPromise) {
                 this.data = data;
@@ -142,12 +159,12 @@ export class DVSection {
     }
 
     mount(element: HTMLElement): DVSection {
-        console.log('mounting', this.id);
+        log.debug(`[section='${this.id}'] attempting to mount on`, element);
 
         if (!element) {
             // TODO: complain in the console that a mount element needs to be provided
 
-            console.log('mount point is not provided', this.id);
+            log.warn(`[section='${this.id}'] cannot mount - the mount point is not provided`);
 
             return this;
         }
@@ -155,7 +172,7 @@ export class DVSection {
         if (this._isMounted) {
             // TODO: complain in the console that instance is already mounted; dismount first
 
-            console.log('section is already mounted', this.id);
+            log.warn(`[section='${this.id}'] cannot mount - already mounted`);
 
             return this;
         }
@@ -165,7 +182,7 @@ export class DVSection {
         // if no explicit template is provided use inline template
         if (!this.template && this._isInlineTemplate) {
 
-            console.log('inline template found; mounting', this.id);
+            log.debug(`[section='${this.id}'] no template provided; using inline template`);
 
             const inlineTemplate = element!.outerHTML.trim();
             while (element.firstChild) {
@@ -180,7 +197,7 @@ export class DVSection {
         if (!this._isMountable) {
             // TODO: complain in the console that it's not possible to mount the section because either data or template is missing.
 
-            console.log('section is missing either data or template', this.id);
+            log.warn(`[section='${this.id}'] cannot mount - either template or data is missing `);
 
             return this;
         }
@@ -205,12 +222,18 @@ export class DVSection {
         // when an explicit template is provided, it might not have the `id` attribute set; setting it manually
         this._vm.$el.setAttribute('id', this.id);
 
+        log.debug(`[section='${this.id}'] mounted successfully`);
+
         return this;
     }
 
     destroy(): DVSection {
+        log.debug(`[section='${this.id}'] attempting to destroy`);
+
         if (!this._mount) {
             // TODO: complain in the console that you can't destroy a not yet mounted instance
+
+            log.warn(`[section='${this.id}'] cannot destroy - the section is not mounted`);
 
             return this;
         }
@@ -220,12 +243,18 @@ export class DVSection {
         this._mount.remove();
         this._mount = null;
 
+        log.debug(`[section='${this.id}'] destroyed successfully`);
+
         return this;
     }
 
     dismount(clear: boolean = true): DVSection {
+        log.debug(`[section='${this.id}'] attempting to dismount`);
+
         if (!this._mount) {
             // TODO: complain in the console that you can't dismount a not yet mounted instance
+
+            log.warn(`[section='${this.id}'] cannot dismount - the section is not mounted`);
 
             return this;
         }
@@ -238,35 +267,40 @@ export class DVSection {
             this._mount.removeChild(this._mount.firstChild);
         }
 
+        log.debug(`[section='${this.id}'] dismounted successfully`);
+
         return this;
     }
 
     remount(): DVSection {
+        log.debug(`[section='${this.id}'] attempting to re-mount`);
+
         if (!this._mount) {
             // TODO: complain in the console that you can't remount a not yet mounted instance
 
-            console.log('cannot remount since there is no mount element', this.id);
-
-
-            return this;
-        }
-
-        // if not yet mounted but having mount element specified means the instance was waiting for `template` or `data` to be resolved
-        // try to mount normally
-        if (!this._isMounted) {
-            this.mount(this._mount);
+            log.warn(`[section='${this.id}'] cannot re-mount - this section is not mounted`);
 
             return this;
         }
 
-        this.dismount().mount(this._mount);
+        // if already mounted, dismount first, then mount back up
+        // not yet mounted sections with mount elements already specified are waiting for `template` or `data` to be resolved
+        if (this._isMounted) {
+            this.dismount();
+        }
+
+        this.mount(this._mount);
 
         return this;
     }
 
-    duplicate(): DVSection {
+    /* duplicate(): DVSection {
+        log.debug(`[section='${this.id}'] attempting to duplicate`);
+
         // TODO: implement
 
+        log.debug(`[section='${this.id}'] duplicated successfully`);
+
         return this;
-    }
+    } */
 };

@@ -1,11 +1,14 @@
 import * as Highcharts from 'highcharts';
 
+import * as log from 'loglevel';
+
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
 
 export default {
     Highcharts,
+    log,
 
     Section: DVSection,
     Chart: DVChart,
