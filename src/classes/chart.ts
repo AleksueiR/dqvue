@@ -26,7 +26,7 @@ export class DVChart {
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
 
-        if (isPromise(config)) {
+        if (isPromise<Highcharts.Options>(config)) {
             this.setConfig(config);
         } else {
             this.config = config;
@@ -91,6 +91,10 @@ export class DVChart {
         this._isConfigValid = false;
 
         if (!this.config) {
+            // TODO: complain that chart config is missing
+
+            console.log('chart config is missing', this.id);
+
             return;
         }
 
@@ -102,9 +106,12 @@ export class DVChart {
             return;
         }
 
+        // if chart data is provided in a separate object, merge it into the config
         if (this.data) {
             if (this.data.length !== this.config.series.length) {
                 // TODO: complain that series data supplied does not match chart config provided
+
+                console.log('provided data does not match chart series', this.id);
                 return;
             } else {
                 // TODO: can we assume here that series data provided is of correct type
@@ -113,6 +120,7 @@ export class DVChart {
             }
         }
 
+        // check if all chart series have corresponding data object
         const isSeriesValid = this.config.series.some((series: Highcharts.IndividualSeriesOptions) =>
             typeof series.data !== 'undefined');
 

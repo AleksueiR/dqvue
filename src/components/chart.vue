@@ -30,18 +30,18 @@ export default class Chart extends Vue {
     mounted(): void {
         EventBus.$on(CHART_CONFIG_UPDATED, ({ id, config }: DVChart) => {
             if (id == this.id) {
-                this.bootChart();
+                this.renderChart();
             }
         });
 
         this.dvchart = this.charts[this.id] as DVChart;
         if (this.dvchart.isConfigValid) {
-            this.bootChart();
+            this.renderChart();
         }
     }
 
-    bootChart(): void {
-        console.log('chart booting');
+    renderChart(): void {
+        console.log('chart booting', this.id);
 
         Highcharts.chart(this.$el, this.dvchart.config as Highcharts.Options);
         this.isLoading = false;

@@ -81,7 +81,10 @@ export class DVSection {
     set template(value: string | null) {
         this._template = value;
         this._templatePromise = null;
-        this.remount();
+
+        if (this._mount) {
+            this.remount();
+        }
     }
 
     setTemplate(value: Promise<string>):void {
@@ -100,7 +103,10 @@ export class DVSection {
     set data(value: object | null) {
         this._data = value;
         this._dataPromise = null;
-        this.remount();
+
+        if (this._mount) {
+            this.remount();
+        }
     }
 
     setData(value: Promise<object>): void {
@@ -126,11 +132,7 @@ export class DVSection {
     }
 
     private get _isMountable(): boolean {
-        if (!this.template && !this._isInlineTemplate) {
-            return false;
-        }
-
-        if (!this.data) {
+        if (!this.template || !this.data) {
             return false;
         }
 
@@ -140,8 +142,12 @@ export class DVSection {
     }
 
     mount(element: HTMLElement): DVSection {
+        console.log('mounting', this.id);
+
         if (!element) {
             // TODO: complain in the console that a mount element needs to be provided
+
+            console.log('mount point is not provided', this.id);
 
             return this;
         }
@@ -149,15 +155,32 @@ export class DVSection {
         if (this._isMounted) {
             // TODO: complain in the console that instance is already mounted; dismount first
 
+            console.log('section is already mounted', this.id);
+
             return this;
         }
 
-        if (this._mount !== element) {
-            this._mount = element;
+        this._mount = element;
+
+        // if no explicit template is provided use inline template
+        if (!this.template && this._isInlineTemplate) {
+
+            console.log('inline template found; mounting', this.id);
+
+            const inlineTemplate = element!.outerHTML.trim();
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+
+            this.template = inlineTemplate;
+
+            return this;
         }
 
         if (!this._isMountable) {
             // TODO: complain in the console that it's not possible to mount the section because either data or template is missing.
+
+            console.log('section is missing either data or template', this.id);
 
             return this;
         }
@@ -179,11 +202,9 @@ export class DVSection {
         this._mount = this._vm.$el; // the mount element has been replaced by the _vm.$el, reassign
         this._isMounted = true;
 
-        // when the template is supplied as a string, need to manually set `id` and `dv-section` attributes
-        if (this.template) {
-            this._vm.$el.setAttribute('id', this.id);
-            this._vm.$el.setAttribute('dv-section', '');
-        }
+        // when an explicit template is provided, it might not have the `id` attribute set; setting it manually
+        this._vm.$el.setAttribute('id', this.id);
+
         return this;
     }
 
@@ -223,6 +244,9 @@ export class DVSection {
     remount(): DVSection {
         if (!this._mount) {
             // TODO: complain in the console that you can't remount a not yet mounted instance
+
+            console.log('cannot remount since there is no mount element', this.id);
+
 
             return this;
         }

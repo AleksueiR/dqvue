@@ -77,11 +77,6 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: { [name: stri
 
     const dvsection: DVSection = new DVSection(sectionOptions);
 
-    // if id was not provided, set the id attribute to the generated value for future reference
-    if (idAttr === null) {
-        sectionNode.setAttribute(ID_ATTR, dvsection.id);
-    }
-
     return dvsection;
 }
 
@@ -122,6 +117,8 @@ function bootChartDeclaration(chartNode: HTMLElement): DVChart {
     const dvchart: DVChart = new DVChart(chartOptions);
 
     // if id was not provided, set the id attribute to the generated value for future reference
+    // this is needed to link declarative charts with their respective config objects
+    // when creating DV Charts programmatically, the DV Section template must have charts' ids already in place
     if (idAttr === null) {
         chartNode.setAttribute(ID_ATTR, dvchart.id);
     }
