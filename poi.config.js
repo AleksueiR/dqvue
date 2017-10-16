@@ -1,6 +1,8 @@
 const pkg = require("./package.json");
 
 module.exports = {
+    vendor: false,
+    extractCSS: false,
     html: {
         title: pkg.productName || pkg.name,
         description: pkg.description,
