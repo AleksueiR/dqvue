@@ -1,5 +1,5 @@
 <template>
-    <div dv-chart :class="{ loading: isLoading }"></div>
+    <div dv-chart :class="{ 'dv-loading': isLoading }"></div>
 </template>
 
 <script lang='ts'>
@@ -70,10 +70,5 @@ export default class Chart extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
-/* [dv-chart].loading {
-    height: 100px;
-    border: 1px solid grey;
-} */
 
 </style>

@@ -115,7 +115,7 @@ export class DVChart {
         return this._data;
     }
 
-    update(): void {
+    refresh(): void {
         this._validateConfig();
     }
 

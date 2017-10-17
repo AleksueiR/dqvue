@@ -7,7 +7,8 @@ import { sections, charts } from './store/main';
 
 const ID_ATTR = 'id';
 const DV_SECTION_DATA_ATTR = 'dv-data';
-const DV_SECTION_ELEMENT = 'dv-section'
+const DV_SECTION_ELEMENT = 'dv-section';
+// const DV_SECTION_WAIT_ATTR = 'dv-wait';
 
 const DV_CHART_ELEMENT ='dv-chart';
 const DV_CHART_CONFIG_ATTR ='dv-config';
@@ -67,7 +68,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: DVChart[]): D
 
     const sectionOptions: DVSectionOptions = {
         id: idValue,
-        automount: sectionNode,
+        mount: sectionNode,
         charts
     };
 
@@ -77,6 +78,13 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: DVChart[]): D
         // TODO: enforce data being either an object or a Promise; no functions allowed
         sectionOptions.data = (<any>window)[dataAttr.value];
     }
+
+    // get data from the global scope
+    /* const waitAttr: Attr = attributes.getNamedItem(DV_SECTION_WAIT_ATTR);
+    if (waitAttr !== null) {
+        // TODO: enforce data being either an object or a Promise; no functions allowed
+        sectionOptions.automount = false;
+    } */
 
     const dvsection: DVSection = new DVSection(sectionOptions);
 

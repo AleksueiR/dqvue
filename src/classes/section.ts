@@ -17,7 +17,8 @@ export interface DVSectionOptions {
     template?: string | Promise<string>,
     data?: object | Promise<object>,
     charts?: DVChart[] | DVChart,
-    automount?: HTMLElement
+    mount?: HTMLElement,
+    automount?: boolean
 };
 
 export class DVSection {
@@ -25,6 +26,7 @@ export class DVSection {
     readonly id: string;
 
     private _mount: HTMLElement | null = null;
+    private _automount: boolean = false;
     private _isMounted: boolean = false;
 
     private _vm: Vue;
@@ -36,7 +38,7 @@ export class DVSection {
 
     private _charts: { [name: string]: DVChart } = {};
 
-    constructor({ id, template = null, data = null, charts = null, automount = null }: DVSectionOptions) {
+    constructor({ id, template = null, data = null, charts = null, mount = null, automount = true }: DVSectionOptions) {
         this.id = id;
 
         log.debug(`[section='${this.id}'] new section is created`);
@@ -59,9 +61,15 @@ export class DVSection {
 
         EventBus.$emit(SECTION_CREATED, this);
 
+        if (mount) {
+            this._mount = mount;
+        }
+
         if (automount) {
+            this._automount = automount;
+
             log.debug(`[section='${this.id}'] attempting automount`);
-            this.mount(automount);
+            this.mount();
         }
     }
 
@@ -159,10 +167,14 @@ export class DVSection {
         return true;
     }
 
-    mount(element: HTMLElement): DVSection {
-        log.debug(`[section='${this.id}'] attempting to mount on`, element);
+    mount(element?: HTMLElement): DVSection {
+        if (element) {
+            this._mount = element;
+        }
 
-        if (!element) {
+        log.debug(`[section='${this.id}'] attempting to mount`);
+
+        if (!this._mount) {
             // TODO: complain in the console that a mount element needs to be provided
 
             log.warn(`[section='${this.id}'] cannot mount - the mount point is not provided`);
@@ -178,16 +190,14 @@ export class DVSection {
             return this;
         }
 
-        this._mount = element;
-
         // if no explicit template is provided use inline template
         if (!this.template && this._isInlineTemplate) {
 
             log.debug(`[section='${this.id}'] no template provided; using inline template`);
 
-            const inlineTemplate = element!.outerHTML.trim();
-            while (element.firstChild) {
-                element.removeChild(element.firstChild);
+            const inlineTemplate = this._mount!.outerHTML.trim();
+            while (this._mount.firstChild) {
+                this._mount.removeChild(this._mount.firstChild);
             }
 
             this.template = inlineTemplate;
@@ -229,7 +239,7 @@ export class DVSection {
         // when an explicit template is provided, it might not have the `id` attribute set; setting it manually
         this._vm.$el.setAttribute('id', this.id);
 
-        log.debug(`[section='${this.id}'] mounted successfully`);
+        log.debug(`[section='${this.id}'] mounted successfully on`, this._mount);
 
         return this;
     }
@@ -294,6 +304,10 @@ export class DVSection {
         // not yet mounted sections with mount elements already specified are waiting for `template` or `data` to be resolved
         if (this._isMounted) {
             this.dismount();
+        } else if (!this._automount) {
+            log.info(`[section='${this.id}'] cannot re-mount - automount is disabled`);
+
+            return this;
         }
 
         this.mount(this._mount);
