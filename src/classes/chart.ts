@@ -35,19 +35,22 @@ export class DVChart {
 
         if (isPromise<Highcharts.Options>(config)) {
             this.setConfig(config);
-        } else {
+        } else if (config !== null) {
             this.config = config;
         }
 
         if (isPromise<SeriesData>(data)) {
             this.setData(data);
-        } else  {
+        } else if (data !== null) {
             this.data = data;
         }
 
         EventBus.$emit(CHART_CREATED, this);
-        EventBus.$on(CHART_RENDERED, (highchartObject: Highcharts.ChartObject) =>
-            (this._highchartObject = highchartObject));
+        EventBus.$on(CHART_RENDERED, (event: { id: string, highchartObject: Highcharts.ChartObject }) => {
+            if (event.id == this.id) {
+                this._highchartObject = event.highchartObject;
+            }
+        });
     }
 
     get highchart(): Highcharts.ChartObject | null {
@@ -68,7 +71,7 @@ export class DVChart {
         this._validateConfig();
     }
 
-    setConfig(value: Promise<Highcharts.Options>): void {
+    setConfig(value: Promise<Highcharts.Options>): DVChart {
         log.debug(`[chart='${this.id}'] waiting for config promise to resolve`);
 
         this._configPromise = value;
@@ -77,6 +80,8 @@ export class DVChart {
                 this.config = config;
             }
         });
+
+        return this;
     }
 
     get config(): Highcharts.Options | null {
@@ -93,7 +98,7 @@ export class DVChart {
         this._validateConfig();
     }
 
-    setData(value: Promise<SeriesData>): void {
+    setData(value: Promise<SeriesData>): DVChart {
         log.debug(`[chart='${this.id}'] waiting for data promise to resolve`);
 
         this._dataPromise = value;
@@ -102,6 +107,8 @@ export class DVChart {
                 this.data = data;
             }
         });
+
+        return this;
     }
 
     get data(): SeriesData | null {
@@ -118,7 +125,7 @@ export class DVChart {
         if (!this.config) {
             // TODO: complain that chart config is missing
 
-            log.warn(`[chart='${this.id}'] chart config is missing`);
+            log.warn(`[chart='${this.id}'] invalid config - chart config is missing`);
 
             return;
         }
@@ -126,7 +133,7 @@ export class DVChart {
         if (!this.config.series) {
             // TODO: complain that chart config is incomplete and some of the data is missing
 
-            log.warn(`[chart='${this.id}'] charts series are missing`);
+            log.warn(`[chart='${this.id}'] invalid config - charts series are missing`);
 
             return;
         }
@@ -136,7 +143,7 @@ export class DVChart {
             if (this.data.length !== this.config.series.length) {
                 // TODO: complain that series data supplied does not match chart config provided
 
-                log.warn(`[chart='${this.id}'] provided data does not match chart series`);
+                log.warn(`[chart='${this.id}'] invalid config - provided data does not match chart series`);
 
                 return;
             } else {
@@ -153,7 +160,7 @@ export class DVChart {
         if (!isSeriesValid) {
             // TODO: complain that chart config is incomplete and some of the data is missing
 
-            log.warn(`[chart='${this.id}'] chart data is missing`);
+            log.warn(`[chart='${this.id}'] invalid config - chart data is incomplete`);
 
             return;
         }
@@ -167,4 +174,14 @@ export class DVChart {
     get isConfigValid(): boolean {
         return this._isConfigValid;
     }
+
+    /* duplicate(): DVChart {
+        log.debug(`[chart='${this.id}'] attempting to duplicate`);
+
+        // TODO: implement
+
+        log.debug(`[chart='${this.id}'] duplicated successfully`);
+
+        return this;
+    } */
 };

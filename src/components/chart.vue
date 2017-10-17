@@ -20,7 +20,8 @@ export default class Chart extends Vue {
 
     highchartObject: Highcharts.ChartObject;
 
-    @Inject() charts: { [name: string]: object }
+    @Inject() rootSectionId: string;
+    @Inject() charts: { [name: string]: object };
 
     get id(): string {
         return this.$attrs.id;
@@ -32,6 +33,18 @@ export default class Chart extends Vue {
      * @function mounted
      */
     mounted(): void {
+        // section is created programmatically and template is missing `id` on a `<dv-chart>` node making it impossible to link in the chart's config
+        if (!this.id) {
+            loglevel.error(`[chart='?'] missing 'id' attribute in [section='${this.rootSectionId}']`);
+            return;
+        }
+
+        // section is created programmatically and one or more charts were not added to the DVSection object
+        if (!this.charts[this.id]) {
+            loglevel.error(`[chart='${this.id}'] is not defined in [section='${this.rootSectionId}']`);
+            return;
+        }
+
         EventBus.$on(CHART_CONFIG_UPDATED, ({ id, config }: DVChart) => {
             if (id == this.id) {
                 this.renderChart();
@@ -50,7 +63,7 @@ export default class Chart extends Vue {
         this.highchartObject = Highcharts.chart(this.$el, this.dvchart.config as Highcharts.Options);
         this.isLoading = false;
 
-        EventBus.$emit(CHART_RENDERED, this.highchartObject);
+        EventBus.$emit(CHART_RENDERED, { id: this.id, highchartObject: this.highchartObject });
     }
 };
 

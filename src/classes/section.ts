@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import * as loglevel from 'loglevel';
-import uniqid from 'uniqid';
 
 import Section from './../components/section.vue';
 import { DVChart } from './chart';
@@ -14,10 +13,10 @@ import { isPromise, isFunction, isString, isObject } from './../utils';
 const log: loglevel.Logger = loglevel.getLogger('dv-section');
 
 export interface DVSectionOptions {
-    id?: string,
+    id: string,
     template?: string | Promise<string>,
     data?: object | Promise<object>,
-    charts?: { [ name: string ]: DVChart },
+    charts?: DVChart[] | DVChart,
     automount?: HTMLElement
 };
 
@@ -37,7 +36,7 @@ export class DVSection {
 
     private _charts: { [name: string]: DVChart } = {};
 
-    constructor({ id = uniqid.time(), template = null, data = null, charts = {}, automount }: DVSectionOptions = {}) {
+    constructor({ id, template = null, data = null, charts = null, automount = null }: DVSectionOptions) {
         this.id = id;
 
         log.debug(`[section='${this.id}'] new section is created`);
@@ -54,7 +53,9 @@ export class DVSection {
             this.data = data;
         }
 
-        this.charts = charts;
+        if (charts !== null) {
+            this.addChart(charts);
+        }
 
         EventBus.$emit(SECTION_CREATED, this);
 
@@ -64,9 +65,7 @@ export class DVSection {
         }
     }
 
-    addChart(items: DVChart):void;
-    addChart(items: DVChart[]):void;
-    addChart(items: any):void {
+    addChart(items: DVChart | DVChart[]): DVSection {
 
         if (!Array.isArray(items)) {
             items = [items];
@@ -76,10 +75,8 @@ export class DVSection {
         // Do we care if we override an already existing chart
         items.forEach((item: DVChart) =>
             this._charts[item.id] = item);
-    }
 
-    set charts(items: { [name: string]: DVChart }) {
-        this._charts = items;
+        return this;
     }
 
     get charts(): { [name: string]: DVChart } {
@@ -98,7 +95,7 @@ export class DVSection {
         }
     }
 
-    setTemplate(value: Promise<string>): void {
+    setTemplate(value: Promise<string>): DVSection {
         log.debug(`[section='${this.id}'] waiting for template promise to resolve`);
 
         this._templatePromise = value;
@@ -107,6 +104,8 @@ export class DVSection {
                 this.template = template;
             }
         });
+
+        return this;
     }
 
     get template(): string | null {
@@ -125,7 +124,7 @@ export class DVSection {
         }
     }
 
-    setData(value: Promise<object>): void {
+    setData(value: Promise<object>): DVSection {
         log.debug(`[section='${this.id}'] waiting for data promise to resolve`);
 
         this._dataPromise = value;
@@ -134,6 +133,8 @@ export class DVSection {
                 this.data = data;
             }
         });
+
+        return this;
     }
 
     get data(): object | null {
@@ -212,6 +213,7 @@ export class DVSection {
             computed: { charts: () => this.charts },
             data: <object>this.data,
             provide: {
+                rootSectionId: this.id,
                 charts: this.charts
             },
             components: {
