@@ -26,7 +26,7 @@ export class DVSection {
     readonly id: string;
 
     private _mount: HTMLElement | null = null;
-    private _automount: boolean = false;
+    private _automount: boolean;
     private _isMounted: boolean = false;
 
     private _vm: Vue;
@@ -65,16 +65,18 @@ export class DVSection {
             this._mount = mount;
         }
 
-        if (automount) {
-            this._automount = automount;
-
+        this._automount = automount;
+        if (this._automount) {
             log.debug(`[section='${this.id}'] attempting automount`);
             this.mount();
         }
     }
 
+    /**
+     * Adds one or several `DVChart` objects to this `DVSection` to be referenced by the section's template.
+     * Existing charts with the same ids will be overwritten.
+     */
     addChart(items: DVChart | DVChart[]): DVSection {
-
         if (!Array.isArray(items)) {
             items = [items];
         }
@@ -117,6 +119,23 @@ export class DVSection {
     }
 
     get template(): string | null {
+        // if no explicit template is provided or promised, use the inline template if present
+        if (!this._template && !this._templatePromise && this._isInlineTemplate) {
+
+            log.debug(`[section='${this.id}'] no template provided; using inline template`);
+
+            // `_isInlineTemplate` assures `this._mount` is defined
+            const mount = <HTMLElement>this._mount;
+            const inlineTemplate = mount.outerHTML.trim();
+
+            // expunge the mount's guts
+            while (mount.firstChild) {
+                mount!.removeChild(mount.firstChild);
+            }
+
+            this._template = inlineTemplate;
+        }
+
         return this._template;
     }
 
@@ -158,8 +177,18 @@ export class DVSection {
     }
 
     private get _isMountable(): boolean {
-        if (!this.template || !this.data) {
+        if (!this.template) {
             return false;
+        }
+
+        // a section can be mounted without a data object if the template doesn't reference anything on the data object
+        // however, if there exists a data promise and no data object is yet defined, do not mount just yet
+        if (!this.data && this._dataPromise) {
+            return false;
+        }
+
+        if (!this.data && !this._dataPromise) {
+            log.debug(`[section='${this.id}'] no data provided; if template uses bindings, mounting the section will throw errors`);
         }
 
         // TODO: check for charts present and their configs
@@ -186,21 +215,6 @@ export class DVSection {
             // TODO: complain in the console that instance is already mounted; dismount first
 
             log.warn(`[section='${this.id}'] cannot mount - already mounted`);
-
-            return this;
-        }
-
-        // if no explicit template is provided use inline template
-        if (!this.template && this._isInlineTemplate) {
-
-            log.debug(`[section='${this.id}'] no template provided; using inline template`);
-
-            const inlineTemplate = this._mount!.outerHTML.trim();
-            while (this._mount.firstChild) {
-                this._mount.removeChild(this._mount.firstChild);
-            }
-
-            this.template = inlineTemplate;
 
             return this;
         }
