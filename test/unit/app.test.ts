@@ -42,30 +42,33 @@ afterEach(function () {
 
     document.body.removeChild(node as HTMLElement);
 }); */
+describe('ok', () => {
 
-it('ok', () => {
-    const id = 'dv1';
-    const dvtemplate1 = `
-        <dv-section dv-data="dvdata1" id="${id}">
-            {{ message }}
-        </dv-section>
-    `;
-    const dvdata1 = {
-        message: 'hello there'
-    };
+    xit('ok', () => {
+        const id = 'dv1';
+        const dvtemplate1 = `
+            <dv-section dv-data="dvdata1" id="${id}">
+                {{ message }}
+            </dv-section>
+        `;
+        const dvdata1 = {
+            message: 'hello there'
+        };
 
-    // inject html into the page
-    document.body.insertAdjacentHTML('afterbegin', dvtemplate1);
+        // inject html into the page
+        document.body.insertAdjacentHTML('afterbegin', dvtemplate1);
 
-    // inject data into global scope
-    (<EnhancedWindow>window).dvdata1 = dvdata1;
+        // inject data into global scope
+        (<EnhancedWindow>window).dvdata1 = dvdata1;
 
-    // since the page has already loaded, trigger the page parse manually
-    parsePage();
+        // since the page has already loaded, trigger the page parse manually
+        parsePage();
 
-    // get the section by id
-    const dvsection = api.sections[id];
+        // get the section by id
+        const dvsection = api.sections[id];
 
-    assert(dvsection.id === id);
-    assert(document.getElementById(id)!.innerHTML.trim() === dvdata1.message);
+        assert(dvsection.id === id);
+        assert(document.getElementById(id)!.innerHTML.trim() === dvdata1.message);
+    });
+
 });

@@ -54,7 +54,7 @@ describe('declarative', () => {
         const dv1id = 'dv1';
         const dv1template1 = `
             <dv-section dv-data="dv1data1" id="${dv1id}">
-                {{ message }}
+                <span class="message">{{ message }}</span>
             </dv-section>
         `;
         const dv1data1 = {
@@ -70,11 +70,37 @@ describe('declarative', () => {
         // get the section by id
         const dvsection = api.sections[dv1id];
 
-        const dv1node: HTMLElement = document.getElementById(dv1id)  as HTMLElement;
+        let dv1node: HTMLElement = document.getElementById(dv1id) as HTMLElement;
+        let messageNode: HTMLElement = dv1node.querySelector('.message') as HTMLElement;
 
         assert(dvsection.id === dv1id);
         assert(dv1node.getAttribute('id') === dv1id);
-        assert(dv1node.innerHTML.trim() === dv1data1.message);
+        assert(messageNode.innerHTML.trim() === dv1data1.message);
+
+        dvsection.dismount();
+        assert(dv1node.innerHTML.trim() === '');
+
+        dvsection.remount();
+
+        // remounting will replace the mount point, so need to get it again
+        dv1node = document.getElementById(dv1id) as HTMLElement;
+        messageNode = dv1node.querySelector('.message') as HTMLElement;
+        assert(messageNode.innerHTML.trim() === dv1data1.message);
+
+        // replacing the data object will remount the instance
+        const dv1data2 = { message: 'new message' };
+        dvsection.data = dv1data2;
+
+        // remounting will replace the mount point, so need to get it again
+        dv1node = document.getElementById(dv1id) as HTMLElement;
+        messageNode = dv1node.querySelector('.message') as HTMLElement;
+        assert(messageNode.innerHTML.trim() === dv1data2.message);
+
+        dvsection.destroy();
+        dv1node = document.getElementById(dv1id) as HTMLElement;
+
+        // destroying will remove the mount point as well
+        assert(dv1node === null);
     });
 
     it('simple section - async data', done => {
@@ -102,8 +128,61 @@ describe('declarative', () => {
             assert(dv2node.getAttribute('id') === dv2id);
             assert(dv2node.innerHTML.trim() === data.message);
 
+            dvsection.destroy();
+
             done();
         });
     });
 
+    it('simple section - sync chart data', () => {
+        const dv3id = 'dv3';
+        const dv3idchart = 'dv3chart';
+        const dv3template1 = `
+            <dv-section id="${dv3id}">
+                <dv-chart id="${dv3idchart}" dv-config="dv3config"></dv-chart>
+            </dv-section>
+        `;
+        const dv3config = {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Fruit Consumption'
+            },
+            xAxis: {
+                categories: ['Apples', 'Bananas', 'Oranges']
+            },
+            yAxis: {
+                title: {
+                    text: 'Fruit eaten'
+                }
+            },
+            series: [{
+                name: 'Jane',
+                data: [1, 0, 4]
+            }, {
+                name: 'John',
+                data: [5, 7, 3]
+            }]
+        };
+
+        // inject html into the page and data into the global scope
+        injectFixtures(dv3template1, { dv3config });
+
+        // since the page has already loaded, trigger the page parse manually
+        parsePage();
+
+        const dvsection = api.sections[dv3id];
+        const dv3chartnode: HTMLElement = document.getElementById(dv3idchart) as HTMLElement;
+
+        assert(dvsection.id === dv3id);
+        assert(dv3chartnode.getAttribute('id') === dv3idchart);
+        assert(dv3chartnode.hasAttribute('data-highcharts-chart'));
+
+        // both DQChart and Highchart object should be defined
+        assert(!!dvsection.charts[dv3idchart]);
+        assert(!!dvsection.charts[dv3idchart].highchart);
+
+        dvsection.destroy();
+    });
 });
