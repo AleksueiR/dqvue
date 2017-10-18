@@ -1,5 +1,3 @@
-let idCounter = 0;
-
 function isFunction(x: any): x is () => any {
     return typeof x === 'function';
 }
