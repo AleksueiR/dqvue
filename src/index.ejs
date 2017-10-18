@@ -11,6 +11,10 @@
     <% if (htmlWebpackPlugin.options.description) { %>
         <meta name="description" content="<%= htmlWebpackPlugin.options.description %>" />
     <% } %>
+
+    <!-- if you need IE support -->
+    <!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
+
     <script>
         dv1data = {
             message: 'Declarative section with sync data from global scope'
@@ -44,6 +48,10 @@
                     },
                     pointStart: 2010
                 }
+            },
+
+            credits: {
+                enabled: false
             },
 
             series: [{
@@ -83,55 +91,55 @@
             [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111],
         ];
 
-        dv2data = new Promise(resolve => {
+        dv2data = new Promise(function (resolve) {
             const data = { message: 'Declarative section with async data using Promise from global scope', seconds: 6 }
-            window.setInterval(() => data.seconds--, 1000);
+            window.setInterval(function () { data.seconds--; }, 1000);
             resolve(data);
         });
 
-        dvchart2config = new Promise(resolve =>
-            setTimeout(() => {
-                resolve({
-                    chart: {
-                        type: 'bar'
-                    },
-                    title: {
-                        text: 'Fruit Consumption'
-                    },
-                    xAxis: {
-                        categories: ['Apples', 'Bananas', 'Oranges']
-                    },
-                    yAxis: {
+        dvchart2config = new Promise(function (resolve) {
+            setTimeout(function () {
+                    resolve({
+                        chart: {
+                            type: 'bar'
+                        },
                         title: {
-                            text: 'Fruit eaten'
-                        }
-                    },
-                    series: [{
-                        name: 'Jane',
-                        data: [1, 0, 4]
-                    }, {
-                        name: 'John',
-                        data: [5, 7, 3]
-                    }]
-                })
-            }, 6000)
+                            text: 'Fruit Consumption'
+                        },
+                        xAxis: {
+                            categories: ['Apples', 'Bananas', 'Oranges']
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Fruit eaten'
+                            }
+                        },
+                        series: [{
+                            name: 'Jane',
+                            data: [1, 0, 4]
+                        }, {
+                            name: 'John',
+                            data: [5, 7, 3]
+                        }]
+                    })
+                }, 6000)
+            }
         );
 
         // testing programmatic bootstrap
         window.addEventListener('load', function() {
-            const testTemplate = `
-                <dv-section id="dv3">
-                    <h3>{{ message }}</h3>
+            const testTemplate =
+            '    <dv-section id="dv3">' +
+            '        <h3>{{ message }}</h3>' +
 
-                    <dv-chart id="nuclear"></dv-chart>
+            '        <dv-chart id="nuclear"></dv-chart>' +
 
-                    <dv-chart></dv-chart>
-                    <dv-chart id="dfdf"></dv-chart>
+            '        <dv-chart></dv-chart>' +
+            '        <dv-chart id="dfdf"></dv-chart>' +
 
-                    [{{ count }}]
-                </dv-section>
-
-            `;
+            '        [{{ count }}]' +
+            '    </dv-section>'
+            ;
 
             const data = {
                 message: 'Programmatic section with sync data',
@@ -206,11 +214,11 @@
                 }]
             };
 
-            window.setInterval(() => data.count++, 6000);
+            window.setInterval(function () { data.count++; }, 6000);
 
             const dvc = new DQV.Chart({ id: 'nuclear', config: chartConfig });
 
-            const dvs = new DQV.Section({ data, id: 'dv33', template: testTemplate/* , charts: [dvc] */ });
+            const dvs = new DQV.Section({ data: data, id: 'dv33', template: testTemplate/* , charts: [dvc] */ });
             dvs
                 .addChart(dvc)
                 .mount(document.getElementById('target1'));

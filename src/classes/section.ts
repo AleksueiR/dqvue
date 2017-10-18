@@ -257,7 +257,8 @@ export class DVSection {
 
         this.dismount();
 
-        this._mount.remove();
+        // .remove() is not supported in IE
+        this._mount.parentNode!.removeChild(this._mount);
         this._mount = null;
 
         log.debug(`[section='${this.id}'] destroyed successfully`);
