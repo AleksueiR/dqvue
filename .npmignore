@@ -1,0 +1,6 @@
+docs.
+test/
+node_modules/
+.gitignore
+poi.config.js
+tsconfig.json
