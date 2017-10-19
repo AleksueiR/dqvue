@@ -3,12 +3,16 @@ const pkg = require("./package.json");
 module.exports = {
     vendor: false,
     extractCSS: false,
+    filename: {
+        js: 'dqvue.js'
+    },
     html: {
         title: pkg.productName || pkg.name,
         description: pkg.description,
-        template: 'src/index.ejs'
+        template: 'src/index.ejs',
     },
     presets: [
+        require('poi-preset-babel-minify')({ }, { comments: false }),
         require('poi-preset-typescript')({}),
         require('poi-preset-karma')({
             // browsers: ['IE'], default is ['Chrome']

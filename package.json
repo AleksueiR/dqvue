@@ -2,7 +2,8 @@
   "name": "dqvue",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/dqvue.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "poi test",
     "dev": "poi --port 3001 src/index.ts",
