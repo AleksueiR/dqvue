@@ -1,16 +1,20 @@
 const pkg = require("./package.json");
+const argv = require('yargs').argv;
+
+const minimize = argv.minimize === true;
 
 module.exports = {
     vendor: false,
     extractCSS: false,
     filename: {
-        js: 'dqvue.js'
+        js: `dqvue${ minimize ? '.min' : '' }.js`
     },
     html: {
         title: pkg.productName || pkg.name,
         description: pkg.description,
         template: 'src/index.ejs',
     },
+    minimize: minimize,
     presets: [
         require('poi-preset-babel-minify')({ }, { comments: false }),
         require('poi-preset-typescript')({}),
@@ -28,6 +32,8 @@ module.exports = {
         config.output
             .set('library', 'DQV')
             .set('libraryExport', 'default'); // exposes the default export directly on the global library variable: https://webpack.js.org/configuration/output/#output-libraryexport
+
+
     },
     karma: {
         mime: {
