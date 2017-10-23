@@ -8,13 +8,15 @@ import { isPromise } from './../utils';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
-export type SeriesData = (number | [number, number] | [string, number] | Highcharts.DataPoint)[] | undefined;
+export type SeriesData =
+    | (number | [number, number] | [string, number] | Highcharts.DataPoint)[]
+    | undefined;
 
 export interface DVChartOptions {
-    id?: string,
-    config?: Highcharts.Options | Promise<Highcharts.Options>,
-    data?: SeriesData | Promise<SeriesData>
-};
+    id?: string;
+    config?: Highcharts.Options | Promise<Highcharts.Options>;
+    data?: SeriesData | Promise<SeriesData>;
+}
 
 export class DVChart {
     readonly id: string;
@@ -46,11 +48,14 @@ export class DVChart {
         }
 
         EventBus.$emit(CHART_CREATED, this);
-        EventBus.$on(CHART_RENDERED, (event: { id: string, highchartObject: Highcharts.ChartObject }) => {
-            if (event.id == this.id) {
-                this._highchartObject = event.highchartObject;
+        EventBus.$on(
+            CHART_RENDERED,
+            (event: { id: string; highchartObject: Highcharts.ChartObject }) => {
+                if (event.id == this.id) {
+                    this._highchartObject = event.highchartObject;
+                }
             }
-        });
+        );
     }
 
     get highchart(): Highcharts.ChartObject | null {
@@ -143,19 +148,25 @@ export class DVChart {
             if (this.data.length !== this.config.series.length) {
                 // TODO: complain that series data supplied does not match chart config provided
 
-                log.warn(`[chart='${this.id}'] invalid config - provided data does not match chart series`);
+                log.warn(
+                    `[chart='${this
+                        .id}'] invalid config - provided data does not match chart series`
+                );
 
                 return;
             } else {
                 // TODO: can we assume here that series data provided is of correct type
-                this.data.forEach((seriesData, index) =>
-                    (this.config!.series![index].data = seriesData as SeriesData));
+                this.data.forEach(
+                    (seriesData, index) =>
+                        (this.config!.series![index].data = seriesData as SeriesData)
+                );
             }
         }
 
         // check if all chart series have corresponding data object
-        const isSeriesValid = this.config.series.some((series: Highcharts.IndividualSeriesOptions) =>
-            typeof series.data !== 'undefined');
+        const isSeriesValid = this.config.series.some(
+            (series: Highcharts.IndividualSeriesOptions) => typeof series.data !== 'undefined'
+        );
 
         if (!isSeriesValid) {
             // TODO: complain that chart config is incomplete and some of the data is missing
@@ -184,4 +195,4 @@ export class DVChart {
 
         return this;
     } */
-};
+}

@@ -7,10 +7,4 @@ const CHART_CONFIG_UPDATED = 'chart-config-updated';
 const CHART_RENDERED = 'chart-rendered';
 
 export const EventBus = new Vue();
-export {
-    SECTION_CREATED,
-
-    CHART_CREATED,
-    CHART_CONFIG_UPDATED,
-    CHART_RENDERED
-};
+export { SECTION_CREATED, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED };

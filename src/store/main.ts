@@ -4,8 +4,8 @@ import { EventBus, SECTION_CREATED, CHART_CREATED } from './../event-bus';
 
 import { isString } from './../utils';
 
-const sections: { [ name: string ]: DVSection } = {};
-const charts: { [ name: string ]: DVChart } = {};
+const sections: { [name: string]: DVSection } = {};
+const charts: { [name: string]: DVChart } = {};
 
 /**
  * Adds a DV Section to the reference container if another section with the same id does not exist.
@@ -32,7 +32,4 @@ function addChart(chart: DVChart): void {
 EventBus.$on(SECTION_CREATED, (section: DVSection) => addSection(section));
 EventBus.$on(CHART_CREATED, (chart: DVChart) => addChart(chart));
 
-export {
-    sections,
-    charts
-};
+export { sections, charts };

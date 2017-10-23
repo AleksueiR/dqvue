@@ -13,16 +13,15 @@ import { isPromise, isFunction, isString, isObject } from './../utils';
 const log: loglevel.Logger = loglevel.getLogger('dv-section');
 
 export interface DVSectionOptions {
-    id: string,
-    template?: string | Promise<string>,
-    data?: object | Promise<object>,
-    charts?: DVChart[] | DVChart,
-    mount?: HTMLElement,
-    automount?: boolean
-};
+    id: string;
+    template?: string | Promise<string>;
+    data?: object | Promise<object>;
+    charts?: DVChart[] | DVChart;
+    mount?: HTMLElement;
+    automount?: boolean;
+}
 
 export class DVSection {
-
     readonly id: string;
 
     private _mount: HTMLElement | null = null;
@@ -38,7 +37,14 @@ export class DVSection {
 
     private _charts: { [name: string]: DVChart } = {};
 
-    constructor({ id, template = null, data = null, charts = null, mount = null, automount = true }: DVSectionOptions) {
+    constructor({
+        id,
+        template = null,
+        data = null,
+        charts = null,
+        mount = null,
+        automount = true
+    }: DVSectionOptions) {
         this.id = id;
 
         log.debug(`[section='${this.id}'] new section is created`);
@@ -83,8 +89,7 @@ export class DVSection {
 
         // TODO: do we ever need to remove charts?
         // Do we care if we override an already existing chart
-        items.forEach((item: DVChart) =>
-            this._charts[item.id] = item);
+        items.forEach((item: DVChart) => (this._charts[item.id] = item));
 
         return this;
     }
@@ -121,7 +126,6 @@ export class DVSection {
     get template(): string | null {
         // if no explicit template is provided or promised, use the inline template if present
         if (!this._template && !this._templatePromise && this._isInlineTemplate) {
-
             log.debug(`[section='${this.id}'] no template provided; using inline template`);
 
             // `_isInlineTemplate` assures `this._mount` is defined
@@ -188,7 +192,10 @@ export class DVSection {
         }
 
         if (!this.data && !this._dataPromise) {
-            log.debug(`[section='${this.id}'] no data provided; if template uses bindings, mounting the section will throw errors`);
+            log.debug(
+                `[section='${this
+                    .id}'] no data provided; if template uses bindings, mounting the section will throw errors`
+            );
         }
 
         // TODO: check for charts present and their configs
@@ -339,4 +346,4 @@ export class DVSection {
 
         return this;
     } */
-};
+}

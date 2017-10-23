@@ -11,12 +11,9 @@ function isObject(x: any): x is object {
 }
 
 function isPromise<T>(x: any): x is Promise<T> {
-    return !!x && (typeof x === 'object' || typeof x === 'function') && typeof x.then === 'function';
-  }
+    return (
+        !!x && (typeof x === 'object' || typeof x === 'function') && typeof x.then === 'function'
+    );
+}
 
-export {
-    isFunction,
-    isString,
-    isObject,
-    isPromise
-};
+export { isFunction, isString, isObject, isPromise };

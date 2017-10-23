@@ -10,9 +10,9 @@ const DV_SECTION_DATA_ATTR = 'dv-data';
 const DV_SECTION_ELEMENT = 'dv-section';
 // const DV_SECTION_WAIT_ATTR = 'dv-wait';
 
-const DV_CHART_ELEMENT ='dv-chart';
-const DV_CHART_CONFIG_ATTR ='dv-config';
-const DV_CHART_DATA_ATTR ='dv-data';
+const DV_CHART_ELEMENT = 'dv-chart';
+const DV_CHART_CONFIG_ATTR = 'dv-config';
+const DV_CHART_DATA_ATTR = 'dv-data';
 
 // wait for the page to load; the dqv script can be placed at the top of the page and
 // it won't find any sections declared below if executed immediately
@@ -137,6 +137,4 @@ function bootChartDeclaration(chartNode: HTMLElement): DVChart {
     return dvchart;
 }
 
-export {
-    parsePage
-};
+export { parsePage };
