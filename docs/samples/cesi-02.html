@@ -151,16 +151,50 @@
         </nav>
     </header>
     <main role="main" property="mainContentOfPage" class="container">
-        <h1 id="wb-cont" property="name">ATCO Power Canada Ltd., Muskeg River Cogeneration Plant, Alberta</h1>
+        <h1 id="wb-cont" property="name">West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta
+        </h1>
         <section>
 
             <script>
                 templateData = {
-                    companyName: 'ATCO Power Canada Ltd.',
-                    totalGHGemissions2015: 1203.15,
-                    facilityType: 'Fossil-Fuel Electric Power Generation',
-                    address: 'Fort McMurray, Alberta, T9H4W1',
-                    description: 'The graph shows the total greenhouse gas (GHG) emissions for the selected facility from 2006 to 2015. Large industrial GHG emitters that emit 50 kilotonnes (kt) or more of GHGs are required to submit a report under the Facility Greenhouse Gas Emissions Reporting Program administered by Environment Canada. Beginning in 2010, the mandatory reporting threshold was lowered to 50 kt for 2009 facility GHG emissions, down from the previous 100 kt for reported emissions from 2004 to 2008. '
+                    companyName: 'West Fraser Mills Ltd., Ranger Board',
+                    npriNumber: '0000004830',
+                    address: ['595007 Highway 658 Highway North', 'Blue Ridge Alberta', 'T0E0B0'],
+                    description: 'The graph represents the annual respirable particulate matter emissions from 2006 to 2015 as reported to Environment and Climate Change Canada for this facility.',
+                    summary2015: [
+                        {
+                            name: "Nitrogen oxides (NOX)",
+                            value: 299.95,
+                        },
+                        {
+                            name: "Sulphur oxides (SOX)",
+                            value: '-',
+                        },
+                        {
+                            name: "Volatile organic compounds (VOC)",
+                            value: 491.19,
+                        },
+                        {
+                            name: "Carbon monoxide (CO)",
+                            value: 93.4,
+                        },
+                        {
+                            name: "Ammonia (NH3)",
+                            value: '-',
+                        },
+                        {
+                            name: "Fine particulate matter (PM2.5)",
+                            value: 3.05,
+                        },
+                        {
+                            name: "Respirable particulate matter (PM10)",
+                            value: 32.22,
+                        },
+                        {
+                            name: "Total particulate matter (TPM)",
+                            value: 60.88,
+                        }
+                    ]
                 };
 
                 chartConfig = {
@@ -168,33 +202,80 @@
                         enabled: false
                     },
                     title: {
-                        text: 'Greenhouse gas emissions, 2006 to 2015'
+                        text: 'Total matter emissions, 2006 to 2015'
+                    },
+                    subtitle: {
+                        text: 'West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta'
                     },
                     yAxis: {
                         title: {
-                            text: 'Kilotonnes of carbon dioxide equivalent'
+                            text: 'Tonnes'
                         },
                     },
                     xAxis: {
                         categories: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015],
                         title: { text: 'Year' }
                     },
+                    legend: {
+                        align: 'right',
+                        verticalAlign: 'top',
+                        layout: 'vertical',
+                        x: -10,
+                        y: 20
+                    },
                     series: [{
-                        name: 'Facility emissions',
-                        data: [1096.04, 1155.88, 1141.42, 1120.63, 1068.69, 1225.35, 1275.75, 1328.92, 1376.57, 1203.15],
-                        type: 'column',
-                        color: '#6eabff'
+                        name: 'Nitrogen oxides (NOX)',
+                        data: [306.5, 308.7, 221.6, 216.7, 266.1, 183.1, 185.5, 353.5, 345.03, 299.95],
+                        type: 'column'
                     }, {
-                        name: 'Reporting Threshold',
-                        data: [100, 100, 100, 50, 50, 50, 50, 50, 50, 50],
-                        type: 'line',
-                        color: '#f2be34'
+                        name: 'Sulphur oxides (SOX) - no data',
+                        visible: false,
+                        data: [],
+                        type: 'column'
+                    }, {
+                        name: 'Volatile organic compounds (VOC)',
+                        data: [443.5, 589, 422.1, 438.9, 542.8, 661.6, 673, 591.2, 637.49, 491.19],
+                        type: 'column'
+                    }, {
+                        name: 'Carbon monoxide (CO)',
+                        data: [95.9, 27, 19.7, 88.9, 89.9, 31.3, 24.63, 93.4],
+                        type: 'column'
+                    }, {
+                        name: 'Ammonia (NH3) - no data',
+                        data: [],
+                        visible: false,
+                        type: 'column'
+                    }, {
+                        name: 'Fine particulate matter (PM2.5)',
+                        data: [15.9, 32.7, 23.44, 1.5, 2, 1.1, 1.2, 0.68, 0.4, 3.05],
+                        type: 'column'
+                    }, {
+                        name: 'Respirable particulate matter (PM10)',
+                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
+                        type: 'column'
+                    }, {
+                        name: 'Total particulate matter (TPM)',
+                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
+                        type: 'column'
                     }]
                 };
             </script>
 
             <style>
+                .meta-container {
+                    display: flex;
+                }
+
                 .meta {
+                    flex: 1;
+                }
+
+                .meta2 {
+                    text-align: right;
+                }
+
+                .meta,
+                .meta2 {
                     margin-top: 16px;
                     margin-bottom: 16px;
                 }
@@ -203,19 +284,38 @@
                     margin: 0;
                 }
 
-                .meta p span {
-                    width: 300px;
-                    display: inline-block;
-                    font-weight: bold;
-                }
 
-                .address {
-                    font-style: italic;
+                .address span {
+                    display: block;
                 }
 
                 #chart1 {
-                    width: 80%;
+                    width: 100%;
                     margin: auto;
+                }
+
+                .summary {
+                    width: 100%;
+                }
+
+                .summary p {
+                    display: flex;
+                    margin: 0;
+                }
+
+                .summary .name {
+                    flex: 1;
+                    text-align: right;
+                }
+
+                .summary .value {
+                    flex: 2;
+                    padding-left: 16px;
+                    font-weight: bold;
+                }
+
+                .summary .unit {
+                    font-weight: normal;
                 }
 
                 dv-section {
@@ -224,23 +324,40 @@
             </style>
 
             <dv-section dv-data="templateData">
-                <div class="meta">
-                    <p>
-                        <span>Company Name:</span>{{ companyName }}</p>
-                    <p>
-                        <span>Total GHG emissions for 2015:</span>{{ totalGHGemissions2015 }} kt CO2 eq.</p>
-                    <p>
-                        <span>Facility Type:</span>{{ facilityType }}</p>
+                <div class="meta-container">
+                    <div class="meta">
+                        <p>
+                            <a href="">{{ companyName }}</a>
+                        </p>
+                        <p>
+                            <span>NPRI Number:</span> {{ npriNumber }}
+                        </p>
+                        <p class="address">
+                            <span v-for="line in address">{{ line }}</span>
+                        </p>
+                    </div>
+                    <div class="meta2">
+                        North American Industry Classification System (NAICS)
+                        <br>
+                        <a href="">Particle board and fibreboard mills CAN</a>
+                    </div>
                 </div>
-                <p class="address">{{ address }}</p>
-
-                <br>
-
-                <a href="">Facility Greenhouse Gas Details</a>
-                <br>
-                <a href="">Facility Industrial Classification</a>
 
                 <dv-chart dv-config="chartConfig" id="chart1"></dv-chart>
+
+                <details>
+                    <summary>Facility Air Pollutant Emissions Indicator Summary for 2015</summary>
+                    <div class="summary">
+                        <p v-for="pair in summary2015">
+                            <span class="name">{{ pair.name }}:</span>
+                            <span class="value">{{ pair.value }}
+                                <span class="unit">tonnes</span>
+                            </span>
+                        </p>
+                    </div>
+                </details>
+
+                <br>
 
                 <p>{{ description }}</p>
                 <p>For more information, see the
