@@ -151,48 +151,44 @@
         </nav>
     </header>
     <main role="main" property="mainContentOfPage" class="container">
-        <h1 id="wb-cont" property="name">West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta
+        <h1 id="wb-cont" property="name">Castlegar, British Columbia, 801 9th Ave
         </h1>
         <section>
 
             <script>
                 templateData = {
-                    companyName: 'West Fraser Mills Ltd., Ranger Board',
-                    npriNumber: '0000004830',
-                    address: ['595007 Highway 658 Highway North', 'Blue Ridge Alberta', 'T0E0B0'],
-                    description: 'The graph represents the annual respirable particulate matter emissions from 2006 to 2015 as reported to Environment and Climate Change Canada for this facility.',
+                    stationNumber: '103502',
+                    address: 'Castlegar, British Columbia',
+                    locationType: 'Urban Residential',
+                    description: 'The graph shows the selected monitoring station\'s recorded average ambient ground-level ozone concentration history over the past ten years. The ground-level ozone concentrations for the station can be compared to the national averages over the same time period. A relative increase or decrease of ambient ground-level ozone concentrations helps to give a sense of the change in air quality for the local region surrounding the monitoring station.',
                     summary2015: [
                         {
-                            name: "Nitrogen oxides (NOX)",
-                            value: 299.95,
+                            name: 'Average ozone concentration',
+                            value: '27 ppb'
                         },
                         {
-                            name: "Sulphur oxides (SOX)",
-                            value: '-',
+                            name: 'Peak ozone concentration',
+                            value: '46.1 ppb'
                         },
                         {
-                            name: "Volatile organic compounds (VOC)",
-                            value: 491.19,
+                            name: 'Average fine particulate matter concentration',
+                            value: '- µg/m3'
                         },
                         {
-                            name: "Carbon monoxide (CO)",
-                            value: 93.4,
+                            name: 'Peak fine particulate matter concentration',
+                            value: '- µg/m3'
                         },
                         {
-                            name: "Ammonia (NH3)",
-                            value: '-',
+                            name: 'Average nitrogen dioxide concentration',
+                            value: '6.1 ppb'
                         },
                         {
-                            name: "Fine particulate matter (PM2.5)",
-                            value: 3.05,
+                            name: 'Average sulphur dioxide concentration',
+                            value: '1.9 ppb'
                         },
                         {
-                            name: "Respirable particulate matter (PM10)",
-                            value: 32.22,
-                        },
-                        {
-                            name: "Total particulate matter (TPM)",
-                            value: 60.88,
+                            name: 'Average volatile organic compound concentration',
+                            value: '- ppbC'
                         }
                     ]
                 };
@@ -202,14 +198,14 @@
                         enabled: false
                     },
                     title: {
-                        text: 'Total matter emissions, 2006 to 2015'
+                        text: 'Ozone concentrations, 2005 to 2014'
                     },
                     subtitle: {
-                        text: 'West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta'
+                        text: 'Castlegar, British Columbia, 801 9th Ave'
                     },
                     yAxis: {
                         title: {
-                            text: 'Tonnes'
+                            text: 'Parts per billion'
                         },
                     },
                     plotOptions: {
@@ -219,7 +215,7 @@
                         }
                     },
                     xAxis: {
-                        categories: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015],
+                        categories: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
                         title: { text: 'Year' }
                     },
                     legend: {
@@ -227,42 +223,128 @@
                         verticalAlign: 'top',
                         layout: 'vertical',
                         x: -10,
-                        y: 20
+                        y: 60
                     },
                     series: [{
-                        name: 'Nitrogen oxides (NOX)',
-                        data: [306.5, 308.7, 221.6, 216.7, 266.1, 183.1, 185.5, 353.5, 345.03, 299.95],
+                        id: 'one',
+                        name: 'Average ozone concentration',
+                        color: '#058DC7',
+                        data: []
+                    }, {
+                        linkedTo: 'one',
+                        name: 'Average ozone concentration - Station concentration',
+                        data: [[7, 28], [8, 27], [9, 27]],
+                        color: '#058DC7',
                         type: 'column'
                     }, {
-                        name: 'Sulphur oxides (SOX) - no data',
+                        id: 'two',
+                        name: 'Peak ozone concentration',
+                        color: '#50B432',
+                        data: []
+                    }, {
+                        linkedTo: 'two',
+                        name: 'Peak ozone concentration - Station concentration',
+                        data: [[7, 50.9], [8, 49.3], [9, 46.1]],
+                        color: '#50B432',
+                        type: 'column'
+                    }, {
+                        linkedTo: 'two',
+                        name: 'Peak ozone concentration - 8-hour standard for 2015',
+                        data: [[6, 62], [7, 62], [8, 62], [9, 62]],
+                        color: '#379B19',
+                        marker: { enabled: false, states: { hover: { enabled: false }, select: { enabled: false } } },
+                        type: 'line',
+                        lineWidth: 1
+                    }, {
+                        linkedTo: 'two',
+                        name: 'Peak ozone concentration - National Average',
+                        data: [[7, 60.5], [8, 56.3], [9, 54.3]],
+                        color: '#046800',
+                        marker: {
+                            symbol: 'cross',
+                            lineColor: null,
+                            fillColor: null,
+                            lineWidth: 1
+                        },
+                        type: 'scatter'
+                    }, {
+                        linkedTo: 'one',
+                        name: 'Average ozone concentration - National Average',
+                        data: [[7, 33.6], [8, 32.8], [9, 32.9]],
+                        color: '#00417B',
+                        marker: {
+                            symbol: 'cross',
+                            lineColor: null,
+                            fillColor: null,
+                            lineWidth: 1
+                        },
+                        type: 'scatter'
+                    }, {
+                        id: 'eight',
+                        name: 'Average fine particular matter concentration - no data',
                         visible: false,
-                        data: [],
-                        type: 'column'
+                        data: []
                     }, {
-                        name: 'Volatile organic compounds (VOC)',
-                        data: [443.5, 589, 422.1, 438.9, 542.8, 661.6, 673, 591.2, 637.49, 491.19],
-                        type: 'column'
-                    }, {
-                        name: 'Carbon monoxide (CO)',
-                        data: [95.9, 27, 19.7, 88.9, 89.9, 31.3, 24.63, 93.4],
-                        type: 'column'
-                    }, {
-                        name: 'Ammonia (NH3) - no data',
-                        data: [],
+                        id: 'five',
+                        name: 'Peak fine particular matter concentration - no data',
                         visible: false,
+                        data: []
+                    }, {
+                        id: 'three',
+                        name: 'Average nitrogen dioxide concentration',
+                        color: '#ED561B',
+                        data: []
+                    }, {
+                        linkedTo: 'three',
+                        name: 'Average nitrogen dioxide concentration - Station concentration',
+                        data: [[8, 6.5], [9, 6.1]],
+                        color: '#ED561B',
                         type: 'column'
                     }, {
-                        name: 'Fine particulate matter (PM2.5)',
-                        data: [15.9, 32.7, 23.44, 1.5, 2, 1.1, 1.2, 0.68, 0.4, 3.05],
+                        linkedTo: 'three',
+                        name: 'Average nitrogen dioxide concentration - National Average',
+                        data: [[8, 8], [9, 8.9]],
+                        color: '#ED561B',
+                        marker: {
+                            symbol: 'cross',
+                            lineColor: null,
+                            fillColor: null,
+                            lineWidth: 1
+                        },
+                        type: 'scatter'
+                    }, {
+                        id: 'four',
+                        name: 'Average sulphur dioxide concentration',
+                        color: '#DDDF00',
+                        data: []
+                    }, {
+                        linkedTo: 'four',
+                        name: 'Average sulphur dioxide concentration - Station concentration',
+                        data: [[7, 2.4], [8, 3, 7], [9, 1.9]],
+                        color: '#DDDF00',
                         type: 'column'
                     }, {
-                        name: 'Respirable particulate matter (PM10)',
-                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
-                        type: 'column'
+                        linkedTo: 'four',
+                        name: 'Average sulphur dioxide concentration - National Average',
+                        data: [[7, 1.4], [8, 1.3], [9, 1.3]],
+                        color: '#919300',
+                        marker: {
+                            symbol: 'cross',
+                            lineColor: null,
+                            fillColor: null,
+                            lineWidth: 1
+                        },
+                        type: 'scatter'
                     }, {
-                        name: 'Total particulate matter (TPM)',
-                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
-                        type: 'column'
+                        id: 'six',
+                        name: 'Average sulphur dioxide concentration - no data',
+                        visible: false,
+                        data: []
+                    }, {
+                        id: 'seven',
+                        name: 'Average volatile organic compound concentration (2013) - no data',
+                        visible: false,
+                        data: []
                     }]
                 };
             </script>
@@ -333,20 +415,16 @@
                 <div class="meta-container">
                     <div class="meta">
                         <p>
-                            <a href="">{{ companyName }}</a>
+                            <span>Station Number:</span> {{ stationNumber }}
                         </p>
                         <p>
-                            <span>NPRI Number:</span> {{ npriNumber }}
+                            {{ address }}
                         </p>
-                        <p class="address">
-                            <span v-for="line in address">{{ line }}</span>
+                        <p>
+                            <span>Location Type:</span> {{ locationType }}
                         </p>
                     </div>
-                    <div class="meta2">
-                        North American Industry Classification System (NAICS)
-                        <br>
-                        <a href="">Particle board and fibreboard mills CAN</a>
-                    </div>
+
                 </div>
 
                 <dv-chart dv-config="chartConfig" id="chart1"></dv-chart>
@@ -356,9 +434,7 @@
                     <div class="summary">
                         <p v-for="pair in summary2015">
                             <span class="name">{{ pair.name }}:</span>
-                            <span class="value">{{ pair.value }}
-                                <span class="unit">tonnes</span>
-                            </span>
+                            <span class="value">{{ pair.value }} </span>
                         </p>
                     </div>
                 </details>
@@ -367,7 +443,7 @@
 
                 <p>{{ description }}</p>
                 <p>For more information, see the
-                    <a href="">Greenhouse Gas Emissions from Large Facilities</a> indicator and its
+                    <a href="">Ambient Levels of Ozone</a> indicator and its
                     <a href="">Data Sources and Methods</a>.
                 </p>
             </dv-section>
@@ -478,6 +554,17 @@
     <script src="https://wet-boew.github.io/themes-dist/theme-gcwu-fegc//theme-gcwu-fegc/js/theme.min.js"></script>
 
     <script type="text/javascript" src="dqvue.js"></script>
+
+    <script>
+                // Define a custom symbol path
+                DQV.Highcharts.SVGRenderer.prototype.symbols.cross = function (x, y, w, h) {
+                    return ['M', x - w, y + h / 2, 'h', w * 3, 'M', x + w * 1 / 4, y + h / 2, 'l', w / 4, -h / 4, 'l', w / 4, h / 4, 'l', -w / 4, h / 4, 'l', -w / 4, -h / 4, 'Z'];
+                };
+                if (DQV.Highcharts.VMLRenderer) {
+                    DQV.Highcharts.VMLRenderer.prototype.symbols.cross = Highcharts.SVGRenderer.prototype.symbols.cross;
+                }
+
+    </script>
 </body>
 
 </html>
