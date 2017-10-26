@@ -151,48 +151,34 @@
         </nav>
     </header>
     <main role="main" property="mainContentOfPage" class="container">
-        <h1 id="wb-cont" property="name">West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta
+        <h1 id="wb-cont" property="name">Vance Creek below Deafies Creek, British Columbia
         </h1>
         <section>
 
             <script>
                 templateData = {
-                    companyName: 'West Fraser Mills Ltd., Ranger Board',
-                    npriNumber: '0000004830',
-                    address: ['595007 Highway 658 Highway North', 'Blue Ridge Alberta', 'T0E0B0'],
-                    description: 'The graph represents the annual respirable particulate matter emissions from 2006 to 2015 as reported to Environment and Climate Change Canada for this facility.',
+                    stationDrainageArea: '70.9 square kilometres ',
+                    waterQuantityStationNumber: '08LC040',
+                    waterFlowBefore: 'Natural ',
+                    waterQuantitySamplingFrequency: 'Yearly',
+                    drainageRegion: 'Fraser–Lower Mainland',
+                    description: 'The graph shows the selected monitoring station\'s recorded water quantity from 2004 to 2013. ',
                     summary2015: [
                         {
-                            name: "Nitrogen oxides (NOX)",
-                            value: 299.95,
+                            name: "Low water quantity",
+                            value: 1,
                         },
                         {
-                            name: "Sulphur oxides (SOX)",
-                            value: '-',
+                            name: "Normal water quantity",
+                            value: 237,
                         },
                         {
-                            name: "Volatile organic compounds (VOC)",
-                            value: 491.19,
+                            name: "High water quantity",
+                            value: 127,
                         },
                         {
-                            name: "Carbon monoxide (CO)",
-                            value: 93.4,
-                        },
-                        {
-                            name: "Ammonia (NH3)",
-                            value: '-',
-                        },
-                        {
-                            name: "Fine particulate matter (PM2.5)",
-                            value: 3.05,
-                        },
-                        {
-                            name: "Respirable particulate matter (PM10)",
-                            value: 32.22,
-                        },
-                        {
-                            name: "Total particulate matter (TPM)",
-                            value: 60.88,
+                            name: "Total days sampled",
+                            value: 365,
                         }
                     ]
                 };
@@ -202,14 +188,14 @@
                         enabled: false
                     },
                     title: {
-                        text: 'Total matter emissions, 2006 to 2015'
+                        text: 'Percentage of days water quantity was low, normal, and high for this monitoring station, 2004 to 2013'
                     },
                     subtitle: {
-                        text: 'West Fraser Mills Ltd., Ranger Board, Blue Ridge Alberta'
+                        text: 'Vance Creek below Deafies Creek, British Columbia'
                     },
                     yAxis: {
                         title: {
-                            text: 'Tonnes'
+                            text: 'Percent of days (%)'
                         },
                     },
                     plotOptions: {
@@ -219,75 +205,42 @@
                         }
                     },
                     xAxis: {
-                        categories: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015],
+                        categories: [2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
                         title: { text: 'Year' }
                     },
-                    legend: {
-                        align: 'right',
-                        verticalAlign: 'top',
-                        layout: 'vertical',
-                        x: -10,
-                        y: 20
-                    },
                     series: [{
-                        name: 'Nitrogen oxides (NOX)',
-                        data: [306.5, 308.7, 221.6, 216.7, 266.1, 183.1, 185.5, 353.5, 345.03, 299.95],
-                        type: 'column'
+                        name: 'Low',
+                        data: [45, 8, 28, 38, 19, 41, 49, 32, 30, 0],
+                        type: 'column',
+                        color: '#d1e38f'
                     }, {
-                        name: 'Sulphur oxides (SOX) - no data',
-                        visible: false,
-                        data: [],
-                        type: 'column'
+                        name: 'Normal',
+                        data: [43, 45, 48, 58, 72, 56, 50, 53, 34, 65],
+                        type: 'column',
+                        color: '#6eabff'
                     }, {
-                        name: 'Volatile organic compounds (VOC)',
-                        data: [443.5, 589, 422.1, 438.9, 542.8, 661.6, 673, 591.2, 637.49, 491.19],
-                        type: 'column'
-                    }, {
-                        name: 'Carbon monoxide (CO)',
-                        data: [95.9, 27, 19.7, 88.9, 89.9, 31.3, 24.63, 93.4],
-                        type: 'column'
-                    }, {
-                        name: 'Ammonia (NH3) - no data',
-                        data: [],
-                        visible: false,
-                        type: 'column'
-                    }, {
-                        name: 'Fine particulate matter (PM2.5)',
-                        data: [15.9, 32.7, 23.44, 1.5, 2, 1.1, 1.2, 0.68, 0.4, 3.05],
-                        type: 'column'
-                    }, {
-                        name: 'Respirable particulate matter (PM10)',
-                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
-                        type: 'column'
-                    }, {
-                        name: 'Total particulate matter (TPM)',
-                        data: [46.7, 47.7, 35.06, 24.9, 26.8, 25.4, 25.75, 27.06, 21.34, 32.22],
-                        type: 'column'
+                        name: 'High',
+                        data: [12, 47, 24, 5, 9, 3, 0, 15, 36, 35],
+                        type: 'column',
+                        color: '#f19624'
                     }]
                 };
             </script>
 
             <style>
-                .meta-container {
-                    display: flex;
-                }
-
                 .meta {
-                    flex: 1;
-                }
-
-                .meta2 {
-                    text-align: right;
-                }
-
-                .meta,
-                .meta2 {
                     margin-top: 16px;
                     margin-bottom: 16px;
                 }
 
                 .meta p {
                     margin: 0;
+                }
+
+                .meta p span {
+                    width: 300px;
+                    display: inline-block;
+                    font-weight: bold;
                 }
 
 
@@ -330,34 +283,34 @@
             </style>
 
             <dv-section dv-data="templateData">
-                <div class="meta-container">
-                    <div class="meta">
-                        <p>
-                            <a href="">{{ companyName }}</a>
-                        </p>
-                        <p>
-                            <span><abbr title="National Pollutant Release Inventory">NPRI</abbr> Number:</span> {{ npriNumber }}
-                        </p>
-                        <p class="address">
-                            <span v-for="line in address">{{ line }}</span>
-                        </p>
-                    </div>
-                    <div class="meta2">
-                        North American Industry Classification System (NAICS)
-                        <br>
-                        <a href="">Particle board and fibreboard mills CAN</a>
-                    </div>
+                <div class="meta">
+                    <p>
+                        <span>Station drainage area:</span>{{ stationDrainageArea }}</p>
+                    <p>
+                        <span>Water quantity station number:</span>{{ waterQuantityStationNumber }}</p>
+                    <p>
+                        <span>Water flow before station is:</span>{{ waterFlowBefore }}</p>
+                    <p>
+                        <span>Water quantity sampling frequency:</span>{{ waterQuantitySamplingFrequency }}</p>
+                    <p>
+                        <span>Drainage Region:</span>
+                        <a href="">{{ drainageRegion }}</a>
+                    </p>
+
                 </div>
 
                 <dv-chart dv-config="chartConfig" id="chart1"></dv-chart>
 
                 <details>
-                    <summary>Facility Air Pollutant Emissions Indicator Summary for 2015</summary>
+                    <summary>Water Quantity for 2013</summary>
                     <div class="summary">
+                        Water quantity measurement is based on: Débit
+                        <br/>
+                        <br/>
+
                         <p v-for="pair in summary2015">
                             <span class="name">{{ pair.name }}:</span>
                             <span class="value">{{ pair.value }}
-                                <span class="unit">tonnes</span>
                             </span>
                         </p>
                     </div>
@@ -367,7 +320,7 @@
 
                 <p>{{ description }}</p>
                 <p>For more information, see the
-                    <a href="">Greenhouse Gas Emissions from Large Facilities</a> indicator and its
+                    <a href="">Local Water Quantity in Canadian Rivers</a> indicator and its
                     <a href="">Data Sources and Methods</a>.
                 </p>
             </dv-section>
