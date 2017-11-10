@@ -5,12 +5,15 @@ docute.init({
     tocVisibleDepth: 3,
     nav: {
         default: [
-          {
-            title: 'Home', path: '/home'
-          }
+            {
+                title: 'Home',
+                path: '/home'
+            },
+            {
+                title: 'Samples',
+                path: '/samples/'
+            }
         ]
     },
-    plugins: [
-        evanyou()
-    ]
+    plugins: [evanyou()]
 });

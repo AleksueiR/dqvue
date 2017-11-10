@@ -2,9 +2,9 @@
 search: english
 ---
 
-# CESI Samples
+# Samples
 
-## Details Pages
+## CESI Details Pages
 | Name                     | DQV Sample Page                          | Original Page                            |
 | ------------------------ | ---------------------------------------- | ---------------------------------------- |
 | Greenhouse Gas Emissions | [cesi-01](./samples/cesi-01.html)                  | [link](http://maps-cartes.ec.gc.ca/indicators-indicateurs/detailPage.aspx?lang=en&type=ghg&objectid=196) |
@@ -13,3 +13,8 @@ search: english
 | Water Toxics             | [cesi-04](./samples/cesi-04.html)                  | [link](http://maps-cartes.ec.gc.ca/indicators-indicateurs/detailPage.aspx?lang=en&type=watertoxics_Cd&objectid=0000010153 ) |
 | Water Quantity           | [cesi-05](./samples/cesi-05.html)                  | [link](http://maps-cartes.ec.gc.ca/indicators-indicateurs/detailPage.aspx?lang=en&type=water_levels&objectid=08LC040 ) |
 | Water Quality            | [cesi-06](./samples/cesi-06.html)                  | [link](http://maps-cartes.ec.gc.ca/indicators-indicateurs/detailPage.aspx?lang=en&type=water_quality&objectid=MB05MJS053 ) |
+| Mercury Emissions            | [cesi-07](./samples/cesi-07.html)                  | [link](http://maps-cartes.ec.gc.ca/indicators-indicateurs/detailPage.aspx?lang=en&type=air_toxics_hg&objectid=0000006674 ) |
+
+## Other Samples
+
+[Random Charts](./samples/index.html)
