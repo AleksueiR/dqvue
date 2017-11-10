@@ -19,7 +19,7 @@ module.exports = {
         require('poi-preset-babel-minify')({}, { comments: false }),
         require('poi-preset-typescript')({}),
         require('poi-preset-karma')({
-            // browsers: ['IE'], default is ['Chrome']
+            // browsers: ['IE'], // default is ['Chrome']
             port: 5001, // default
             files: ['test/unit/*.test.ts'] // default,
         })
