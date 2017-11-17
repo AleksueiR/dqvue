@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import uniqid from 'uniqid';
 
 import { DVSection, DVSectionOptions } from './classes/section';

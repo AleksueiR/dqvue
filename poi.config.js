@@ -4,19 +4,11 @@ const webpack = require('webpack');
 
 const minimize = argv.minimize === true;
 
-const HC_ENV_VALUES = {
-    full: 'full',
-    minimal: 'minimal',
-    none: 'none'
-};
-
-process.env.HC_ENV = HC_ENV_VALUES[argv.hc] || HC_ENV_VALUES.full;
-console.log(process.env.HC_ENV);
 module.exports = {
     vendor: false,
     extractCSS: false,
     filename: {
-        js: `dqvue-${process.env.HC_ENV}${minimize ? '.min' : ''}.js`
+        js: `dqvue${minimize ? '.min' : ''}.js`
     },
     html: {
         title: pkg.productName || pkg.name,
@@ -39,8 +31,6 @@ module.exports = {
             .set('highcharts', 'highcharts/highcharts.src.js'); // include non-minified highcharts into the dev build
 
         config.output.set('library', 'DQV').set('libraryExport', 'default'); // exposes the default export directly on the global library variable: https://webpack.js.org/configuration/output/#output-libraryexport
-
-        config.plugin('env').use(webpack.EnvironmentPlugin, ['HC_ENV']);
     },
     karma: {
         mime: {
