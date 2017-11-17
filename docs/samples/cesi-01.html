@@ -195,7 +195,12 @@
                         data: [100, 100, 100, 50, 50, 50, 50, 50, 50, 50],
                         type: 'line',
                         color: '#f2be34'
-                    }]
+                    }],
+                    exporting: {
+                        menuItemDefinitions: {
+                            viewData: null
+                        }
+                    }
                 };
             </script>
 
@@ -220,8 +225,13 @@
                 }
 
                 #chart1 {
-                    width: 80%;
+                    width: 100%;
                     margin: auto;
+                }
+
+                #chart1 [dv-chart-container] {
+                    margin: auto;
+                    width: 80%;
                 }
 
                 dv-section {
@@ -246,7 +256,14 @@
                 <br>
                 <a href="">Facility Industrial Classification</a>
 
-                <dv-chart dv-config="chartConfig" id="chart1"></dv-chart>
+                <dv-chart dv-config="chartConfig" id="chart1">
+                    <details>
+                        <summary>View data for this chart</summary>
+                        <div class="summary">
+                            <dv-chart-table dv-auto-render dv-table-class="wb-tables table table-striped"></dv-chart-table>
+                        </div>
+                    </details>
+                </dv-chart>
 
                 <p>{{ description }}</p>
                 <p>For more information, see the
@@ -360,6 +377,10 @@
         <![endif]-->
     <script src="https://wet-boew.github.io/themes-dist/theme-gcwu-fegc//theme-gcwu-fegc/js/theme.min.js"></script>
 
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script type="text/javascript" src="dqvue.js"></script>
 </body>
 
