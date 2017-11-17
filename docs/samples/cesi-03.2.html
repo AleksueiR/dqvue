@@ -257,16 +257,6 @@
                         type: 'line',
                         lineWidth: 1
                     }, {
-                        id: 'eight',
-                        name: 'Average fine particular matter concentration - no data',
-                        visible: false,
-                        data: []
-                    }, {
-                        id: 'five',
-                        name: 'Peak fine particular matter concentration - no data',
-                        visible: false,
-                        data: []
-                    }, {
                         name: 'Average nitrogen dioxide concentration',
                         data: [{ x: 8, y: 6.5, target: 8 }, { x: 9, y: 6.1, target: 8.9 }],
                         color: '#ED561B',
@@ -277,24 +267,38 @@
                         type: 'bullet'
                     }, {
                         name: 'Average sulphur dioxide concentration',
-                        data: [{ x: 7, y: 2.4, target: 1.4 }, { x: 8, y: 3.7, target: 1.3 }, { x: 9, y: 1.9, target: 1.3 }],
+                        data: [{ x: 6, y: null }, { x: 7, y: 2.4, target: 1.4 }, { x: 8, y: 3.7, target: 1.3 }, { x: 9, y: 1.9, target: 1.3 }],
                         color: '#DDDF00',
                         tooltip: {
                             pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}<br/> Station concentration: <b>{point.y}</b>.<br/> National average: <b>{point.target}</b><br/>'
                         },
                         targetOptions: { color: '#919300' },
                         type: 'bullet'
-                    }, {
-                        id: 'six',
-                        name: 'Average sulphur dioxide concentration - no data',
-                        visible: false,
-                        data: []
-                    }, {
-                        id: 'seven',
-                        name: 'Average volatile organic compound concentration (2013) - no data',
-                        visible: false,
-                        data: []
-                    }]
+                    }],
+                    exporting: {
+                        menuItemDefinitions: {
+                            viewData: null
+                        }
+                    },
+                    chart: {
+                        events: {
+                            load: function () {
+                                var oldFormatter = this.options.exporting.csv.columnHeaderFormatter;
+
+                                this.options.exporting.csv.columnHeaderFormatter = function (item, key, keyLength) {
+                                    var isSingleLine = key == 'y' && keyLength == 1;
+
+                                    var oldFormat = oldFormatter(
+                                        item,
+                                        key,
+                                        isSingleLine ? 2 : keyLength
+                                    );
+
+                                    return isSingleLine ? key : oldFormat;
+                                }
+                            }
+                        }
+                    }
                 };
             </script>
 
@@ -358,6 +362,10 @@
                 dv-section {
                     display: none;
                 }
+
+                [dv-chart] details {
+                    overflow-x: auto;
+                }
             </style>
 
             <dv-section dv-data="templateData">
@@ -376,7 +384,14 @@
 
                 </div>
 
-                <dv-chart dv-config="chartConfig" id="chart1"></dv-chart>
+                <dv-chart dv-config="chartConfig" id="chart1">
+                    <details>
+                        <summary>View data for this chart</summary>
+                        <div class="summary">
+                            <dv-chart-table dv-auto-render dv-table-class="wb-tables table table-striped"></dv-chart-table>
+                        </div>
+                    </details>
+                </dv-chart>
 
                 <details>
                     <summary>Facility Air Pollutant Emissions Indicator Summary for 2015</summary>
@@ -502,22 +517,13 @@
         <![endif]-->
     <script src="https://wet-boew.github.io/themes-dist/theme-gcwu-fegc//theme-gcwu-fegc/js/theme.min.js"></script>
 
-    <script type="text/javascript" src="dqvue.js"></script>
-    <script>
-                window.Highcharts = DQV.Highcharts;
-    </script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
     <script src="https://code.highcharts.com/modules/bullet.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-    <script>
-                // Define a custom symbol path
-                DQV.Highcharts.SVGRenderer.prototype.symbols.cross = function (x, y, w, h) {
-                    return ['M', x - w, y + h / 2, 'h', w * 3, 'M', x + w * 1 / 4, y + h / 2, 'l', w / 4, -h / 4, 'l', w / 4, h / 4, 'l', -w / 4, h / 4, 'l', -w / 4, -h / 4, 'Z'];
-                };
-                if (DQV.Highcharts.VMLRenderer) {
-                    DQV.Highcharts.VMLRenderer.prototype.symbols.cross = Highcharts.SVGRenderer.prototype.symbols.cross;
-                }
-
-    </script>
+    <script type="text/javascript" src="dqvue.js"></script>
 </body>
 
 </html>
