@@ -1,9 +1,11 @@
 import Vue from 'vue';
-import * as loglevel from 'loglevel';
+import loglevel from 'loglevel';
 
 import Section from './../components/section.vue';
 import { DVChart } from './chart';
 import Chart from './../components/chart.vue';
+import ChartTable from './../components/chart-table.vue';
+
 import { EventBus, SECTION_CREATED } from './../event-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
@@ -134,7 +136,7 @@ export class DVSection {
 
             // expunge the mount's guts
             while (mount.firstChild) {
-                mount!.removeChild(mount.firstChild);
+                mount.removeChild(mount.firstChild);
             }
 
             this._template = inlineTemplate;
@@ -249,7 +251,8 @@ export class DVSection {
             },
             components: {
                 'dv-section': Section,
-                'dv-chart': Chart
+                'dv-chart': Chart,
+                'dv-chart-table': ChartTable
             }
         });
 

@@ -1,5 +1,5 @@
 import uniqid from 'uniqid';
-import * as loglevel from 'loglevel';
+import loglevel from 'loglevel';
 import api from './../api/main';
 
 import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED } from './../event-bus';
@@ -156,6 +156,7 @@ export class DVChart {
                 return;
             } else {
                 // TODO: can we assume here that series data provided is of correct type
+                // mash data object into the chart series
                 this.data.forEach(
                     (seriesData, index) =>
                         (this.config!.series![index].data = seriesData as SeriesData)

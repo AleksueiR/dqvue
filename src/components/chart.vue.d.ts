@@ -1,9 +1,9 @@
 import { Vue } from 'vue-property-decorator';
-import * as Highcharts from 'highcharts';
+import Highcharts from 'highcharts';
 import { DVChart } from './../classes/chart';
 export default class Chart extends Vue {
     dvchart: DVChart;
-    isLoading: boolean;
+    _isLoading: boolean;
     highchartObject: Highcharts.ChartObject;
     rootSectionId: string;
     charts: {
