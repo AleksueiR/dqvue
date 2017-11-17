@@ -155,7 +155,7 @@
                         },
                         subtitle: {
                             text: 'Source: <a href="http://thebulletin.metapress.com/content/c4120650912x74k7/fulltext.pdf">' +
-                            'thebulletin.metapress.com</a>'
+                                'thebulletin.metapress.com</a>'
                         },
                         xAxis: {
                             allowDecimals: false,
@@ -216,8 +216,9 @@
 
                     window.setInterval(function () { data.count++; }, 6000);
 
-                    const dvc = new DQV.Chart({ id: 'nuclear', config: chartConfig });
+                    DQV.highchartsModules = ['exporting', 'export-data'];
 
+                    const dvc = new DQV.Chart({ id: 'nuclear', config: chartConfig });
                     const dvs = new DQV.Section({ data: data, id: 'dv33', template: testTemplate/* , charts: [dvc] */ });
                     dvs
                         .addChart(dvc)
@@ -281,6 +282,8 @@
     </dv-section>
 
     <div id="target1"></div>
+
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
 </body>
 

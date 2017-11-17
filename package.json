@@ -8,6 +8,13 @@
         "test": "poi test",
         "dev": "poi --port 3001 src/index.ts",
         "build": "poi build src/index.ts && poi build src/index.ts --minimize",
+        "build-all": "npm run hc-full && npm run hc-minimal && npm run hc-none",
+        "hc-full":
+            "poi build src/index.ts --hc=full && poi build src/index.ts --hc=full --minimize",
+        "hc-minimal":
+            "poi build src/index.ts --hc=minimal && poi build src/index.ts --hc=minimal --minimize",
+        "hc-none":
+            "poi build src/index.ts --hc=none && poi build src/index.ts --hc=none --minimize",
         "vuetype": "vuetype src"
     },
     "author": "",

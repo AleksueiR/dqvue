@@ -5,6 +5,7 @@ export default class Chart extends Vue {
     dvchart: DVChart;
     isLoading: boolean;
     highchartObject: Highcharts.ChartObject;
+    rootSectionId: string;
     charts: {
         [name: string]: object;
     };

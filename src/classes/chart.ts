@@ -1,6 +1,6 @@
 import uniqid from 'uniqid';
 import * as loglevel from 'loglevel';
-import * as Highcharts from 'highcharts';
+import api from './../api/main';
 
 import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED } from './../event-bus';
 
@@ -33,7 +33,7 @@ export class DVChart {
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
 
-        log.debug(`[chart='${this.id}'] new chart is created`);
+        log.info(`[chart='${this.id}'] new chart is created`);
 
         if (isPromise<Highcharts.Options>(config)) {
             this.setConfig(config);
@@ -70,14 +70,14 @@ export class DVChart {
         this._config = value;
         this._configPromise = null;
 
-        log.debug(`[chart='${this.id}'] config value is set successfully`);
+        log.info(`[chart='${this.id}'] config value is set successfully`);
 
         this._isConfigValid = false;
         this._validateConfig();
     }
 
     setConfig(value: Promise<Highcharts.Options>): DVChart {
-        log.debug(`[chart='${this.id}'] waiting for config promise to resolve`);
+        log.info(`[chart='${this.id}'] waiting for config promise to resolve`);
 
         this._configPromise = value;
         value.then(config => {
@@ -97,14 +97,14 @@ export class DVChart {
         this._data = value;
         this._dataPromise = null;
 
-        log.debug(`[chart='${this.id}'] data value is set successfully`);
+        log.info(`[chart='${this.id}'] data value is set successfully`);
 
         this._isConfigValid = false;
         this._validateConfig();
     }
 
     setData(value: Promise<SeriesData>): DVChart {
-        log.debug(`[chart='${this.id}'] waiting for data promise to resolve`);
+        log.info(`[chart='${this.id}'] waiting for data promise to resolve`);
 
         this._dataPromise = value;
         value.then(data => {
@@ -125,7 +125,7 @@ export class DVChart {
     }
 
     private _validateConfig(): void {
-        log.debug(`[chart='${this.id}'] attempting to validate config`);
+        log.info(`[chart='${this.id}'] attempting to validate config`);
 
         if (!this.config) {
             // TODO: complain that chart config is missing
@@ -176,7 +176,7 @@ export class DVChart {
             return;
         }
 
-        log.debug(`[chart='${this.id}'] chart config is valid`);
+        log.info(`[chart='${this.id}'] chart config is valid`);
 
         this._isConfigValid = true;
         EventBus.$emit(CHART_CONFIG_UPDATED, this);
@@ -187,11 +187,11 @@ export class DVChart {
     }
 
     /* duplicate(): DVChart {
-        log.debug(`[chart='${this.id}'] attempting to duplicate`);
+        log.info(`[chart='${this.id}'] attempting to duplicate`);
 
         // TODO: implement
 
-        log.debug(`[chart='${this.id}'] duplicated successfully`);
+        log.info(`[chart='${this.id}'] duplicated successfully`);
 
         return this;
     } */
