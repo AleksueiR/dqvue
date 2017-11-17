@@ -21,7 +21,11 @@
                 };
 
                 dvchart1config = {
-
+                    exporting: {
+                        menuItemDefinitions: {
+                            viewData: null
+                        }
+                    },
                     title: {
                         text: 'Solar Employment Growth by Sector, 2010-2016'
                     },
@@ -337,7 +341,7 @@
                 <summary>View chart data</summary>
                 <div class="summary">
                     <p>Here we can display chart data in a nice table.</p>
-                    <dv-chart-table></dv-chart-table>
+                    <dv-chart-table dv-auto-render dv-table-class="whatever andto"></dv-chart-table>
                 </div>
             </details>
         </dv-chart>

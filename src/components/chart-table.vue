@@ -37,6 +37,14 @@ export default class ChartTable extends Vue {
 
     dvchart: DVChart;
 
+    get autoRender(): boolean {
+        return typeof this.$attrs['dv-auto-render'] !== 'undefined';
+    }
+
+    get tableClass(): string {
+        return this.$attrs['dv-table-class'];
+    }
+
     mounted(): void {
         if (!api.Highcharts.Chart.prototype.viewData) {
             log.error(
@@ -64,7 +72,7 @@ export default class ChartTable extends Vue {
             CHART_RENDERED,
             (event: { id: string; highchartObject: Highcharts.ChartObject }) => {
                 // when the chart is re-rendered, only re-render the table if it was already rendered
-                if (event.id == this.rootChartId && this.isTableRendered) {
+                if (event.id == this.rootChartId && (this.isTableRendered || this.autoRender)) {
                     this.renderTable(event.highchartObject);
                 }
             }
@@ -82,6 +90,9 @@ export default class ChartTable extends Vue {
         }
 
         this.highchartsDataTable.innerHTML = (<EnhancedChartObject>highchartObject).getTable();
+        this.highchartsDataTable.querySelector('table')!.classList.add(
+            ...this.tableClass.split(' ')
+        );
         this.isTableRendered = true;
     }
 }
