@@ -19,7 +19,10 @@ import { DVChart } from './../classes/chart';
 import {
     chartConfigUpdatedSubject,
     chartRenderedSubject,
-    chartTableCreatedSubject
+    chartTableCreatedSubject,
+    chartViewDataClickedSubject,
+    ChartTableCreatedEventType,
+    ChartViewDataClickEventType
 } from './../observable-bus';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
@@ -56,15 +59,40 @@ export default class Chart extends Vue {
     private _chartContainer: HTMLElement;
     private _viewDataExportOption: EnhancedMenuItem | null = null;
 
+    get autoGenerateTable(): boolean {
+        return typeof this.$attrs['dv-auto-generate-table'] !== 'undefined';
+    }
+
     created(): void {
-        // listen on the table-prepared event which provides a table renderer if chart table (`dv-chart-table`) is included in the template
-        chartTableCreatedSubject.filter(event => event.id === this.id).subscribe(event => {
-            // create a `viewData` export option with the custom table renderer provided
-            // `viewData` options defaults to `null` which will hide it from the export menu
+        if (!api.Highcharts.Chart.prototype.viewData) {
+            log.error(`[chart='${this.id}'] export-data module required for chart data table`);
+            return;
+        }
+
+        if (!this.autoGenerateTable) {
             this._viewDataExportOption = {
                 text: '',
-                onclick: (<any>event).renderer
+                onclick: () => this.simulateViewDataClick()
             };
+        }
+
+        // listen on the table-prepared event which provides a table renderer if chart table (`dv-chart-table`) is included in the template
+        chartTableCreatedSubject
+            .filter(event => event.chartId === this.id && this.autoGenerateTable)
+            .subscribe(event => {
+                this.simulateViewDataClick(event.tableId);
+            });
+    }
+
+    simulateViewDataClick(tableId?: string): void {
+        if (typeof this.highchartObject === 'undefined') {
+            // error
+            return;
+        }
+        chartViewDataClickedSubject.next({
+            chartId: this.id,
+            tableId,
+            highchartObject: this.highchartObject
         });
     }
 
@@ -119,6 +147,9 @@ export default class Chart extends Vue {
         this.isLoading = false;
 
         chartRenderedSubject.next({ id: this.id, highchartObject: this.highchartObject });
+        if (this.autoGenerateTable) {
+            this.simulateViewDataClick();
+        }
     }
 }
 </script>

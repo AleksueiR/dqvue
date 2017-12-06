@@ -1,21 +1,26 @@
 <template>
-    <div dv-chart-table-container>
+    <div dv-chart-table-container :id="id">
         <div class="highcharts-data-table"></div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Inject } from 'vue-property-decorator';
+import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 import api from './../api/main';
 
+import { charts } from './../store/main';
+
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 
 import { DVChart } from './../classes/chart';
 import {
-    chartConfigUpdatedSubject,
     chartRenderedSubject,
-    chartTableCreatedSubject
+    chartTableCreatedSubject,
+    chartViewDataClickedSubject,
+    ChartViewDataClickEventType
 } from './../observable-bus';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
@@ -29,7 +34,6 @@ interface EnhancedChartObject extends Highcharts.ChartObject {
 
 @Component
 export default class ChartTable extends Vue {
-    @Inject() charts: { [name: string]: object };
     @Inject() rootSectionId: string;
     @Inject() rootChartId: string;
 
@@ -38,6 +42,21 @@ export default class ChartTable extends Vue {
 
     dvchart: DVChart;
 
+    id: string = uniqid.time();
+
+    get chartId(): string | undefined {
+        const id: string = this.rootChartId || this.$attrs['dv-chart-id'];
+        if (!id) {
+            log.error(
+                `[chart-table section='${this
+                    .rootSectionId}'] table cannot be linked because it is missing a parent chart id`
+            );
+        }
+
+        return id;
+    }
+
+    // TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
     get autoRender(): boolean {
         return typeof this.$attrs['dv-auto-render'] !== 'undefined';
     }
@@ -47,35 +66,49 @@ export default class ChartTable extends Vue {
     }
 
     mounted(): void {
-        if (!api.Highcharts.Chart.prototype.viewData) {
-            log.error(
-                `[chart-table='${this
-                    .rootChartId}'] export-data module required for chart data table`
-            );
+        // no chart id, no cake
+        if (!this.chartId) {
             return;
         }
-
-        // pull the chart instance provided by the section
-        this.dvchart = this.charts[this.rootChartId] as DVChart;
 
         // find the table container
         this.highchartsDataTable = this.$el.querySelector(
             HIGHCHARTS_DATA_TABLE_CLASS
         ) as HTMLElement;
 
-        // fire even with the table renderer function to be injected into the chart config
-        chartTableCreatedSubject.next({
-            id: this.rootChartId,
-            renderer: () => this.renderTable()
-        });
+        // when chart renders, notify it that a table is ready
+        if (charts[this.chartId]) {
+            this.notifyChart();
+        } else {
+            // when chart renders, notify it that a table is ready
+            chartRenderedSubject
+                .filter(event => event.id === this.chartId)
+                .first()
+                .subscribe(event => this.notifyChart);
+        }
+    }
 
-        chartRenderedSubject
+    notifyChart() {
+        // TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
+        if (this.autoRender) {
+            chartRenderedSubject
+                .filter(event => event.id === this.chartId)
+                .first()
+                .subscribe(() => this.renderTable(charts[this.chartId as string].highchart));
+        }
+
+        // chart.observable?
+        chartViewDataClickedSubject
             .filter(
-                event => event.id === this.rootChartId && (this.isTableRendered || this.autoRender)
+                ({ chartId, tableId = this.id, highchartObject }: ChartViewDataClickEventType) => {
+                    return chartId === this.chartId && tableId === this.id;
+                }
             )
             .subscribe(event => {
                 this.renderTable(event.highchartObject);
             });
+
+        chartTableCreatedSubject.next({ chartId: this.chartId as string, tableId: this.id });
     }
 
     renderTable(highchartObject: Highcharts.ChartObject | null = this.dvchart.highchart): void {
@@ -83,15 +116,17 @@ export default class ChartTable extends Vue {
         if (!highchartObject) {
             log.warn(
                 `[chart-table='${this
-                    .rootChartId}'] something's wrong - trying to render the table before chart is ready`
+                    .chartId}'] something's wrong - trying to render the table before chart is ready`
             );
             return;
         }
 
         this.highchartsDataTable.innerHTML = (<EnhancedChartObject>highchartObject).getTable();
-        this.highchartsDataTable.querySelector('table')!.classList.add(
-            ...this.tableClass.split(' ')
-        );
+        if (typeof this.tableClass !== 'undefined') {
+            this.highchartsDataTable.querySelector('table')!.classList.add(
+                ...this.tableClass.split(' ')
+            );
+        }
         this.isTableRendered = true;
     }
 }
