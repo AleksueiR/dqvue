@@ -1,8 +1,16 @@
 import uniqid from 'uniqid';
 import loglevel from 'loglevel';
+
+import 'rxjs/add/operator/filter';
+
 import api from './../api/main';
 
-import { EventBus, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED } from './../event-bus';
+import {
+    chartCreatedSubject,
+    chartConfigUpdatedSubject,
+    chartRenderedSubject,
+    ChartRenderedEventType
+} from './../observable-bus';
 
 import { isPromise } from './../utils';
 
@@ -47,15 +55,12 @@ export class DVChart {
             this.data = data;
         }
 
-        EventBus.$emit(CHART_CREATED, this);
-        EventBus.$on(
-            CHART_RENDERED,
-            (event: { id: string; highchartObject: Highcharts.ChartObject }) => {
-                if (event.id == this.id) {
-                    this._highchartObject = event.highchartObject;
-                }
-            }
-        );
+        chartCreatedSubject.next(this);
+        chartRenderedSubject
+            .filter(event => event.id === this.id)
+            .subscribe(
+                (event: ChartRenderedEventType) => (this._highchartObject = event.highchartObject)
+            );
     }
 
     get highchart(): Highcharts.ChartObject | null {
@@ -149,8 +154,9 @@ export class DVChart {
                 // TODO: complain that series data supplied does not match chart config provided
 
                 log.warn(
-                    `[chart='${this
-                        .id}'] invalid config - provided data does not match chart series`
+                    `[chart='${
+                        this.id
+                    }'] invalid config - provided data does not match chart series`
                 );
 
                 return;
@@ -180,7 +186,7 @@ export class DVChart {
         log.info(`[chart='${this.id}'] chart config is valid`);
 
         this._isConfigValid = true;
-        EventBus.$emit(CHART_CONFIG_UPDATED, this);
+        chartConfigUpdatedSubject.next(this);
     }
 
     get isConfigValid(): boolean {

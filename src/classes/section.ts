@@ -6,7 +6,7 @@ import { DVChart } from './chart';
 import Chart from './../components/chart.vue';
 import ChartTable from './../components/chart-table.vue';
 
-import { EventBus, SECTION_CREATED } from './../event-bus';
+import { sectionCreatedSubject } from './../observable-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
 // TODO: constrain logging to 'warn' in production builds
@@ -67,7 +67,8 @@ export class DVSection {
             this.addChart(charts);
         }
 
-        EventBus.$emit(SECTION_CREATED, this);
+        // push the new section through the stream
+        sectionCreatedSubject.next(this);
 
         if (mount) {
             this._mount = mount;
@@ -195,8 +196,9 @@ export class DVSection {
 
         if (!this.data && !this._dataPromise) {
             log.info(
-                `[section='${this
-                    .id}'] no data provided; if template uses bindings, mounting the section will throw errors`
+                `[section='${
+                    this.id
+                }'] no data provided; if template uses bindings, mounting the section will throw errors`
             );
         }
 
@@ -244,7 +246,7 @@ export class DVSection {
         this._vm = new Vue({
             template: <string>this.template,
             computed: { charts: () => this.charts },
-            data: <object>this.data,
+            data: <object>this.data || {}, // if no data object is provided, return an empty object
             provide: {
                 rootSectionId: this.id,
                 charts: this.charts

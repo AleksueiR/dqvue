@@ -1,8 +1,11 @@
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
-import { EventBus, SECTION_CREATED, CHART_CREATED } from './../event-bus';
+
+import { sectionCreatedSubject, chartCreatedSubject } from './../observable-bus';
 
 import { isString } from './../utils';
+
+import { Subject } from 'rxjs/Subject';
 
 const sections: { [name: string]: DVSection } = {};
 const charts: { [name: string]: DVChart } = {};
@@ -29,7 +32,7 @@ function addChart(chart: DVChart): void {
     charts[chart.id] = chart;
 }
 
-EventBus.$on(SECTION_CREATED, (section: DVSection) => addSection(section));
-EventBus.$on(CHART_CREATED, (chart: DVChart) => addChart(chart));
+sectionCreatedSubject.subscribe(addSection);
+chartCreatedSubject.subscribe(addChart);
 
 export { sections, charts };

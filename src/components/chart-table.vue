@@ -9,13 +9,14 @@ import { Vue, Component, Prop, Inject } from 'vue-property-decorator';
 import loglevel from 'loglevel';
 import api from './../api/main';
 
+import 'rxjs/add/operator/filter';
+
 import { DVChart } from './../classes/chart';
 import {
-    EventBus,
-    CHART_CONFIG_UPDATED,
-    CHART_RENDERED,
-    CHART_TABLE_PREPARED
-} from './../event-bus';
+    chartConfigUpdatedSubject,
+    chartRenderedSubject,
+    chartTableCreatedSubject
+} from './../observable-bus';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 
@@ -63,20 +64,18 @@ export default class ChartTable extends Vue {
         ) as HTMLElement;
 
         // fire even with the table renderer function to be injected into the chart config
-        EventBus.$emit(CHART_TABLE_PREPARED, {
+        chartTableCreatedSubject.next({
             id: this.rootChartId,
             renderer: () => this.renderTable()
         });
 
-        EventBus.$on(
-            CHART_RENDERED,
-            (event: { id: string; highchartObject: Highcharts.ChartObject }) => {
-                // when the chart is re-rendered, only re-render the table if it was already rendered
-                if (event.id == this.rootChartId && (this.isTableRendered || this.autoRender)) {
-                    this.renderTable(event.highchartObject);
-                }
-            }
-        );
+        chartRenderedSubject
+            .filter(
+                event => event.id === this.rootChartId && (this.isTableRendered || this.autoRender)
+            )
+            .subscribe(event => {
+                this.renderTable(event.highchartObject);
+            });
     }
 
     renderTable(highchartObject: Highcharts.ChartObject | null = this.dvchart.highchart): void {

@@ -6,6 +6,10 @@ import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
 
+import { sectionCreatedSubject, chartCreatedSubject } from './../observable-bus';
+
+import { Observable } from 'rxjs/Observable';
+
 const version = require('./../../package.json').version;
 const log: loglevel.Logger = loglevel.getLogger('DQV');
 
@@ -41,6 +45,9 @@ export default {
 
     Section: DVSection,
     Chart: DVChart,
+
+    sectionCreated: sectionCreatedSubject.asObservable(),
+    chartCreated: chartCreatedSubject.asObservable(),
 
     get sections(): { [name: string]: DVSection } {
         // TODO: return a clone instead of original object so users can't mess with it

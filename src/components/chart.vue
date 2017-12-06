@@ -11,14 +11,16 @@ import loglevel from 'loglevel';
 import Highcharts from 'highcharts';
 import deepmerge from 'deepmerge';
 
+import 'rxjs/add/operator/filter';
+
 import api from './../api/main';
 import { DVChart } from './../classes/chart';
+
 import {
-    EventBus,
-    CHART_CONFIG_UPDATED,
-    CHART_RENDERED,
-    CHART_TABLE_PREPARED
-} from './../event-bus';
+    chartConfigUpdatedSubject,
+    chartRenderedSubject,
+    chartTableCreatedSubject
+} from './../observable-bus';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -56,27 +58,14 @@ export default class Chart extends Vue {
 
     created(): void {
         // listen on the table-prepared event which provides a table renderer if chart table (`dv-chart-table`) is included in the template
-        EventBus.$on(
-            CHART_TABLE_PREPARED,
-            ({
-                id,
-                renderer
-            }: {
-                id: string;
-                renderer: (highchartObject?: Highcharts.ChartObject) => void;
-            }) => {
-                if (id !== this.id) {
-                    return;
-                }
-
-                // create a `viewData` export option with the custom table renderer provided
-                // `viewData` options defaults to `null` which will hide it from the export menu
-                this._viewDataExportOption = {
-                    text: '',
-                    onclick: renderer
-                };
-            }
-        );
+        chartTableCreatedSubject.filter(event => event.id === this.id).subscribe(event => {
+            // create a `viewData` export option with the custom table renderer provided
+            // `viewData` options defaults to `null` which will hide it from the export menu
+            this._viewDataExportOption = {
+                text: '',
+                onclick: (<any>event).renderer
+            };
+        });
     }
 
     /**
@@ -100,11 +89,9 @@ export default class Chart extends Vue {
         // find chart and table containers
         this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT) as HTMLElement;
 
-        EventBus.$on(CHART_CONFIG_UPDATED, ({ id, config }: DVChart) => {
-            if (id == this.id) {
-                this.renderChart();
-            }
-        });
+        chartConfigUpdatedSubject
+            .filter(dvchart => dvchart.id === this.id)
+            .subscribe(() => this.renderChart());
 
         this.dvchart = this.charts[this.id] as DVChart;
         if (this.dvchart.isConfigValid) {
@@ -131,7 +118,7 @@ export default class Chart extends Vue {
             .config as Highcharts.Options);
         this.isLoading = false;
 
-        EventBus.$emit(CHART_RENDERED, { id: this.id, highchartObject: this.highchartObject });
+        chartRenderedSubject.next({ id: this.id, highchartObject: this.highchartObject });
     }
 }
 </script>
