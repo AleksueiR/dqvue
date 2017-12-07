@@ -248,8 +248,8 @@ export class DVSection {
             computed: { charts: () => this.charts },
             data: <object>this.data || {}, // if no data object is provided, return an empty object
             provide: {
-                rootSectionId: this.id,
-                charts: this.charts
+                rootSectionId: this.id
+                // charts: this.charts
             },
             components: {
                 'dv-section': Section,
@@ -303,6 +303,7 @@ export class DVSection {
             return this;
         }
 
+        // TODO: when dismouning a section, remove all the chart tables originating from charts in this section, even ones that are in different sections
         this._vm.$destroy();
         this._isMounted = false;
 

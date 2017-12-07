@@ -15,6 +15,7 @@ import 'rxjs/add/operator/filter';
 
 import api from './../api/main';
 import { DVChart } from './../classes/chart';
+import { charts } from './../store/main';
 
 import {
     chartConfigUpdatedSubject,
@@ -48,7 +49,7 @@ export default class Chart extends Vue {
     highchartObject: Highcharts.ChartObject;
 
     @Inject() rootSectionId: string;
-    @Inject() charts: { [name: string]: object };
+    // @Inject() charts: { [name: string]: object };
 
     @Provide() rootChartId: string = this.id;
 
@@ -109,7 +110,7 @@ export default class Chart extends Vue {
         }
 
         // section is created programmatically and one or more charts were not added to the DVSection object
-        if (!this.charts[this.id]) {
+        if (!charts[this.id]) {
             log.error(`[chart='${this.id}'] is not defined in [section='${this.rootSectionId}']`);
             return;
         }
@@ -121,7 +122,7 @@ export default class Chart extends Vue {
             .filter(dvchart => dvchart.id === this.id)
             .subscribe(() => this.renderChart());
 
-        this.dvchart = this.charts[this.id] as DVChart;
+        this.dvchart = charts[this.id] as DVChart;
         if (this.dvchart.isConfigValid) {
             this.renderChart();
         }

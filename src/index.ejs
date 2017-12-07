@@ -222,9 +222,7 @@
 
                     const dvc = new DQV.Chart({ id: 'nuclear', config: chartConfig });
                     const dvs = new DQV.Section({ data: data, id: 'dv33', template: testTemplate/* , charts: [dvc] */ });
-                    dvs
-                        .addChart(dvc)
-                        .mount(document.getElementById('target1'));
+                    dvs.mount(document.getElementById('target1'));
 
                 })
             </script>
@@ -350,6 +348,7 @@
 
         <dv-chart-table dv-chart-id="app1chart1" dv-table-class="whatever andto"></dv-chart-table>
 
+
     </dv-section>
 
     <dv-section dv-data="dv2data">
@@ -359,6 +358,7 @@
         <div v-if="seconds > 0" class="delay-message">Chart will load in {{ seconds }} second{{ seconds > 1 ? 's' : '' }}</div>
 
         <dv-chart dv-config="dvchart2config" class="chart2"></dv-chart>
+
     </dv-section>
 
     <div id="target1"></div>
