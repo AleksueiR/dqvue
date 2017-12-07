@@ -230,6 +230,7 @@
             <style>
                 body {
                     font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+                    margin: 0;
                 }
 
                 h3 {
@@ -237,16 +238,24 @@
                     margin: 8px;
                 }
 
+                .main-section {
+                    display: flex;
+                    flex-direction: row;
+
+                    flex-wrap: wrap;
+                }
+
                 dv-section {
                     display: none;
+
                 }
 
                 [dv-section] {
                     padding: 10px;
-                    margin: 5px 0;
+                    margin: 5px;
                     border: 1px solid black;
 
-                    width: 650px;
+                    width: 31%
                 }
 
                 [dv-chart-container] {
@@ -331,38 +340,35 @@
 </head>
 
 <body>
-    <dv-section id="app1" dv-data="dv1data">
-        <h3>{{ message }}</h3>
+    <section class="main-section">
+        <dv-section id="app1" dv-data="dv1data">
+            <h3>{{ message }}</h3>
 
-        <dv-chart-table dv-chart-id="app1chart1" dv-table-class="whatever andto"></dv-chart-table>
+            <dv-chart-table dv-chart-id="notchart"></dv-chart-table>
 
-        <dv-chart id="app1chart1" dv-auto-generate-table class="chart1" dv-data='dvchart1data' dv-config="dvchart1config">
-            <details>
-                <summary>View chart data</summary>
-                <div class="summary">
-                    <p>Here we can display chart data in a nice table.</p>
-                    <dv-chart-table dv-auto-render dv-table-class="whatever andto"></dv-chart-table>
-                </div>
-            </details>
-        </dv-chart>
+            <dv-chart id="app1chart1" class="chart1" dv-data='dvchart1data' dv-config="dvchart1config">
+                <details>
+                    <summary>View chart data</summary>
+                    <div class="summary">
+                        <p>Here we can display chart data in a nice table.</p>
+                        <dv-chart-table dv-auto-render dv-table-class="whatever andto"></dv-chart-table>
+                    </div>
+                </details>
+            </dv-chart>
+        </dv-section>
 
-        <dv-chart-table dv-chart-id="app1chart1" dv-table-class="whatever andto"></dv-chart-table>
+        <dv-section dv-data="dv2data">
+            <h3>{{ message }} </h3>
+            <div v-if="seconds > 0" class="delay-message">Chart will load in {{ seconds }} second{{ seconds > 1 ? 's' : '' }}</div>
 
+            <dv-chart dv-config="dvchart2config" class="chart2"></dv-chart>
 
-    </dv-section>
+        </dv-section>
 
-    <dv-section dv-data="dv2data">
-        <dv-chart-table dv-chart-id="app1chart1" dv-table-class="whatever andto"></dv-chart-table>
+        <div id="target1"></div>
 
-        <h3>{{ message }} </h3>
-        <div v-if="seconds > 0" class="delay-message">Chart will load in {{ seconds }} second{{ seconds > 1 ? 's' : '' }}</div>
-
-        <dv-chart dv-config="dvchart2config" class="chart2"></dv-chart>
-
-    </dv-section>
-
-    <div id="target1"></div>
-
+        <div>dfdsfdsfs</div>
+    </section>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.src.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.src.js"></script>

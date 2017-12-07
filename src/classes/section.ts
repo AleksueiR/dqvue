@@ -37,13 +37,10 @@ export class DVSection {
     private _data: object | null = null;
     private _dataPromise: Promise<object> | null = null;
 
-    private _charts: { [name: string]: DVChart } = {};
-
     constructor({
         id,
         template = null,
         data = null,
-        charts = null,
         mount = null,
         automount = true
     }: DVSectionOptions) {
@@ -63,10 +60,6 @@ export class DVSection {
             this.data = data;
         }
 
-        if (charts !== null) {
-            this.addChart(charts);
-        }
-
         // push the new section through the stream
         sectionCreatedSubject.next(this);
 
@@ -82,23 +75,16 @@ export class DVSection {
     }
 
     /**
-     * Adds one or several `DVChart` objects to this `DVSection` to be referenced by the section's template.
-     * Existing charts with the same ids will be overwritten.
+     * Deprecated - charts no longer need to be added directly to the sections
+     *
+     * --- Adds one or several `DVChart` objects to this `DVSection` to be referenced by the section's template.
+     * --- Existing charts with the same ids will be overwritten.
      */
-    addChart(items: DVChart | DVChart[]): DVSection {
-        if (!Array.isArray(items)) {
-            items = [items];
-        }
-
-        // TODO: do we ever need to remove charts?
-        // Do we care if we override an already existing chart
-        items.forEach((item: DVChart) => (this._charts[item.id] = item));
-
-        return this;
-    }
+    addChart(): void {}
 
     get charts(): { [name: string]: DVChart } {
-        return this._charts;
+        // TODO: find all the DVCharts mentioned in the current section and return them.
+        return {};
     }
 
     set template(value: string | null) {
@@ -296,8 +282,6 @@ export class DVSection {
         log.info(`[section='${this.id}'] attempting to dismount`);
 
         if (!this._mount) {
-            // TODO: complain in the console that you can't dismount a not yet mounted instance
-
             log.warn(`[section='${this.id}'] cannot dismount - the section is not mounted`);
 
             return this;
@@ -321,8 +305,6 @@ export class DVSection {
         log.info(`[section='${this.id}'] attempting to re-mount`);
 
         if (!this._mount) {
-            // TODO: complain in the console that you can't remount a not yet mounted instance
-
             log.warn(`[section='${this.id}'] cannot re-mount - this section is not mounted`);
 
             return this;

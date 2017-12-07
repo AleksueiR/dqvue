@@ -1,18 +1,16 @@
 import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
 import api from './../api/main';
 
-import {
-    chartCreatedSubject,
-    chartConfigUpdatedSubject,
-    chartRenderedSubject,
-    ChartRenderedEventType
-} from './../observable-bus';
+import { chartCreatedSubject } from './../observable-bus';
 
 import { isPromise } from './../utils';
+import Chart, { RenderedEventType, ViewDataClickedEventType } from './../components/chart.vue';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -36,7 +34,21 @@ export class DVChart {
     private _data: SeriesData | null = null;
     private _dataPromise: Promise<SeriesData> | null = null;
 
+    private _isTableGenerated: boolean = false;
+
     private _highchartObject: Highcharts.ChartObject | null = null;
+
+    private _renderedSubject: Subject<Highcharts.ChartObject> = new Subject<
+        Highcharts.ChartObject
+    >();
+    get rendered(): Observable<Highcharts.ChartObject> {
+        return this._renderedSubject.asObservable();
+    }
+
+    private _configUpdatedSubject: Subject<DVChart> = new Subject<DVChart>();
+    get configUpdated(): Observable<DVChart> {
+        return this._configUpdatedSubject.asObservable();
+    }
 
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
@@ -55,12 +67,27 @@ export class DVChart {
             this.data = data;
         }
 
+        this._renderedSubject.next();
+
+        // every time the chart is re-rendered, store the reference to the highchart object
+        Chart.rendered
+            .filter(event => event.chartId === this.id)
+            .subscribe((event: RenderedEventType) => {
+                this._highchartObject = event.highchartObject;
+                this._renderedSubject.next(this._highchartObject);
+            });
+
+        Chart.viewDataClicked
+            .filter((event: ViewDataClickedEventType) => {
+                return event.chartId === this.id;
+            })
+            .subscribe(() => (this._isTableGenerated = true));
+
         chartCreatedSubject.next(this);
-        chartRenderedSubject
-            .filter(event => event.id === this.id)
-            .subscribe(
-                (event: ChartRenderedEventType) => (this._highchartObject = event.highchartObject)
-            );
+    }
+
+    get isTableGenerated(): boolean {
+        return this._isTableGenerated;
     }
 
     get highchart(): Highcharts.ChartObject | null {
@@ -186,7 +213,7 @@ export class DVChart {
         log.info(`[chart='${this.id}'] chart config is valid`);
 
         this._isConfigValid = true;
-        chartConfigUpdatedSubject.next(this);
+        this._configUpdatedSubject.next(this);
     }
 
     get isConfigValid(): boolean {
