@@ -61,7 +61,7 @@ var DQV =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 26);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -325,33 +325,91 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 
 /***/ }),
 /* 1 */
-/*!**************************!*\
-  !*** ./src/event-bus.ts ***!
-  \**************************/
-/*! exports provided: EventBus, SECTION_CREATED, CHART_CREATED, CHART_CONFIG_UPDATED, CHART_RENDERED, CHART_TABLE_PREPARED */
-/*! exports used: CHART_CONFIG_UPDATED, CHART_CREATED, CHART_RENDERED, CHART_TABLE_PREPARED, EventBus, SECTION_CREATED */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EventBus; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SECTION_CREATED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return CHART_CREATED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CHART_CONFIG_UPDATED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return CHART_RENDERED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return CHART_TABLE_PREPARED; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(/*! vue */ 2);
+var g;
 
-var SECTION_CREATED = 'section-created';
-var CHART_CREATED = 'chart-created';
-var CHART_CONFIG_UPDATED = 'chart-config-updated';
-var CHART_RENDERED = 'chart-rendered';
-var CHART_TABLE_PREPARED = 'chart-table-prepared';
-var EventBus = new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]();
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
 
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
 /* 2 */
+/*!***************************!*\
+  !*** ./src/store/main.ts ***!
+  \***************************/
+/*! exports provided: sections, charts */
+/*! exports used: charts, sections */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return sections; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return charts; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 3);
+
+var sections = {};
+var charts = {};
+function addSection(section) {
+    if (sections[section.id]) {
+        return;
+    }
+    sections[section.id] = section;
+}
+function addChart(chart) {
+    if (charts[chart.id]) {
+        return;
+    }
+    charts[chart.id] = chart;
+}
+__WEBPACK_IMPORTED_MODULE_0__observable_bus__["b" /* sectionCreatedSubject */].subscribe(addSection);
+__WEBPACK_IMPORTED_MODULE_0__observable_bus__["a" /* chartCreatedSubject */].subscribe(addChart);
+
+
+
+/***/ }),
+/* 3 */
+/*!*******************************!*\
+  !*** ./src/observable-bus.ts ***!
+  \*******************************/
+/*! exports provided: sectionCreatedSubject, chartCreatedSubject */
+/*! exports used: chartCreatedSubject, sectionCreatedSubject */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return sectionCreatedSubject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return chartCreatedSubject; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Subject__ = __webpack_require__(/*! rxjs/Subject */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_rxjs_Subject__);
+
+var sectionCreatedSubject = new __WEBPACK_IMPORTED_MODULE_0_rxjs_Subject__["Subject"]();
+var chartCreatedSubject = new __WEBPACK_IMPORTED_MODULE_0_rxjs_Subject__["Subject"]();
+
+
+
+/***/ }),
+/* 4 */
 /*!******************************************!*\
   !*** ./node_modules/vue/dist/vue.esm.js ***!
   \******************************************/
@@ -10996,92 +11054,7 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 4), __webpack_require__(/*! ./../../timers-browserify/main.js */ 17).setImmediate))
-
-/***/ }),
-/* 3 */
-/*!*************************!*\
-  !*** ./src/api/main.ts ***!
-  \*************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel__ = __webpack_require__(/*! loglevel */ 0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./../classes/section */ 10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./../classes/chart */ 12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./../store/main */ 14);
-
-
-
-
-var version = __webpack_require__(/*! ./../../package.json */ 39).version;
-var log = __WEBPACK_IMPORTED_MODULE_0_loglevel___default.a.getLogger('DQV');
-var hc;
-function importHighcharts() {
-    if (window.Highcharts) {
-        hc = window.Highcharts;
-        log.info("[DQV] using globally defined Highcharts (" + hc.version + ")");
-    }
-    else {
-        log.error("[DQV] Highcharts is not defined; please load Highcharts first");
-        throw new Error("[DQV] Highcharts is not defined");
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = ({
-    get Highcharts() {
-        if (hc) {
-            return hc;
-        }
-        importHighcharts();
-        return hc;
-    },
-    loglevel: __WEBPACK_IMPORTED_MODULE_0_loglevel___default.a,
-    version: version,
-    Section: __WEBPACK_IMPORTED_MODULE_1__classes_section__["a" /* DVSection */],
-    Chart: __WEBPACK_IMPORTED_MODULE_2__classes_chart__["a" /* DVChart */],
-    get sections() {
-        return __WEBPACK_IMPORTED_MODULE_3__store_main__["b" /* sections */];
-    },
-    get charts() {
-        return __WEBPACK_IMPORTED_MODULE_3__store_main__["a" /* charts */];
-    }
-});
-
-
-/***/ }),
-/* 4 */
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! dynamic exports provided */
-/*! all exports used */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 1), __webpack_require__(/*! ./../../timers-browserify/main.js */ 28).setImmediate))
 
 /***/ }),
 /* 5 */
@@ -11390,7 +11363,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(/*! ./listToStyles */ 22)
+var listToStyles = __webpack_require__(/*! ./listToStyles */ 33)
 
 /*
 type StyleObject = {
@@ -11715,7 +11688,7 @@ module.exports = function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
-	 true ? factory(exports, __webpack_require__(/*! vue */ 2), __webpack_require__(/*! vue-class-component */ 24), __webpack_require__(/*! reflect-metadata */ 25)) :
+	 true ? factory(exports, __webpack_require__(/*! vue */ 4), __webpack_require__(/*! vue-class-component */ 35), __webpack_require__(/*! reflect-metadata */ 36)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'vue', 'vue-class-component', 'reflect-metadata'], factory) :
 	(factory((global.VuePropertyDecorator = {}),global.Vue,global.VueClassComponent));
 }(this, (function (exports,vue,vueClassComponent) { 'use strict';
@@ -11849,6 +11822,898 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 /***/ }),
 /* 10 */
+/*!**********************************!*\
+  !*** ./src/components/chart.vue ***!
+  \**********************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart.vue */ 40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3eb3c7d2_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-3eb3c7d2","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart.vue */ 54);
+function injectStyle (ssrContext) {
+  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-3eb3c7d2","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart.vue */ 38)
+}
+var normalizeComponent = __webpack_require__(/*! ../../node_modules/vue-loader/lib/component-normalizer */ 8)
+/* script */
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-3eb3c7d2"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3eb3c7d2_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 11 */
+/*!**************************************!*\
+  !*** ./node_modules/rxjs/Subject.js ***!
+  \**************************************/
+/*! dynamic exports provided */
+/*! exports used: Subject */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Observable_1 = __webpack_require__(/*! ./Observable */ 20);
+var Subscriber_1 = __webpack_require__(/*! ./Subscriber */ 13);
+var Subscription_1 = __webpack_require__(/*! ./Subscription */ 14);
+var ObjectUnsubscribedError_1 = __webpack_require__(/*! ./util/ObjectUnsubscribedError */ 50);
+var SubjectSubscription_1 = __webpack_require__(/*! ./SubjectSubscription */ 51);
+var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 15);
+/**
+ * @class SubjectSubscriber<T>
+ */
+var SubjectSubscriber = /** @class */ (function (_super) {
+    __extends(SubjectSubscriber, _super);
+    function SubjectSubscriber(destination) {
+        var _this = _super.call(this, destination) || this;
+        _this.destination = destination;
+        return _this;
+    }
+    return SubjectSubscriber;
+}(Subscriber_1.Subscriber));
+exports.SubjectSubscriber = SubjectSubscriber;
+/**
+ * @class Subject<T>
+ */
+var Subject = /** @class */ (function (_super) {
+    __extends(Subject, _super);
+    function Subject() {
+        var _this = _super.call(this) || this;
+        _this.observers = [];
+        _this.closed = false;
+        _this.isStopped = false;
+        _this.hasError = false;
+        _this.thrownError = null;
+        return _this;
+    }
+    Subject.prototype[rxSubscriber_1.rxSubscriber] = function () {
+        return new SubjectSubscriber(this);
+    };
+    Subject.prototype.lift = function (operator) {
+        var subject = new AnonymousSubject(this, this);
+        subject.operator = operator;
+        return subject;
+    };
+    Subject.prototype.next = function (value) {
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        if (!this.isStopped) {
+            var observers = this.observers;
+            var len = observers.length;
+            var copy = observers.slice();
+            for (var i = 0; i < len; i++) {
+                copy[i].next(value);
+            }
+        }
+    };
+    Subject.prototype.error = function (err) {
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        this.hasError = true;
+        this.thrownError = err;
+        this.isStopped = true;
+        var observers = this.observers;
+        var len = observers.length;
+        var copy = observers.slice();
+        for (var i = 0; i < len; i++) {
+            copy[i].error(err);
+        }
+        this.observers.length = 0;
+    };
+    Subject.prototype.complete = function () {
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        this.isStopped = true;
+        var observers = this.observers;
+        var len = observers.length;
+        var copy = observers.slice();
+        for (var i = 0; i < len; i++) {
+            copy[i].complete();
+        }
+        this.observers.length = 0;
+    };
+    Subject.prototype.unsubscribe = function () {
+        this.isStopped = true;
+        this.closed = true;
+        this.observers = null;
+    };
+    Subject.prototype._trySubscribe = function (subscriber) {
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        else {
+            return _super.prototype._trySubscribe.call(this, subscriber);
+        }
+    };
+    Subject.prototype._subscribe = function (subscriber) {
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        else if (this.hasError) {
+            subscriber.error(this.thrownError);
+            return Subscription_1.Subscription.EMPTY;
+        }
+        else if (this.isStopped) {
+            subscriber.complete();
+            return Subscription_1.Subscription.EMPTY;
+        }
+        else {
+            this.observers.push(subscriber);
+            return new SubjectSubscription_1.SubjectSubscription(this, subscriber);
+        }
+    };
+    Subject.prototype.asObservable = function () {
+        var observable = new Observable_1.Observable();
+        observable.source = this;
+        return observable;
+    };
+    Subject.create = function (destination, source) {
+        return new AnonymousSubject(destination, source);
+    };
+    return Subject;
+}(Observable_1.Observable));
+exports.Subject = Subject;
+/**
+ * @class AnonymousSubject<T>
+ */
+var AnonymousSubject = /** @class */ (function (_super) {
+    __extends(AnonymousSubject, _super);
+    function AnonymousSubject(destination, source) {
+        var _this = _super.call(this) || this;
+        _this.destination = destination;
+        _this.source = source;
+        return _this;
+    }
+    AnonymousSubject.prototype.next = function (value) {
+        var destination = this.destination;
+        if (destination && destination.next) {
+            destination.next(value);
+        }
+    };
+    AnonymousSubject.prototype.error = function (err) {
+        var destination = this.destination;
+        if (destination && destination.error) {
+            this.destination.error(err);
+        }
+    };
+    AnonymousSubject.prototype.complete = function () {
+        var destination = this.destination;
+        if (destination && destination.complete) {
+            this.destination.complete();
+        }
+    };
+    AnonymousSubject.prototype._subscribe = function (subscriber) {
+        var source = this.source;
+        if (source) {
+            return this.source.subscribe(subscriber);
+        }
+        else {
+            return Subscription_1.Subscription.EMPTY;
+        }
+    };
+    return AnonymousSubject;
+}(Subject));
+exports.AnonymousSubject = AnonymousSubject;
+//# sourceMappingURL=Subject.js.map
+
+/***/ }),
+/* 12 */
+/*!****************************************!*\
+  !*** ./node_modules/rxjs/util/root.js ***!
+  \****************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+// CommonJS / Node have global context exposed as "global" variable.
+// We don't want to include the whole node.d.ts this this compilation unit so we'll just fake
+// the global "global" var for now.
+var __window = typeof window !== 'undefined' && window;
+var __self = typeof self !== 'undefined' && typeof WorkerGlobalScope !== 'undefined' &&
+    self instanceof WorkerGlobalScope && self;
+var __global = typeof global !== 'undefined' && global;
+var _root = __window || __global || __self;
+exports.root = _root;
+// Workaround Closure Compiler restriction: The body of a goog.module cannot use throw.
+// This is needed when used with angular/tsickle which inserts a goog.module statement.
+// Wrap in IIFE
+(function () {
+    if (!_root) {
+        throw new Error('RxJS could not find any global context (window, self, global)');
+    }
+})();
+//# sourceMappingURL=root.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 1)))
+
+/***/ }),
+/* 13 */
+/*!*****************************************!*\
+  !*** ./node_modules/rxjs/Subscriber.js ***!
+  \*****************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 21);
+var Subscription_1 = __webpack_require__(/*! ./Subscription */ 14);
+var Observer_1 = __webpack_require__(/*! ./Observer */ 23);
+var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 15);
+/**
+ * Implements the {@link Observer} interface and extends the
+ * {@link Subscription} class. While the {@link Observer} is the public API for
+ * consuming the values of an {@link Observable}, all Observers get converted to
+ * a Subscriber, in order to provide Subscription-like capabilities such as
+ * `unsubscribe`. Subscriber is a common type in RxJS, and crucial for
+ * implementing operators, but it is rarely used as a public API.
+ *
+ * @class Subscriber<T>
+ */
+var Subscriber = /** @class */ (function (_super) {
+    __extends(Subscriber, _super);
+    /**
+     * @param {Observer|function(value: T): void} [destinationOrNext] A partially
+     * defined Observer or a `next` callback function.
+     * @param {function(e: ?any): void} [error] The `error` callback of an
+     * Observer.
+     * @param {function(): void} [complete] The `complete` callback of an
+     * Observer.
+     */
+    function Subscriber(destinationOrNext, error, complete) {
+        var _this = _super.call(this) || this;
+        _this.syncErrorValue = null;
+        _this.syncErrorThrown = false;
+        _this.syncErrorThrowable = false;
+        _this.isStopped = false;
+        switch (arguments.length) {
+            case 0:
+                _this.destination = Observer_1.empty;
+                break;
+            case 1:
+                if (!destinationOrNext) {
+                    _this.destination = Observer_1.empty;
+                    break;
+                }
+                if (typeof destinationOrNext === 'object') {
+                    if (destinationOrNext instanceof Subscriber) {
+                        _this.destination = destinationOrNext;
+                        _this.destination.add(_this);
+                    }
+                    else {
+                        _this.syncErrorThrowable = true;
+                        _this.destination = new SafeSubscriber(_this, destinationOrNext);
+                    }
+                    break;
+                }
+            default:
+                _this.syncErrorThrowable = true;
+                _this.destination = new SafeSubscriber(_this, destinationOrNext, error, complete);
+                break;
+        }
+        return _this;
+    }
+    Subscriber.prototype[rxSubscriber_1.rxSubscriber] = function () { return this; };
+    /**
+     * A static factory for a Subscriber, given a (potentially partial) definition
+     * of an Observer.
+     * @param {function(x: ?T): void} [next] The `next` callback of an Observer.
+     * @param {function(e: ?any): void} [error] The `error` callback of an
+     * Observer.
+     * @param {function(): void} [complete] The `complete` callback of an
+     * Observer.
+     * @return {Subscriber<T>} A Subscriber wrapping the (partially defined)
+     * Observer represented by the given arguments.
+     */
+    Subscriber.create = function (next, error, complete) {
+        var subscriber = new Subscriber(next, error, complete);
+        subscriber.syncErrorThrowable = false;
+        return subscriber;
+    };
+    /**
+     * The {@link Observer} callback to receive notifications of type `next` from
+     * the Observable, with a value. The Observable may call this method 0 or more
+     * times.
+     * @param {T} [value] The `next` value.
+     * @return {void}
+     */
+    Subscriber.prototype.next = function (value) {
+        if (!this.isStopped) {
+            this._next(value);
+        }
+    };
+    /**
+     * The {@link Observer} callback to receive notifications of type `error` from
+     * the Observable, with an attached {@link Error}. Notifies the Observer that
+     * the Observable has experienced an error condition.
+     * @param {any} [err] The `error` exception.
+     * @return {void}
+     */
+    Subscriber.prototype.error = function (err) {
+        if (!this.isStopped) {
+            this.isStopped = true;
+            this._error(err);
+        }
+    };
+    /**
+     * The {@link Observer} callback to receive a valueless notification of type
+     * `complete` from the Observable. Notifies the Observer that the Observable
+     * has finished sending push-based notifications.
+     * @return {void}
+     */
+    Subscriber.prototype.complete = function () {
+        if (!this.isStopped) {
+            this.isStopped = true;
+            this._complete();
+        }
+    };
+    Subscriber.prototype.unsubscribe = function () {
+        if (this.closed) {
+            return;
+        }
+        this.isStopped = true;
+        _super.prototype.unsubscribe.call(this);
+    };
+    Subscriber.prototype._next = function (value) {
+        this.destination.next(value);
+    };
+    Subscriber.prototype._error = function (err) {
+        this.destination.error(err);
+        this.unsubscribe();
+    };
+    Subscriber.prototype._complete = function () {
+        this.destination.complete();
+        this.unsubscribe();
+    };
+    Subscriber.prototype._unsubscribeAndRecycle = function () {
+        var _a = this, _parent = _a._parent, _parents = _a._parents;
+        this._parent = null;
+        this._parents = null;
+        this.unsubscribe();
+        this.closed = false;
+        this.isStopped = false;
+        this._parent = _parent;
+        this._parents = _parents;
+        return this;
+    };
+    return Subscriber;
+}(Subscription_1.Subscription));
+exports.Subscriber = Subscriber;
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var SafeSubscriber = /** @class */ (function (_super) {
+    __extends(SafeSubscriber, _super);
+    function SafeSubscriber(_parentSubscriber, observerOrNext, error, complete) {
+        var _this = _super.call(this) || this;
+        _this._parentSubscriber = _parentSubscriber;
+        var next;
+        var context = _this;
+        if (isFunction_1.isFunction(observerOrNext)) {
+            next = observerOrNext;
+        }
+        else if (observerOrNext) {
+            next = observerOrNext.next;
+            error = observerOrNext.error;
+            complete = observerOrNext.complete;
+            if (observerOrNext !== Observer_1.empty) {
+                context = Object.create(observerOrNext);
+                if (isFunction_1.isFunction(context.unsubscribe)) {
+                    _this.add(context.unsubscribe.bind(context));
+                }
+                context.unsubscribe = _this.unsubscribe.bind(_this);
+            }
+        }
+        _this._context = context;
+        _this._next = next;
+        _this._error = error;
+        _this._complete = complete;
+        return _this;
+    }
+    SafeSubscriber.prototype.next = function (value) {
+        if (!this.isStopped && this._next) {
+            var _parentSubscriber = this._parentSubscriber;
+            if (!_parentSubscriber.syncErrorThrowable) {
+                this.__tryOrUnsub(this._next, value);
+            }
+            else if (this.__tryOrSetError(_parentSubscriber, this._next, value)) {
+                this.unsubscribe();
+            }
+        }
+    };
+    SafeSubscriber.prototype.error = function (err) {
+        if (!this.isStopped) {
+            var _parentSubscriber = this._parentSubscriber;
+            if (this._error) {
+                if (!_parentSubscriber.syncErrorThrowable) {
+                    this.__tryOrUnsub(this._error, err);
+                    this.unsubscribe();
+                }
+                else {
+                    this.__tryOrSetError(_parentSubscriber, this._error, err);
+                    this.unsubscribe();
+                }
+            }
+            else if (!_parentSubscriber.syncErrorThrowable) {
+                this.unsubscribe();
+                throw err;
+            }
+            else {
+                _parentSubscriber.syncErrorValue = err;
+                _parentSubscriber.syncErrorThrown = true;
+                this.unsubscribe();
+            }
+        }
+    };
+    SafeSubscriber.prototype.complete = function () {
+        var _this = this;
+        if (!this.isStopped) {
+            var _parentSubscriber = this._parentSubscriber;
+            if (this._complete) {
+                var wrappedComplete = function () { return _this._complete.call(_this._context); };
+                if (!_parentSubscriber.syncErrorThrowable) {
+                    this.__tryOrUnsub(wrappedComplete);
+                    this.unsubscribe();
+                }
+                else {
+                    this.__tryOrSetError(_parentSubscriber, wrappedComplete);
+                    this.unsubscribe();
+                }
+            }
+            else {
+                this.unsubscribe();
+            }
+        }
+    };
+    SafeSubscriber.prototype.__tryOrUnsub = function (fn, value) {
+        try {
+            fn.call(this._context, value);
+        }
+        catch (err) {
+            this.unsubscribe();
+            throw err;
+        }
+    };
+    SafeSubscriber.prototype.__tryOrSetError = function (parent, fn, value) {
+        try {
+            fn.call(this._context, value);
+        }
+        catch (err) {
+            parent.syncErrorValue = err;
+            parent.syncErrorThrown = true;
+            return true;
+        }
+        return false;
+    };
+    SafeSubscriber.prototype._unsubscribe = function () {
+        var _parentSubscriber = this._parentSubscriber;
+        this._context = null;
+        this._parentSubscriber = null;
+        _parentSubscriber.unsubscribe();
+    };
+    return SafeSubscriber;
+}(Subscriber));
+//# sourceMappingURL=Subscriber.js.map
+
+/***/ }),
+/* 14 */
+/*!*******************************************!*\
+  !*** ./node_modules/rxjs/Subscription.js ***!
+  \*******************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var isArray_1 = __webpack_require__(/*! ./util/isArray */ 43);
+var isObject_1 = __webpack_require__(/*! ./util/isObject */ 44);
+var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 21);
+var tryCatch_1 = __webpack_require__(/*! ./util/tryCatch */ 45);
+var errorObject_1 = __webpack_require__(/*! ./util/errorObject */ 22);
+var UnsubscriptionError_1 = __webpack_require__(/*! ./util/UnsubscriptionError */ 46);
+/**
+ * Represents a disposable resource, such as the execution of an Observable. A
+ * Subscription has one important method, `unsubscribe`, that takes no argument
+ * and just disposes the resource held by the subscription.
+ *
+ * Additionally, subscriptions may be grouped together through the `add()`
+ * method, which will attach a child Subscription to the current Subscription.
+ * When a Subscription is unsubscribed, all its children (and its grandchildren)
+ * will be unsubscribed as well.
+ *
+ * @class Subscription
+ */
+var Subscription = /** @class */ (function () {
+    /**
+     * @param {function(): void} [unsubscribe] A function describing how to
+     * perform the disposal of resources when the `unsubscribe` method is called.
+     */
+    function Subscription(unsubscribe) {
+        /**
+         * A flag to indicate whether this Subscription has already been unsubscribed.
+         * @type {boolean}
+         */
+        this.closed = false;
+        this._parent = null;
+        this._parents = null;
+        this._subscriptions = null;
+        if (unsubscribe) {
+            this._unsubscribe = unsubscribe;
+        }
+    }
+    /**
+     * Disposes the resources held by the subscription. May, for instance, cancel
+     * an ongoing Observable execution or cancel any other type of work that
+     * started when the Subscription was created.
+     * @return {void}
+     */
+    Subscription.prototype.unsubscribe = function () {
+        var hasErrors = false;
+        var errors;
+        if (this.closed) {
+            return;
+        }
+        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
+        this.closed = true;
+        this._parent = null;
+        this._parents = null;
+        // null out _subscriptions first so any child subscriptions that attempt
+        // to remove themselves from this subscription will noop
+        this._subscriptions = null;
+        var index = -1;
+        var len = _parents ? _parents.length : 0;
+        // if this._parent is null, then so is this._parents, and we
+        // don't have to remove ourselves from any parent subscriptions.
+        while (_parent) {
+            _parent.remove(this);
+            // if this._parents is null or index >= len,
+            // then _parent is set to null, and the loop exits
+            _parent = ++index < len && _parents[index] || null;
+        }
+        if (isFunction_1.isFunction(_unsubscribe)) {
+            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
+            if (trial === errorObject_1.errorObject) {
+                hasErrors = true;
+                errors = errors || (errorObject_1.errorObject.e instanceof UnsubscriptionError_1.UnsubscriptionError ?
+                    flattenUnsubscriptionErrors(errorObject_1.errorObject.e.errors) : [errorObject_1.errorObject.e]);
+            }
+        }
+        if (isArray_1.isArray(_subscriptions)) {
+            index = -1;
+            len = _subscriptions.length;
+            while (++index < len) {
+                var sub = _subscriptions[index];
+                if (isObject_1.isObject(sub)) {
+                    var trial = tryCatch_1.tryCatch(sub.unsubscribe).call(sub);
+                    if (trial === errorObject_1.errorObject) {
+                        hasErrors = true;
+                        errors = errors || [];
+                        var err = errorObject_1.errorObject.e;
+                        if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
+                            errors = errors.concat(flattenUnsubscriptionErrors(err.errors));
+                        }
+                        else {
+                            errors.push(err);
+                        }
+                    }
+                }
+            }
+        }
+        if (hasErrors) {
+            throw new UnsubscriptionError_1.UnsubscriptionError(errors);
+        }
+    };
+    /**
+     * Adds a tear down to be called during the unsubscribe() of this
+     * Subscription.
+     *
+     * If the tear down being added is a subscription that is already
+     * unsubscribed, is the same reference `add` is being called on, or is
+     * `Subscription.EMPTY`, it will not be added.
+     *
+     * If this subscription is already in an `closed` state, the passed
+     * tear down logic will be executed immediately.
+     *
+     * @param {TeardownLogic} teardown The additional logic to execute on
+     * teardown.
+     * @return {Subscription} Returns the Subscription used or created to be
+     * added to the inner subscriptions list. This Subscription can be used with
+     * `remove()` to remove the passed teardown logic from the inner subscriptions
+     * list.
+     */
+    Subscription.prototype.add = function (teardown) {
+        if (!teardown || (teardown === Subscription.EMPTY)) {
+            return Subscription.EMPTY;
+        }
+        if (teardown === this) {
+            return this;
+        }
+        var subscription = teardown;
+        switch (typeof teardown) {
+            case 'function':
+                subscription = new Subscription(teardown);
+            case 'object':
+                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
+                    return subscription;
+                }
+                else if (this.closed) {
+                    subscription.unsubscribe();
+                    return subscription;
+                }
+                else if (typeof subscription._addParent !== 'function' /* quack quack */) {
+                    var tmp = subscription;
+                    subscription = new Subscription();
+                    subscription._subscriptions = [tmp];
+                }
+                break;
+            default:
+                throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
+        }
+        var subscriptions = this._subscriptions || (this._subscriptions = []);
+        subscriptions.push(subscription);
+        subscription._addParent(this);
+        return subscription;
+    };
+    /**
+     * Removes a Subscription from the internal list of subscriptions that will
+     * unsubscribe during the unsubscribe process of this Subscription.
+     * @param {Subscription} subscription The subscription to remove.
+     * @return {void}
+     */
+    Subscription.prototype.remove = function (subscription) {
+        var subscriptions = this._subscriptions;
+        if (subscriptions) {
+            var subscriptionIndex = subscriptions.indexOf(subscription);
+            if (subscriptionIndex !== -1) {
+                subscriptions.splice(subscriptionIndex, 1);
+            }
+        }
+    };
+    Subscription.prototype._addParent = function (parent) {
+        var _a = this, _parent = _a._parent, _parents = _a._parents;
+        if (!_parent || _parent === parent) {
+            // If we don't have a parent, or the new parent is the same as the
+            // current parent, then set this._parent to the new parent.
+            this._parent = parent;
+        }
+        else if (!_parents) {
+            // If there's already one parent, but not multiple, allocate an Array to
+            // store the rest of the parent Subscriptions.
+            this._parents = [parent];
+        }
+        else if (_parents.indexOf(parent) === -1) {
+            // Only add the new parent to the _parents list if it's not already there.
+            _parents.push(parent);
+        }
+    };
+    Subscription.EMPTY = (function (empty) {
+        empty.closed = true;
+        return empty;
+    }(new Subscription()));
+    return Subscription;
+}());
+exports.Subscription = Subscription;
+function flattenUnsubscriptionErrors(errors) {
+    return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError_1.UnsubscriptionError) ? err.errors : err); }, []);
+}
+//# sourceMappingURL=Subscription.js.map
+
+/***/ }),
+/* 15 */
+/*!**************************************************!*\
+  !*** ./node_modules/rxjs/symbol/rxSubscriber.js ***!
+  \**************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var root_1 = __webpack_require__(/*! ../util/root */ 12);
+var Symbol = root_1.root.Symbol;
+exports.rxSubscriber = (typeof Symbol === 'function' && typeof Symbol.for === 'function') ?
+    Symbol.for('rxSubscriber') : '@@rxSubscriber';
+/**
+ * @deprecated use rxSubscriber instead
+ */
+exports.$$rxSubscriber = exports.rxSubscriber;
+//# sourceMappingURL=rxSubscriber.js.map
+
+/***/ }),
+/* 16 */
+/*!**************************************************!*\
+  !*** ./node_modules/rxjs/add/operator/filter.js ***!
+  \**************************************************/
+/*! dynamic exports provided */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Observable_1 = __webpack_require__(/*! ../../Observable */ 20);
+var filter_1 = __webpack_require__(/*! ../../operator/filter */ 52);
+Observable_1.Observable.prototype.filter = filter_1.filter;
+//# sourceMappingURL=filter.js.map
+
+/***/ }),
+/* 17 */
+/*!**************************************!*\
+  !*** ./node_modules/uniqid/index.js ***!
+  \**************************************/
+/*! dynamic exports provided */
+/*! exports used: default */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process, module) {/* 
+(The MIT License)
+Copyright (c) 2014 Halász Ádám <mail@adamhalasz.com>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+//  Unique Hexatridecimal ID Generator
+// ================================================
+
+//  Dependencies
+// ================================================
+var pid = process && process.pid ? process.pid.toString(36) : '' ;
+var mac =  false ? require('macaddress').one(macHandler) : null ;
+var address = mac ? parseInt(mac.replace(/\:|\D+/gi, '')).toString(36) : '' ;
+
+//  Exports
+// ================================================
+module.exports         = function(prefix){ return (prefix || '') + address + pid + now().toString(36); }
+module.exports.process = function(prefix){ return (prefix || '')           + pid + now().toString(36); }
+module.exports.time    = function(prefix){ return (prefix || '')                 + now().toString(36); }
+
+//  Helpers
+// ================================================
+function now(){
+    var time = Date.now();
+    var last = now.last || time;
+    return now.last = time > last ? time : last + 1;
+}
+
+function macHandler(error){
+    if(module.parent && module.parent.uniqid_debug){
+        if(error) console.error('Info: No mac address - uniqid() falls back to uniqid.process().', error)
+        if(pid == '') console.error('Info: No process.pid - uniqid.process() falls back to uniqid.time().')
+    }
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 5), __webpack_require__(/*! ./../webpack/buildin/module.js */ 59)(module)))
+
+/***/ }),
+/* 18 */
+/*!*************************!*\
+  !*** ./src/api/main.ts ***!
+  \*************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel__ = __webpack_require__(/*! loglevel */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_loglevel__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./../classes/section */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./../classes/chart */ 25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./../store/main */ 2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 3);
+
+
+
+
+
+var version = __webpack_require__(/*! ./../../package.json */ 61).version;
+var log = __WEBPACK_IMPORTED_MODULE_0_loglevel___default.a.getLogger('DQV');
+var hc;
+function importHighcharts() {
+    if (window.Highcharts) {
+        hc = window.Highcharts;
+        log.info("[DQV] using globally defined Highcharts (" + hc.version + ")");
+    }
+    else {
+        log.error("[DQV] Highcharts is not defined; please load Highcharts first");
+        throw new Error("[DQV] Highcharts is not defined");
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = ({
+    get Highcharts() {
+        if (hc) {
+            return hc;
+        }
+        importHighcharts();
+        return hc;
+    },
+    loglevel: __WEBPACK_IMPORTED_MODULE_0_loglevel___default.a,
+    version: version,
+    Section: __WEBPACK_IMPORTED_MODULE_1__classes_section__["a" /* DVSection */],
+    Chart: __WEBPACK_IMPORTED_MODULE_2__classes_chart__["a" /* DVChart */],
+    sectionCreated: __WEBPACK_IMPORTED_MODULE_4__observable_bus__["b" /* sectionCreatedSubject */].asObservable(),
+    chartCreated: __WEBPACK_IMPORTED_MODULE_4__observable_bus__["a" /* chartCreatedSubject */].asObservable(),
+    get sections() {
+        return __WEBPACK_IMPORTED_MODULE_3__store_main__["b" /* sections */];
+    },
+    get charts() {
+        return __WEBPACK_IMPORTED_MODULE_3__store_main__["a" /* charts */];
+    }
+});
+
+
+/***/ }),
+/* 19 */
 /*!********************************!*\
   !*** ./src/classes/section.ts ***!
   \********************************/
@@ -11858,14 +12723,14 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DVSection; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(/*! vue */ 2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(/*! vue */ 4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_section_vue__ = __webpack_require__(/*! ./../components/section.vue */ 19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__ = __webpack_require__(/*! ./../components/chart.vue */ 27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_chart_table_vue__ = __webpack_require__(/*! ./../components/chart-table.vue */ 33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__event_bus__ = __webpack_require__(/*! ./../event-bus */ 1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(/*! ./../utils */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_section_vue__ = __webpack_require__(/*! ./../components/section.vue */ 30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__ = __webpack_require__(/*! ./../components/chart.vue */ 10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_chart_table_vue__ = __webpack_require__(/*! ./../components/chart-table.vue */ 55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(/*! ./../utils */ 24);
 
 
 
@@ -11876,14 +12741,13 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var log = __WEBPACK_IMPORTED_MODULE_1_loglevel___default.a.getLogger('dv-section');
 var DVSection = (function () {
     function DVSection(_a) {
-        var id = _a.id, _b = _a.template, template = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c, _d = _a.charts, charts = _d === void 0 ? null : _d, _e = _a.mount, mount = _e === void 0 ? null : _e, _f = _a.automount, automount = _f === void 0 ? true : _f;
+        var id = _a.id, _b = _a.template, template = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c, _d = _a.mount, mount = _d === void 0 ? null : _d, _e = _a.automount, automount = _e === void 0 ? true : _e;
         this._mount = null;
         this._isMounted = false;
         this._template = null;
         this._templatePromise = null;
         this._data = null;
         this._dataPromise = null;
-        this._charts = {};
         this.id = id;
         log.info("[section='" + this.id + "'] new section is created");
         if (Object(__WEBPACK_IMPORTED_MODULE_6__utils__["b" /* isString */])(template)) {
@@ -11898,10 +12762,7 @@ var DVSection = (function () {
         else if (data !== null) {
             this.data = data;
         }
-        if (charts !== null) {
-            this.addChart(charts);
-        }
-        __WEBPACK_IMPORTED_MODULE_5__event_bus__["e" /* EventBus */].$emit(__WEBPACK_IMPORTED_MODULE_5__event_bus__["f" /* SECTION_CREATED */], this);
+        __WEBPACK_IMPORTED_MODULE_5__observable_bus__["b" /* sectionCreatedSubject */].next(this);
         if (mount) {
             this._mount = mount;
         }
@@ -11911,17 +12772,10 @@ var DVSection = (function () {
             this.mount();
         }
     }
-    DVSection.prototype.addChart = function (items) {
-        var _this = this;
-        if (!Array.isArray(items)) {
-            items = [items];
-        }
-        items.forEach(function (item) { return (_this._charts[item.id] = item); });
-        return this;
-    };
+    DVSection.prototype.addChart = function () { };
     Object.defineProperty(DVSection.prototype, "charts", {
         get: function () {
-            return this._charts;
+            return {};
         },
         enumerable: true,
         configurable: true
@@ -12006,8 +12860,7 @@ var DVSection = (function () {
                 return false;
             }
             if (!this.data && !this._dataPromise) {
-                log.info("[section='" + this
-                    .id + "'] no data provided; if template uses bindings, mounting the section will throw errors");
+                log.info("[section='" + this.id + "'] no data provided; if template uses bindings, mounting the section will throw errors");
             }
             return true;
         },
@@ -12035,10 +12888,9 @@ var DVSection = (function () {
         this._vm = new __WEBPACK_IMPORTED_MODULE_0_vue__["default"]({
             template: this.template,
             computed: { charts: function () { return _this.charts; } },
-            data: this.data,
+            data: this.data || {},
             provide: {
-                rootSectionId: this.id,
-                charts: this.charts
+                rootSectionId: this.id
             },
             components: {
                 'dv-section': __WEBPACK_IMPORTED_MODULE_2__components_section_vue__["a" /* default */],
@@ -12102,7 +12954,378 @@ var DVSection = (function () {
 
 
 /***/ }),
-/* 11 */
+/* 20 */
+/*!*****************************************!*\
+  !*** ./node_modules/rxjs/Observable.js ***!
+  \*****************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var root_1 = __webpack_require__(/*! ./util/root */ 12);
+var toSubscriber_1 = __webpack_require__(/*! ./util/toSubscriber */ 42);
+var observable_1 = __webpack_require__(/*! ./symbol/observable */ 47);
+var pipe_1 = __webpack_require__(/*! ./util/pipe */ 48);
+/**
+ * A representation of any set of values over any amount of time. This is the most basic building block
+ * of RxJS.
+ *
+ * @class Observable<T>
+ */
+var Observable = /** @class */ (function () {
+    /**
+     * @constructor
+     * @param {Function} subscribe the function that is called when the Observable is
+     * initially subscribed to. This function is given a Subscriber, to which new values
+     * can be `next`ed, or an `error` method can be called to raise an error, or
+     * `complete` can be called to notify of a successful completion.
+     */
+    function Observable(subscribe) {
+        this._isScalar = false;
+        if (subscribe) {
+            this._subscribe = subscribe;
+        }
+    }
+    /**
+     * Creates a new Observable, with this Observable as the source, and the passed
+     * operator defined as the new observable's operator.
+     * @method lift
+     * @param {Operator} operator the operator defining the operation to take on the observable
+     * @return {Observable} a new observable with the Operator applied
+     */
+    Observable.prototype.lift = function (operator) {
+        var observable = new Observable();
+        observable.source = this;
+        observable.operator = operator;
+        return observable;
+    };
+    /**
+     * Invokes an execution of an Observable and registers Observer handlers for notifications it will emit.
+     *
+     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
+     *
+     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
+     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
+     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
+     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
+     * thought.
+     *
+     * Apart from starting the execution of an Observable, this method allows you to listen for values
+     * that an Observable emits, as well as for when it completes or errors. You can achieve this in two
+     * following ways.
+     *
+     * The first way is creating an object that implements {@link Observer} interface. It should have methods
+     * defined by that interface, but note that it should be just a regular JavaScript object, which you can create
+     * yourself in any way you want (ES6 class, classic function constructor, object literal etc.). In particular do
+     * not attempt to use any RxJS implementation details to create Observers - you don't need them. Remember also
+     * that your object does not have to implement all methods. If you find yourself creating a method that doesn't
+     * do anything, you can simply omit it. Note however, that if `error` method is not provided, all errors will
+     * be left uncaught.
+     *
+     * The second way is to give up on Observer object altogether and simply provide callback functions in place of its methods.
+     * This means you can provide three functions as arguments to `subscribe`, where first function is equivalent
+     * of a `next` method, second of an `error` method and third of a `complete` method. Just as in case of Observer,
+     * if you do not need to listen for something, you can omit a function, preferably by passing `undefined` or `null`,
+     * since `subscribe` recognizes these functions by where they were placed in function call. When it comes
+     * to `error` function, just as before, if not provided, errors emitted by an Observable will be thrown.
+     *
+     * Whatever style of calling `subscribe` you use, in both cases it returns a Subscription object.
+     * This object allows you to call `unsubscribe` on it, which in turn will stop work that an Observable does and will clean
+     * up all resources that an Observable used. Note that cancelling a subscription will not call `complete` callback
+     * provided to `subscribe` function, which is reserved for a regular completion signal that comes from an Observable.
+     *
+     * Remember that callbacks provided to `subscribe` are not guaranteed to be called asynchronously.
+     * It is an Observable itself that decides when these functions will be called. For example {@link of}
+     * by default emits all its values synchronously. Always check documentation for how given Observable
+     * will behave when subscribed and if its default behavior can be modified with a {@link Scheduler}.
+     *
+     * @example <caption>Subscribe with an Observer</caption>
+     * const sumObserver = {
+     *   sum: 0,
+     *   next(value) {
+     *     console.log('Adding: ' + value);
+     *     this.sum = this.sum + value;
+     *   },
+     *   error() { // We actually could just remove this method,
+     *   },        // since we do not really care about errors right now.
+     *   complete() {
+     *     console.log('Sum equals: ' + this.sum);
+     *   }
+     * };
+     *
+     * Rx.Observable.of(1, 2, 3) // Synchronously emits 1, 2, 3 and then completes.
+     * .subscribe(sumObserver);
+     *
+     * // Logs:
+     * // "Adding: 1"
+     * // "Adding: 2"
+     * // "Adding: 3"
+     * // "Sum equals: 6"
+     *
+     *
+     * @example <caption>Subscribe with functions</caption>
+     * let sum = 0;
+     *
+     * Rx.Observable.of(1, 2, 3)
+     * .subscribe(
+     *   function(value) {
+     *     console.log('Adding: ' + value);
+     *     sum = sum + value;
+     *   },
+     *   undefined,
+     *   function() {
+     *     console.log('Sum equals: ' + sum);
+     *   }
+     * );
+     *
+     * // Logs:
+     * // "Adding: 1"
+     * // "Adding: 2"
+     * // "Adding: 3"
+     * // "Sum equals: 6"
+     *
+     *
+     * @example <caption>Cancel a subscription</caption>
+     * const subscription = Rx.Observable.interval(1000).subscribe(
+     *   num => console.log(num),
+     *   undefined,
+     *   () => console.log('completed!') // Will not be called, even
+     * );                                // when cancelling subscription
+     *
+     *
+     * setTimeout(() => {
+     *   subscription.unsubscribe();
+     *   console.log('unsubscribed!');
+     * }, 2500);
+     *
+     * // Logs:
+     * // 0 after 1s
+     * // 1 after 2s
+     * // "unsubscribed!" after 2.5s
+     *
+     *
+     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
+     *  or the first of three possible handlers, which is the handler for each value emitted from the subscribed
+     *  Observable.
+     * @param {Function} error (optional) A handler for a terminal event resulting from an error. If no error handler is provided,
+     *  the error will be thrown as unhandled.
+     * @param {Function} complete (optional) A handler for a terminal event resulting from successful completion.
+     * @return {ISubscription} a subscription reference to the registered handlers
+     * @method subscribe
+     */
+    Observable.prototype.subscribe = function (observerOrNext, error, complete) {
+        var operator = this.operator;
+        var sink = toSubscriber_1.toSubscriber(observerOrNext, error, complete);
+        if (operator) {
+            operator.call(sink, this.source);
+        }
+        else {
+            sink.add(this.source ? this._subscribe(sink) : this._trySubscribe(sink));
+        }
+        if (sink.syncErrorThrowable) {
+            sink.syncErrorThrowable = false;
+            if (sink.syncErrorThrown) {
+                throw sink.syncErrorValue;
+            }
+        }
+        return sink;
+    };
+    Observable.prototype._trySubscribe = function (sink) {
+        try {
+            return this._subscribe(sink);
+        }
+        catch (err) {
+            sink.syncErrorThrown = true;
+            sink.syncErrorValue = err;
+            sink.error(err);
+        }
+    };
+    /**
+     * @method forEach
+     * @param {Function} next a handler for each value emitted by the observable
+     * @param {PromiseConstructor} [PromiseCtor] a constructor function used to instantiate the Promise
+     * @return {Promise} a promise that either resolves on observable completion or
+     *  rejects with the handled error
+     */
+    Observable.prototype.forEach = function (next, PromiseCtor) {
+        var _this = this;
+        if (!PromiseCtor) {
+            if (root_1.root.Rx && root_1.root.Rx.config && root_1.root.Rx.config.Promise) {
+                PromiseCtor = root_1.root.Rx.config.Promise;
+            }
+            else if (root_1.root.Promise) {
+                PromiseCtor = root_1.root.Promise;
+            }
+        }
+        if (!PromiseCtor) {
+            throw new Error('no Promise impl found');
+        }
+        return new PromiseCtor(function (resolve, reject) {
+            // Must be declared in a separate statement to avoid a RefernceError when
+            // accessing subscription below in the closure due to Temporal Dead Zone.
+            var subscription;
+            subscription = _this.subscribe(function (value) {
+                if (subscription) {
+                    // if there is a subscription, then we can surmise
+                    // the next handling is asynchronous. Any errors thrown
+                    // need to be rejected explicitly and unsubscribe must be
+                    // called manually
+                    try {
+                        next(value);
+                    }
+                    catch (err) {
+                        reject(err);
+                        subscription.unsubscribe();
+                    }
+                }
+                else {
+                    // if there is NO subscription, then we're getting a nexted
+                    // value synchronously during subscription. We can just call it.
+                    // If it errors, Observable's `subscribe` will ensure the
+                    // unsubscription logic is called, then synchronously rethrow the error.
+                    // After that, Promise will trap the error and send it
+                    // down the rejection path.
+                    next(value);
+                }
+            }, reject, resolve);
+        });
+    };
+    Observable.prototype._subscribe = function (subscriber) {
+        return this.source.subscribe(subscriber);
+    };
+    /**
+     * An interop point defined by the es7-observable spec https://github.com/zenparsing/es-observable
+     * @method Symbol.observable
+     * @return {Observable} this instance of the observable
+     */
+    Observable.prototype[observable_1.observable] = function () {
+        return this;
+    };
+    /* tslint:enable:max-line-length */
+    /**
+     * Used to stitch together functional operators into a chain.
+     * @method pipe
+     * @return {Observable} the Observable result of all of the operators having
+     * been called in the order they were passed in.
+     *
+     * @example
+     *
+     * import { map, filter, scan } from 'rxjs/operators';
+     *
+     * Rx.Observable.interval(1000)
+     *   .pipe(
+     *     filter(x => x % 2 === 0),
+     *     map(x => x + x),
+     *     scan((acc, x) => acc + x)
+     *   )
+     *   .subscribe(x => console.log(x))
+     */
+    Observable.prototype.pipe = function () {
+        var operations = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            operations[_i] = arguments[_i];
+        }
+        if (operations.length === 0) {
+            return this;
+        }
+        return pipe_1.pipeFromArray(operations)(this);
+    };
+    /* tslint:enable:max-line-length */
+    Observable.prototype.toPromise = function (PromiseCtor) {
+        var _this = this;
+        if (!PromiseCtor) {
+            if (root_1.root.Rx && root_1.root.Rx.config && root_1.root.Rx.config.Promise) {
+                PromiseCtor = root_1.root.Rx.config.Promise;
+            }
+            else if (root_1.root.Promise) {
+                PromiseCtor = root_1.root.Promise;
+            }
+        }
+        if (!PromiseCtor) {
+            throw new Error('no Promise impl found');
+        }
+        return new PromiseCtor(function (resolve, reject) {
+            var value;
+            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
+        });
+    };
+    // HACK: Since TypeScript inherits static properties too, we have to
+    // fight against TypeScript here so Subject can have a different static create signature
+    /**
+     * Creates a new cold Observable by calling the Observable constructor
+     * @static true
+     * @owner Observable
+     * @method create
+     * @param {Function} subscribe? the subscriber function to be passed to the Observable constructor
+     * @return {Observable} a new cold observable
+     */
+    Observable.create = function (subscribe) {
+        return new Observable(subscribe);
+    };
+    return Observable;
+}());
+exports.Observable = Observable;
+//# sourceMappingURL=Observable.js.map
+
+/***/ }),
+/* 21 */
+/*!**********************************************!*\
+  !*** ./node_modules/rxjs/util/isFunction.js ***!
+  \**********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isFunction(x) {
+    return typeof x === 'function';
+}
+exports.isFunction = isFunction;
+//# sourceMappingURL=isFunction.js.map
+
+/***/ }),
+/* 22 */
+/*!***********************************************!*\
+  !*** ./node_modules/rxjs/util/errorObject.js ***!
+  \***********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// typeof any so that it we don't have to cast when comparing a result to the error object
+exports.errorObject = { e: {} };
+//# sourceMappingURL=errorObject.js.map
+
+/***/ }),
+/* 23 */
+/*!***************************************!*\
+  !*** ./node_modules/rxjs/Observer.js ***!
+  \***************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.empty = {
+    closed: true,
+    next: function (value) { },
+    error: function (err) { throw err; },
+    complete: function () { }
+};
+//# sourceMappingURL=Observer.js.map
+
+/***/ }),
+/* 24 */
 /*!**********************!*\
   !*** ./src/utils.ts ***!
   \**********************/
@@ -12131,7 +13354,7 @@ function isPromise(x) {
 
 
 /***/ }),
-/* 12 */
+/* 25 */
 /*!******************************!*\
   !*** ./src/classes/chart.ts ***!
   \******************************/
@@ -12141,12 +13364,20 @@ function isPromise(x) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DVChart; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_uniqid__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__event_bus__ = __webpack_require__(/*! ./../event-bus */ 1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(/*! ./../utils */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__ = __webpack_require__(/*! rxjs/Subject */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__ = __webpack_require__(/*! rxjs/add/operator/filter */ 16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils__ = __webpack_require__(/*! ./../utils */ 24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_chart_vue__ = __webpack_require__(/*! ./../components/chart.vue */ 10);
+
+
+
 
 
 
@@ -12161,28 +13392,58 @@ var DVChart = (function () {
         this._configPromise = null;
         this._data = null;
         this._dataPromise = null;
+        this._isTableGenerated = false;
         this._highchartObject = null;
+        this._renderedSubject = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["Subject"]();
+        this._configUpdatedSubject = new __WEBPACK_IMPORTED_MODULE_2_rxjs_Subject__["Subject"]();
         this.id = id;
         log.info("[chart='" + this.id + "'] new chart is created");
-        if (Object(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* isPromise */])(config)) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_5__utils__["a" /* isPromise */])(config)) {
             this.setConfig(config);
         }
         else if (config !== null) {
             this.config = config;
         }
-        if (Object(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* isPromise */])(data)) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_5__utils__["a" /* isPromise */])(data)) {
             this.setData(data);
         }
         else if (data !== null) {
             this.data = data;
         }
-        __WEBPACK_IMPORTED_MODULE_2__event_bus__["e" /* EventBus */].$emit(__WEBPACK_IMPORTED_MODULE_2__event_bus__["b" /* CHART_CREATED */], this);
-        __WEBPACK_IMPORTED_MODULE_2__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_2__event_bus__["c" /* CHART_RENDERED */], function (event) {
-            if (event.id == _this.id) {
-                _this._highchartObject = event.highchartObject;
-            }
+        __WEBPACK_IMPORTED_MODULE_6__components_chart_vue__["a" /* default */].rendered
+            .filter(function (event) { return event.chartId === _this.id; })
+            .subscribe(function (event) {
+            _this._highchartObject = event.highchartObject;
+            _this._renderedSubject.next(_this._highchartObject);
         });
+        __WEBPACK_IMPORTED_MODULE_6__components_chart_vue__["a" /* default */].viewDataClicked
+            .filter(function (event) {
+            return event.chartId === _this.id;
+        })
+            .subscribe(function () { return (_this._isTableGenerated = true); });
+        __WEBPACK_IMPORTED_MODULE_4__observable_bus__["a" /* chartCreatedSubject */].next(this);
     }
+    Object.defineProperty(DVChart.prototype, "rendered", {
+        get: function () {
+            return this._renderedSubject.asObservable();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DVChart.prototype, "configUpdated", {
+        get: function () {
+            return this._configUpdatedSubject.asObservable();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DVChart.prototype, "isTableGenerated", {
+        get: function () {
+            return this._isTableGenerated;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(DVChart.prototype, "highchart", {
         get: function () {
             if (!this._highchartObject) {
@@ -12259,8 +13520,7 @@ var DVChart = (function () {
         }
         if (this.data) {
             if (this.data.length !== this.config.series.length) {
-                log.warn("[chart='" + this
-                    .id + "'] invalid config - provided data does not match chart series");
+                log.warn("[chart='" + this.id + "'] invalid config - provided data does not match chart series");
                 return;
             }
             else {
@@ -12276,7 +13536,7 @@ var DVChart = (function () {
         }
         log.info("[chart='" + this.id + "'] chart config is valid");
         this._isConfigValid = true;
-        __WEBPACK_IMPORTED_MODULE_2__event_bus__["e" /* EventBus */].$emit(__WEBPACK_IMPORTED_MODULE_2__event_bus__["a" /* CHART_CONFIG_UPDATED */], this);
+        this._configUpdatedSubject.next(this);
     };
     Object.defineProperty(DVChart.prototype, "isConfigValid", {
         get: function () {
@@ -12291,89 +13551,7 @@ var DVChart = (function () {
 
 
 /***/ }),
-/* 13 */
-/*!**************************************!*\
-  !*** ./node_modules/uniqid/index.js ***!
-  \**************************************/
-/*! dynamic exports provided */
-/*! exports used: default */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process, module) {/* 
-(The MIT License)
-Copyright (c) 2014 Halász Ádám <mail@adamhalasz.com>
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-//  Unique Hexatridecimal ID Generator
-// ================================================
-
-//  Dependencies
-// ================================================
-var pid = process && process.pid ? process.pid.toString(36) : '' ;
-var mac =  false ? require('macaddress').one(macHandler) : null ;
-var address = mac ? parseInt(mac.replace(/\:|\D+/gi, '')).toString(36) : '' ;
-
-//  Exports
-// ================================================
-module.exports         = function(prefix){ return (prefix || '') + address + pid + now().toString(36); }
-module.exports.process = function(prefix){ return (prefix || '')           + pid + now().toString(36); }
-module.exports.time    = function(prefix){ return (prefix || '')                 + now().toString(36); }
-
-//  Helpers
-// ================================================
-function now(){
-    var time = Date.now();
-    var last = now.last || time;
-    return now.last = time > last ? time : last + 1;
-}
-
-function macHandler(error){
-    if(module.parent && module.parent.uniqid_debug){
-        if(error) console.error('Info: No mac address - uniqid() falls back to uniqid.process().', error)
-        if(pid == '') console.error('Info: No process.pid - uniqid.process() falls back to uniqid.time().')
-    }
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 5), __webpack_require__(/*! ./../webpack/buildin/module.js */ 38)(module)))
-
-/***/ }),
-/* 14 */
-/*!***************************!*\
-  !*** ./src/store/main.ts ***!
-  \***************************/
-/*! exports provided: sections, charts */
-/*! exports used: charts, sections */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return sections; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return charts; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus__ = __webpack_require__(/*! ./../event-bus */ 1);
-
-var sections = {};
-var charts = {};
-function addSection(section) {
-    if (sections[section.id]) {
-        return;
-    }
-    sections[section.id] = section;
-}
-function addChart(chart) {
-    if (charts[chart.id]) {
-        return;
-    }
-    charts[chart.id] = chart;
-}
-__WEBPACK_IMPORTED_MODULE_0__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_0__event_bus__["f" /* SECTION_CREATED */], function (section) { return addSection(section); });
-__WEBPACK_IMPORTED_MODULE_0__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_0__event_bus__["b" /* CHART_CREATED */], function (chart) { return addChart(chart); });
-
-
-
-/***/ }),
-/* 15 */
+/* 26 */
 /*!****************************!*\
   !*** multi ./src/index.ts ***!
   \****************************/
@@ -12381,11 +13559,11 @@ __WEBPACK_IMPORTED_MODULE_0__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPOR
 /*! all exports used */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\Aleksuei Riabtsev\ownCloud\Development\GitHub\dqv-starter\src\index.ts */16);
+module.exports = __webpack_require__(/*! C:\Users\aleksueir\Klingon\Development\GitHub\dqv-starter\src\index.ts */27);
 
 
 /***/ }),
-/* 16 */
+/* 27 */
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
@@ -12395,15 +13573,15 @@ module.exports = __webpack_require__(/*! C:\Users\Aleksuei Riabtsev\ownCloud\Dev
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_main__ = __webpack_require__(/*! ./api/main */ 3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap__ = __webpack_require__(/*! ./bootstrap */ 40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_main__ = __webpack_require__(/*! ./api/main */ 18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap__ = __webpack_require__(/*! ./bootstrap */ 62);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__api_main__["a" /* default */]);
 
 
 /***/ }),
-/* 17 */
+/* 28 */
 /*!************************************************!*\
   !*** ./node_modules/timers-browserify/main.js ***!
   \************************************************/
@@ -12461,13 +13639,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(/*! setimmediate */ 18);
+__webpack_require__(/*! setimmediate */ 29);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 18 */
+/* 29 */
 /*!***************************************************!*\
   !*** ./node_modules/setimmediate/setImmediate.js ***!
   \***************************************************/
@@ -12662,10 +13840,10 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 4), __webpack_require__(/*! ./../process/browser.js */ 5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 1), __webpack_require__(/*! ./../process/browser.js */ 5)))
 
 /***/ }),
-/* 19 */
+/* 30 */
 /*!************************************!*\
   !*** ./src/components/section.vue ***!
   \************************************/
@@ -12674,10 +13852,10 @@ exports.clearImmediate = clearImmediate;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_section_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./section.vue */ 23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_41fdad77_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_section_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-41fdad77","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./section.vue */ 26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_section_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./section.vue */ 34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e59bee60_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_section_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-e59bee60","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./section.vue */ 37);
 function injectStyle (ssrContext) {
-  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-41fdad77","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./section.vue */ 20)
+  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-e59bee60","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./section.vue */ 31)
 }
 var normalizeComponent = __webpack_require__(/*! ../../node_modules/vue-loader/lib/component-normalizer */ 8)
 /* script */
@@ -12689,12 +13867,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-41fdad77"
+var __vue_scopeId__ = "data-v-e59bee60"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_section_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_41fdad77_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_section_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_e59bee60_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_section_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -12705,9 +13883,9 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 20 */
+/* 31 */
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-41fdad77","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/section.vue ***!
+  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-e59bee60","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/section.vue ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -12716,16 +13894,16 @@ var Component = normalizeComponent(
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-41fdad77","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./section.vue */ 21);
+var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-e59bee60","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./section.vue */ 32);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("188bf305", content, true);
+var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("d0f872e0", content, true);
 
 /***/ }),
-/* 21 */
+/* 32 */
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-41fdad77","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/section.vue ***!
+  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-e59bee60","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/section.vue ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -12742,7 +13920,7 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 
 
 /***/ }),
-/* 22 */
+/* 33 */
 /*!***********************************************************!*\
   !*** ./node_modules/vue-style-loader/lib/listToStyles.js ***!
   \***********************************************************/
@@ -12780,7 +13958,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 23 */
+/* 34 */
 /*!***************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/section.vue ***!
   \***************************************************************************************************************************/
@@ -12813,17 +13991,19 @@ var Section = (function (_super) {
     function Section() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Provide"])()
+    ], Section.prototype, "rootChartId", void 0);
     Section = __decorate([
         __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Component"]
     ], Section);
     return Section;
 }(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Vue"]));
 /* harmony default export */ __webpack_exports__["a"] = (Section);
-;
 
 
 /***/ }),
-/* 24 */
+/* 35 */
 /*!*****************************************************************************!*\
   !*** ./node_modules/vue-class-component/dist/vue-class-component.common.js ***!
   \*****************************************************************************/
@@ -12843,7 +14023,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var Vue = _interopDefault(__webpack_require__(/*! vue */ 2));
+var Vue = _interopDefault(__webpack_require__(/*! vue */ 4));
 
 function createDecorator(factory) {
     return function (target, key, index) {
@@ -12983,7 +14163,7 @@ exports.createDecorator = createDecorator;
 
 
 /***/ }),
-/* 25 */
+/* 36 */
 /*!**************************************************!*\
   !*** ./node_modules/reflect-metadata/Reflect.js ***!
   \**************************************************/
@@ -14116,12 +15296,12 @@ var Reflect;
             Function("return this;")());
 })(Reflect || (Reflect = {}));
 //# sourceMappingURL=Reflect.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 5), __webpack_require__(/*! ./../webpack/buildin/global.js */ 4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 5), __webpack_require__(/*! ./../webpack/buildin/global.js */ 1)))
 
 /***/ }),
-/* 26 */
+/* 37 */
 /*!************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-41fdad77","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/section.vue ***!
+  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-e59bee60","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/section.vue ***!
   \************************************************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /*! exports used: default */
@@ -14134,49 +15314,9 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 27 */
-/*!**********************************!*\
-  !*** ./src/components/chart.vue ***!
-  \**********************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart.vue */ 30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35d38583_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-35d38583","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart.vue */ 32);
-function injectStyle (ssrContext) {
-  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-35d38583","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart.vue */ 28)
-}
-var normalizeComponent = __webpack_require__(/*! ../../node_modules/vue-loader/lib/component-normalizer */ 8)
-/* script */
-
-/* template */
-
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-35d38583"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_35d38583_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_vue__["a" /* default */],
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-
-/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
-
-
-/***/ }),
-/* 28 */
+/* 38 */
 /*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-35d38583","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart.vue ***!
+  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-3eb3c7d2","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart.vue ***!
   \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -14185,16 +15325,16 @@ var Component = normalizeComponent(
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-35d38583","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart.vue */ 29);
+var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-3eb3c7d2","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart.vue */ 39);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("4b9e7c3e", content, true);
+var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("50f750b6", content, true);
 
 /***/ }),
-/* 29 */
+/* 39 */
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-35d38583","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart.vue ***!
+  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-3eb3c7d2","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart.vue ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -14211,7 +15351,7 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 
 
 /***/ }),
-/* 30 */
+/* 40 */
 /*!*************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/chart.vue ***!
   \*************************************************************************************************************************/
@@ -14224,9 +15364,13 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api_main__ = __webpack_require__(/*! ./../api/main */ 3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__event_bus__ = __webpack_require__(/*! ./../event-bus */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__ = __webpack_require__(/*! rxjs/Subject */ 11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_filter__ = __webpack_require__(/*! rxjs/add/operator/filter */ 16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_filter__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__api_main__ = __webpack_require__(/*! ./../api/main */ 18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__store_main__ = __webpack_require__(/*! ./../store/main */ 2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14248,6 +15392,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
+
 var log = __WEBPACK_IMPORTED_MODULE_1_loglevel___default.a.getLogger('dv-chart');
 var DV_CHART_CONTAINER_ELEMENT = '[dv-chart-container]';
 var DV_CHART_TABLE_CONTAINER_ELEMENT = '[dv-chart-table-container]';
@@ -14256,10 +15402,11 @@ var Chart = (function (_super) {
     function Chart() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.isLoading = true;
-        _this.rootChartId = _this.id;
         _this._viewDataExportOption = null;
+        _this.rootChartId = _this.id;
         return _this;
     }
+    Chart_1 = Chart;
     Object.defineProperty(Chart.prototype, "id", {
         get: function () {
             return this.$attrs.id;
@@ -14267,37 +15414,55 @@ var Chart = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Chart.prototype, "autoGenerateTable", {
+        get: function () {
+            return typeof this.$attrs['dv-auto-generate-table'] !== 'undefined';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Chart.prototype.created = function () {
-        var _this = this;
-        __WEBPACK_IMPORTED_MODULE_4__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_4__event_bus__["d" /* CHART_TABLE_PREPARED */], function (_a) {
-            var id = _a.id, renderer = _a.renderer;
-            if (id !== _this.id) {
-                return;
-            }
-            _this._viewDataExportOption = {
-                text: '',
-                onclick: renderer
-            };
-        });
-    };
-    Chart.prototype.mounted = function () {
         var _this = this;
         if (!this.id) {
             log.error("[chart='?'] missing 'id' attribute in [section='" + this.rootSectionId + "']");
             return;
         }
-        if (!this.charts[this.id]) {
+        if (!__WEBPACK_IMPORTED_MODULE_6__store_main__["a" /* charts */][this.id]) {
             log.error("[chart='" + this.id + "'] is not defined in [section='" + this.rootSectionId + "']");
             return;
         }
-        this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT);
-        __WEBPACK_IMPORTED_MODULE_4__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_4__event_bus__["a" /* CHART_CONFIG_UPDATED */], function (_a) {
-            var id = _a.id, config = _a.config;
-            if (id == _this.id) {
-                _this.renderChart();
+        this.dvchart = __WEBPACK_IMPORTED_MODULE_6__store_main__["a" /* charts */][this.id];
+        if (!this.autoGenerateTable) {
+            this._viewDataExportOption = {
+                text: '',
+                onclick: function () { return _this.simulateViewDataClick(); }
+            };
+        }
+    };
+    Chart.prototype.simulateViewDataClick = function (tableId) {
+        if (!__WEBPACK_IMPORTED_MODULE_5__api_main__["a" /* default */].Highcharts.Chart.prototype.viewData) {
+            log.error("[chart='" + this.id + "'] export-data module required for chart data table");
+            return;
+        }
+        if (typeof this.highchartObject === 'undefined') {
+            return;
+        }
+        Chart_1._viewDataClicked.next({ chartId: this.id });
+    };
+    Chart.prototype.mounted = function () {
+        var _this = this;
+        if (!this.dvchart) {
+            this.$destroy();
+            while (this.$el.firstChild) {
+                this.$el.removeChild(this.$el.firstChild);
             }
-        });
-        this.dvchart = this.charts[this.id];
+            this.$el.parentNode.removeChild(this.$el);
+            return;
+        }
+        this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT);
+        this.dvchart.configUpdated
+            .filter(function (dvchart) { return dvchart.id === _this.id; })
+            .subscribe(function () { return _this.renderChart(); });
         if (this.dvchart.isConfigValid) {
             this.renderChart();
         }
@@ -14312,30 +15477,35 @@ var Chart = (function (_super) {
             },
             (this.dvchart.config.exporting || {})
         ]);
-        this.highchartObject = __WEBPACK_IMPORTED_MODULE_3__api_main__["a" /* default */].Highcharts.chart(this._chartContainer, this.dvchart
+        this.highchartObject = __WEBPACK_IMPORTED_MODULE_5__api_main__["a" /* default */].Highcharts.chart(this._chartContainer, this.dvchart
             .config);
         this.isLoading = false;
-        __WEBPACK_IMPORTED_MODULE_4__event_bus__["e" /* EventBus */].$emit(__WEBPACK_IMPORTED_MODULE_4__event_bus__["c" /* CHART_RENDERED */], { id: this.id, highchartObject: this.highchartObject });
+        Chart_1._rendered.next({ chartId: this.id, highchartObject: this.highchartObject });
+        if (this.autoGenerateTable) {
+            this.simulateViewDataClick();
+        }
     };
+    Chart._rendered = new __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__["Subject"]();
+    Chart.rendered = Chart_1._rendered.asObservable();
+    Chart._viewDataClicked = new __WEBPACK_IMPORTED_MODULE_3_rxjs_Subject__["Subject"]();
+    Chart.viewDataClicked = Chart_1._viewDataClicked.asObservable();
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Inject"])()
     ], Chart.prototype, "rootSectionId", void 0);
     __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Inject"])()
-    ], Chart.prototype, "charts", void 0);
-    __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Provide"])()
     ], Chart.prototype, "rootChartId", void 0);
-    Chart = __decorate([
+    Chart = Chart_1 = __decorate([
         __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Component"]
     ], Chart);
     return Chart;
+    var Chart_1;
 }(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Vue"]));
 /* harmony default export */ __webpack_exports__["a"] = (Chart);
 
 
 /***/ }),
-/* 31 */
+/* 41 */
 /*!*******************************************!*\
   !*** ./node_modules/deepmerge/dist/es.js ***!
   \*******************************************/
@@ -14436,9 +15606,515 @@ var deepmerge_1 = deepmerge;
 
 
 /***/ }),
-/* 32 */
+/* 42 */
+/*!************************************************!*\
+  !*** ./node_modules/rxjs/util/toSubscriber.js ***!
+  \************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Subscriber_1 = __webpack_require__(/*! ../Subscriber */ 13);
+var rxSubscriber_1 = __webpack_require__(/*! ../symbol/rxSubscriber */ 15);
+var Observer_1 = __webpack_require__(/*! ../Observer */ 23);
+function toSubscriber(nextOrObserver, error, complete) {
+    if (nextOrObserver) {
+        if (nextOrObserver instanceof Subscriber_1.Subscriber) {
+            return nextOrObserver;
+        }
+        if (nextOrObserver[rxSubscriber_1.rxSubscriber]) {
+            return nextOrObserver[rxSubscriber_1.rxSubscriber]();
+        }
+    }
+    if (!nextOrObserver && !error && !complete) {
+        return new Subscriber_1.Subscriber(Observer_1.empty);
+    }
+    return new Subscriber_1.Subscriber(nextOrObserver, error, complete);
+}
+exports.toSubscriber = toSubscriber;
+//# sourceMappingURL=toSubscriber.js.map
+
+/***/ }),
+/* 43 */
+/*!*******************************************!*\
+  !*** ./node_modules/rxjs/util/isArray.js ***!
+  \*******************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isArray = Array.isArray || (function (x) { return x && typeof x.length === 'number'; });
+//# sourceMappingURL=isArray.js.map
+
+/***/ }),
+/* 44 */
+/*!********************************************!*\
+  !*** ./node_modules/rxjs/util/isObject.js ***!
+  \********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isObject(x) {
+    return x != null && typeof x === 'object';
+}
+exports.isObject = isObject;
+//# sourceMappingURL=isObject.js.map
+
+/***/ }),
+/* 45 */
+/*!********************************************!*\
+  !*** ./node_modules/rxjs/util/tryCatch.js ***!
+  \********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var errorObject_1 = __webpack_require__(/*! ./errorObject */ 22);
+var tryCatchTarget;
+function tryCatcher() {
+    try {
+        return tryCatchTarget.apply(this, arguments);
+    }
+    catch (e) {
+        errorObject_1.errorObject.e = e;
+        return errorObject_1.errorObject;
+    }
+}
+function tryCatch(fn) {
+    tryCatchTarget = fn;
+    return tryCatcher;
+}
+exports.tryCatch = tryCatch;
+;
+//# sourceMappingURL=tryCatch.js.map
+
+/***/ }),
+/* 46 */
+/*!*******************************************************!*\
+  !*** ./node_modules/rxjs/util/UnsubscriptionError.js ***!
+  \*******************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * An error thrown when one or more errors have occurred during the
+ * `unsubscribe` of a {@link Subscription}.
+ */
+var UnsubscriptionError = /** @class */ (function (_super) {
+    __extends(UnsubscriptionError, _super);
+    function UnsubscriptionError(errors) {
+        var _this = _super.call(this) || this;
+        _this.errors = errors;
+        var err = Error.call(_this, errors ?
+            errors.length + " errors occurred during unsubscription:\n  " + errors.map(function (err, i) { return i + 1 + ") " + err.toString(); }).join('\n  ') : '');
+        _this.name = err.name = 'UnsubscriptionError';
+        _this.stack = err.stack;
+        _this.message = err.message;
+        return _this;
+    }
+    return UnsubscriptionError;
+}(Error));
+exports.UnsubscriptionError = UnsubscriptionError;
+//# sourceMappingURL=UnsubscriptionError.js.map
+
+/***/ }),
+/* 47 */
+/*!************************************************!*\
+  !*** ./node_modules/rxjs/symbol/observable.js ***!
+  \************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var root_1 = __webpack_require__(/*! ../util/root */ 12);
+function getSymbolObservable(context) {
+    var $$observable;
+    var Symbol = context.Symbol;
+    if (typeof Symbol === 'function') {
+        if (Symbol.observable) {
+            $$observable = Symbol.observable;
+        }
+        else {
+            $$observable = Symbol('observable');
+            Symbol.observable = $$observable;
+        }
+    }
+    else {
+        $$observable = '@@observable';
+    }
+    return $$observable;
+}
+exports.getSymbolObservable = getSymbolObservable;
+exports.observable = getSymbolObservable(root_1.root);
+/**
+ * @deprecated use observable instead
+ */
+exports.$$observable = exports.observable;
+//# sourceMappingURL=observable.js.map
+
+/***/ }),
+/* 48 */
+/*!****************************************!*\
+  !*** ./node_modules/rxjs/util/pipe.js ***!
+  \****************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var noop_1 = __webpack_require__(/*! ./noop */ 49);
+/* tslint:enable:max-line-length */
+function pipe() {
+    var fns = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        fns[_i] = arguments[_i];
+    }
+    return pipeFromArray(fns);
+}
+exports.pipe = pipe;
+/* @internal */
+function pipeFromArray(fns) {
+    if (!fns) {
+        return noop_1.noop;
+    }
+    if (fns.length === 1) {
+        return fns[0];
+    }
+    return function piped(input) {
+        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
+    };
+}
+exports.pipeFromArray = pipeFromArray;
+//# sourceMappingURL=pipe.js.map
+
+/***/ }),
+/* 49 */
+/*!****************************************!*\
+  !*** ./node_modules/rxjs/util/noop.js ***!
+  \****************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/* tslint:disable:no-empty */
+function noop() { }
+exports.noop = noop;
+//# sourceMappingURL=noop.js.map
+
+/***/ }),
+/* 50 */
+/*!***********************************************************!*\
+  !*** ./node_modules/rxjs/util/ObjectUnsubscribedError.js ***!
+  \***********************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * An error thrown when an action is invalid because the object has been
+ * unsubscribed.
+ *
+ * @see {@link Subject}
+ * @see {@link BehaviorSubject}
+ *
+ * @class ObjectUnsubscribedError
+ */
+var ObjectUnsubscribedError = /** @class */ (function (_super) {
+    __extends(ObjectUnsubscribedError, _super);
+    function ObjectUnsubscribedError() {
+        var _this = this;
+        var err = _this = _super.call(this, 'object unsubscribed') || this;
+        _this.name = err.name = 'ObjectUnsubscribedError';
+        _this.stack = err.stack;
+        _this.message = err.message;
+        return _this;
+    }
+    return ObjectUnsubscribedError;
+}(Error));
+exports.ObjectUnsubscribedError = ObjectUnsubscribedError;
+//# sourceMappingURL=ObjectUnsubscribedError.js.map
+
+/***/ }),
+/* 51 */
+/*!**************************************************!*\
+  !*** ./node_modules/rxjs/SubjectSubscription.js ***!
+  \**************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Subscription_1 = __webpack_require__(/*! ./Subscription */ 14);
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var SubjectSubscription = /** @class */ (function (_super) {
+    __extends(SubjectSubscription, _super);
+    function SubjectSubscription(subject, subscriber) {
+        var _this = _super.call(this) || this;
+        _this.subject = subject;
+        _this.subscriber = subscriber;
+        _this.closed = false;
+        return _this;
+    }
+    SubjectSubscription.prototype.unsubscribe = function () {
+        if (this.closed) {
+            return;
+        }
+        this.closed = true;
+        var subject = this.subject;
+        var observers = subject.observers;
+        this.subject = null;
+        if (!observers || observers.length === 0 || subject.isStopped || subject.closed) {
+            return;
+        }
+        var subscriberIndex = observers.indexOf(this.subscriber);
+        if (subscriberIndex !== -1) {
+            observers.splice(subscriberIndex, 1);
+        }
+    };
+    return SubjectSubscription;
+}(Subscription_1.Subscription));
+exports.SubjectSubscription = SubjectSubscription;
+//# sourceMappingURL=SubjectSubscription.js.map
+
+/***/ }),
+/* 52 */
+/*!**********************************************!*\
+  !*** ./node_modules/rxjs/operator/filter.js ***!
+  \**********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var filter_1 = __webpack_require__(/*! ../operators/filter */ 53);
+/* tslint:enable:max-line-length */
+/**
+ * Filter items emitted by the source Observable by only emitting those that
+ * satisfy a specified predicate.
+ *
+ * <span class="informal">Like
+ * [Array.prototype.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
+ * it only emits a value from the source if it passes a criterion function.</span>
+ *
+ * <img src="./img/filter.png" width="100%">
+ *
+ * Similar to the well-known `Array.prototype.filter` method, this operator
+ * takes values from the source Observable, passes them through a `predicate`
+ * function and only emits those values that yielded `true`.
+ *
+ * @example <caption>Emit only click events whose target was a DIV element</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var clicksOnDivs = clicks.filter(ev => ev.target.tagName === 'DIV');
+ * clicksOnDivs.subscribe(x => console.log(x));
+ *
+ * @see {@link distinct}
+ * @see {@link distinctUntilChanged}
+ * @see {@link distinctUntilKeyChanged}
+ * @see {@link ignoreElements}
+ * @see {@link partition}
+ * @see {@link skip}
+ *
+ * @param {function(value: T, index: number): boolean} predicate A function that
+ * evaluates each value emitted by the source Observable. If it returns `true`,
+ * the value is emitted, if `false` the value is not passed to the output
+ * Observable. The `index` parameter is the number `i` for the i-th source
+ * emission that has happened since the subscription, starting from the number
+ * `0`.
+ * @param {any} [thisArg] An optional argument to determine the value of `this`
+ * in the `predicate` function.
+ * @return {Observable} An Observable of values from the source that were
+ * allowed by the `predicate` function.
+ * @method filter
+ * @owner Observable
+ */
+function filter(predicate, thisArg) {
+    return filter_1.filter(predicate, thisArg)(this);
+}
+exports.filter = filter;
+//# sourceMappingURL=filter.js.map
+
+/***/ }),
+/* 53 */
+/*!***********************************************!*\
+  !*** ./node_modules/rxjs/operators/filter.js ***!
+  \***********************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Subscriber_1 = __webpack_require__(/*! ../Subscriber */ 13);
+/* tslint:enable:max-line-length */
+/**
+ * Filter items emitted by the source Observable by only emitting those that
+ * satisfy a specified predicate.
+ *
+ * <span class="informal">Like
+ * [Array.prototype.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
+ * it only emits a value from the source if it passes a criterion function.</span>
+ *
+ * <img src="./img/filter.png" width="100%">
+ *
+ * Similar to the well-known `Array.prototype.filter` method, this operator
+ * takes values from the source Observable, passes them through a `predicate`
+ * function and only emits those values that yielded `true`.
+ *
+ * @example <caption>Emit only click events whose target was a DIV element</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var clicksOnDivs = clicks.filter(ev => ev.target.tagName === 'DIV');
+ * clicksOnDivs.subscribe(x => console.log(x));
+ *
+ * @see {@link distinct}
+ * @see {@link distinctUntilChanged}
+ * @see {@link distinctUntilKeyChanged}
+ * @see {@link ignoreElements}
+ * @see {@link partition}
+ * @see {@link skip}
+ *
+ * @param {function(value: T, index: number): boolean} predicate A function that
+ * evaluates each value emitted by the source Observable. If it returns `true`,
+ * the value is emitted, if `false` the value is not passed to the output
+ * Observable. The `index` parameter is the number `i` for the i-th source
+ * emission that has happened since the subscription, starting from the number
+ * `0`.
+ * @param {any} [thisArg] An optional argument to determine the value of `this`
+ * in the `predicate` function.
+ * @return {Observable} An Observable of values from the source that were
+ * allowed by the `predicate` function.
+ * @method filter
+ * @owner Observable
+ */
+function filter(predicate, thisArg) {
+    return function filterOperatorFunction(source) {
+        return source.lift(new FilterOperator(predicate, thisArg));
+    };
+}
+exports.filter = filter;
+var FilterOperator = /** @class */ (function () {
+    function FilterOperator(predicate, thisArg) {
+        this.predicate = predicate;
+        this.thisArg = thisArg;
+    }
+    FilterOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new FilterSubscriber(subscriber, this.predicate, this.thisArg));
+    };
+    return FilterOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var FilterSubscriber = /** @class */ (function (_super) {
+    __extends(FilterSubscriber, _super);
+    function FilterSubscriber(destination, predicate, thisArg) {
+        var _this = _super.call(this, destination) || this;
+        _this.predicate = predicate;
+        _this.thisArg = thisArg;
+        _this.count = 0;
+        return _this;
+    }
+    // the try catch block below is left specifically for
+    // optimization and perf reasons. a tryCatcher is not necessary here.
+    FilterSubscriber.prototype._next = function (value) {
+        var result;
+        try {
+            result = this.predicate.call(this.thisArg, value, this.count++);
+        }
+        catch (err) {
+            this.destination.error(err);
+            return;
+        }
+        if (result) {
+            this.destination.next(value);
+        }
+    };
+    return FilterSubscriber;
+}(Subscriber_1.Subscriber));
+//# sourceMappingURL=filter.js.map
+
+/***/ }),
+/* 54 */
 /*!**********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-35d38583","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart.vue ***!
+  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-3eb3c7d2","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart.vue ***!
   \**********************************************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /*! exports used: default */
@@ -14451,7 +16127,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
 /***/ }),
-/* 33 */
+/* 55 */
 /*!****************************************!*\
   !*** ./src/components/chart-table.vue ***!
   \****************************************/
@@ -14460,10 +16136,10 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-table.vue */ 36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1069989f_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-1069989f","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart-table.vue */ 37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-table.vue */ 58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_815fafe8_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-815fafe8","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart-table.vue */ 60);
 function injectStyle (ssrContext) {
-  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-1069989f","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart-table.vue */ 34)
+  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-815fafe8","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart-table.vue */ 56)
 }
 var normalizeComponent = __webpack_require__(/*! ../../node_modules/vue-loader/lib/component-normalizer */ 8)
 /* script */
@@ -14475,12 +16151,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-1069989f"
+var __vue_scopeId__ = "data-v-815fafe8"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1069989f_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_815fafe8_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -14491,9 +16167,9 @@ var Component = normalizeComponent(
 
 
 /***/ }),
-/* 34 */
+/* 56 */
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-1069989f","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
+  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-815fafe8","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
   \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -14502,16 +16178,16 @@ var Component = normalizeComponent(
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-1069989f","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart-table.vue */ 35);
+var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-815fafe8","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart-table.vue */ 57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("f7edee0a", content, true);
+var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("e271fd32", content, true);
 
 /***/ }),
-/* 35 */
+/* 57 */
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-1069989f","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
+  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-815fafe8","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
   \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -14528,7 +16204,7 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 
 
 /***/ }),
-/* 36 */
+/* 58 */
 /*!*******************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/chart-table.vue ***!
   \*******************************************************************************************************************************/
@@ -14539,10 +16215,14 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__ = __webpack_require__(/*! vue-property-decorator */ 9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_main__ = __webpack_require__(/*! ./../api/main */ 3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__event_bus__ = __webpack_require__(/*! ./../event-bus */ 1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_uniqid__ = __webpack_require__(/*! uniqid */ 17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_uniqid__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_loglevel__ = __webpack_require__(/*! loglevel */ 0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_loglevel__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__ = __webpack_require__(/*! ./../components/chart.vue */ 10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store_main__ = __webpack_require__(/*! ./../store/main */ 2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter__ = __webpack_require__(/*! rxjs/add/operator/filter */ 16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_filter__);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14563,15 +16243,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var log = __WEBPACK_IMPORTED_MODULE_1_loglevel___default.a.getLogger('dv-chart-table');
+
+
+var log = __WEBPACK_IMPORTED_MODULE_2_loglevel___default.a.getLogger('dv-chart-table');
 var HIGHCHARTS_DATA_TABLE_CLASS = '.highcharts-data-table';
 var ChartTable = (function (_super) {
     __extends(ChartTable, _super);
     function ChartTable() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.isTableRendered = false;
+        _this.id = __WEBPACK_IMPORTED_MODULE_1_uniqid___default.a.time();
         return _this;
     }
+    Object.defineProperty(ChartTable.prototype, "chartId", {
+        get: function () {
+            return this.rootChartId || this.$attrs['dv-chart-id'];
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(ChartTable.prototype, "autoRender", {
         get: function () {
             return typeof this.$attrs['dv-auto-render'] !== 'undefined';
@@ -14586,40 +16275,57 @@ var ChartTable = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    ChartTable.prototype.created = function () {
+        if (!this.chartId) {
+            log.error("[chart-table='" + this.id + "' section='" + this
+                .rootSectionId + "'] table cannot be linked because it is missing a parent chart id");
+        }
+        if (!__WEBPACK_IMPORTED_MODULE_4__store_main__["a" /* charts */][this.chartId]) {
+            log.error("[chart-table='" + this.id + "' chart='" + this.chartId + "' section='" + this
+                .rootSectionId + "'] referenced chart does not exist");
+            return;
+        }
+        this.dvchart = __WEBPACK_IMPORTED_MODULE_4__store_main__["a" /* charts */][this.chartId];
+    };
     ChartTable.prototype.mounted = function () {
         var _this = this;
-        if (!__WEBPACK_IMPORTED_MODULE_2__api_main__["a" /* default */].Highcharts.Chart.prototype.viewData) {
-            log.error("[chart-table='" + this
-                .rootChartId + "'] export-data module required for chart data table");
-            return;
-        }
-        this.dvchart = this.charts[this.rootChartId];
-        this.highchartsDataTable = this.$el.querySelector(HIGHCHARTS_DATA_TABLE_CLASS);
-        __WEBPACK_IMPORTED_MODULE_3__event_bus__["e" /* EventBus */].$emit(__WEBPACK_IMPORTED_MODULE_3__event_bus__["d" /* CHART_TABLE_PREPARED */], {
-            id: this.rootChartId,
-            renderer: function () { return _this.renderTable(); }
-        });
-        __WEBPACK_IMPORTED_MODULE_3__event_bus__["e" /* EventBus */].$on(__WEBPACK_IMPORTED_MODULE_3__event_bus__["c" /* CHART_RENDERED */], function (event) {
-            if (event.id == _this.rootChartId && (_this.isTableRendered || _this.autoRender)) {
-                _this.renderTable(event.highchartObject);
+        if (!this.dvchart) {
+            this.$destroy();
+            while (this.$el.firstChild) {
+                this.$el.removeChild(this.$el.firstChild);
             }
-        });
-    };
-    ChartTable.prototype.renderTable = function (highchartObject) {
-        if (highchartObject === void 0) { highchartObject = this.dvchart.highchart; }
-        if (!highchartObject) {
-            log.warn("[chart-table='" + this
-                .rootChartId + "'] something's wrong - trying to render the table before chart is ready");
+            this.$el.parentNode.removeChild(this.$el);
             return;
         }
-        this.highchartsDataTable.innerHTML = highchartObject.getTable();
-        (_a = this.highchartsDataTable.querySelector('table').classList).add.apply(_a, this.tableClass.split(' '));
-        this.isTableRendered = true;
+        this.highchartsDataTable = this.$el.querySelector(HIGHCHARTS_DATA_TABLE_CLASS);
+        if (this.dvchart.isTableGenerated) {
+            this.generateTable();
+        }
+        if (this.autoRender) {
+            __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__["a" /* default */].rendered
+                .filter(function (event) { return event.chartId === _this.chartId; })
+                .subscribe(function () { return _this.generateTable(); });
+        }
+        __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__["a" /* default */].viewDataClicked
+            .filter(function (event) {
+            return event.chartId === _this.chartId;
+        })
+            .subscribe(function () { return _this.generateTable(); });
+    };
+    ChartTable.prototype.generateTable = function () {
+        if (!this.dvchart.highchart) {
+            log.warn("[chart-table='" + this.id + "' chart='" + this
+                .chartId + "'] something's wrong - trying to render the table before chart is ready");
+            return;
+        }
+        this.highchartsDataTable.innerHTML = this.dvchart
+            .highchart.getTable();
+        if (typeof this.tableClass !== 'undefined') {
+            (_a = this.highchartsDataTable.querySelector('table').classList).add.apply(_a, this.tableClass.split(' '));
+        }
+        log.info("[chart-table='" + this.id + "' chart='" + this.chartId + "'] rendering chart table on", this.highchartsDataTable);
         var _a;
     };
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Inject"])()
-    ], ChartTable.prototype, "charts", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__["Inject"])()
     ], ChartTable.prototype, "rootSectionId", void 0);
@@ -14635,22 +16341,7 @@ var ChartTable = (function (_super) {
 
 
 /***/ }),
-/* 37 */
-/*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-1069989f","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart-table.vue ***!
-  \****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0,false,false)}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"dv-chart-table-container":""}},[_c('div',{staticClass:"highcharts-data-table"})])}]
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-
-/***/ }),
-/* 38 */
+/* 59 */
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
@@ -14683,7 +16374,22 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 39 */
+/* 60 */
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-815fafe8","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart-table.vue ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"dv-chart-table-container":"","id":_vm.id}},[_c('div',{staticClass:"highcharts-data-table"})])}
+var staticRenderFns = []
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+
+/***/ }),
+/* 61 */
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
@@ -14691,10 +16397,10 @@ module.exports = function(module) {
 /*! all exports used */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"dqvue","version":"0.2.0","description":"","main":"./dist/dqvue.js","types":"./index.d.ts","scripts":{"test":"poi test","dev":"poi --port 3001 src/index.ts","build":"poi build src/index.ts && poi build src/index.ts --minimize","vuetype":"vuetype src"},"author":"","license":"MIT","devDependencies":{"@types/deepmerge":"1.3.2","@types/highcharts":"5.0.11","@types/loglevel":"1.5.1","@types/mocha":"2.2.43","@types/node":"8.0.28","@types/uniqid":"4.1.2","deepmerge":"2.0.1","highcharts":"6.0.2","karma-ie-launcher":"1.0.0","loglevel":"1.5.1","node-sass":"4.5.3","poi":"9.5.2","poi-preset-babel-minify":"1.0.3","poi-preset-karma":"9.2.1","poi-preset-typescript":"9.0.2","sass-loader":"6.0.6","typescript":"2.6.1","uniqid":"4.1.1","vue-property-decorator":"6.0.0","vuetype":"0.2.2","yargs":"9.0.1"}}
+module.exports = {"name":"dqvue","version":"0.3.0","description":"","main":"./dist/dqvue.js","types":"./index.d.ts","scripts":{"test":"poi test","dev":"poi --port 3001 src/index.ts","build":"poi build src/index.ts && poi build src/index.ts --minimize","vuetype":"vuetype src"},"author":"","license":"MIT","devDependencies":{"@reactivex/rxjs":"^5.5.3","@types/deepmerge":"1.3.2","@types/highcharts":"5.0.11","@types/loglevel":"1.5.1","@types/mocha":"2.2.43","@types/node":"8.0.28","@types/uniqid":"4.1.2","deepmerge":"2.0.1","highcharts":"6.0.2","karma-ie-launcher":"1.0.0","loglevel":"1.5.1","node-sass":"4.5.3","poi":"9.5.2","poi-preset-babel-minify":"1.0.3","poi-preset-karma":"9.2.1","poi-preset-typescript":"9.0.2","rxjs":"^5.5.3","sass-loader":"6.0.6","typescript":"2.6.1","uniqid":"4.1.1","vue-property-decorator":"6.0.0","vuetype":"0.2.2","yargs":"9.0.1"}}
 
 /***/ }),
-/* 40 */
+/* 62 */
 /*!**************************!*\
   !*** ./src/bootstrap.ts ***!
   \**************************/
@@ -14703,11 +16409,11 @@ module.exports = {"name":"dqvue","version":"0.2.0","description":"","main":"./di
 
 "use strict";
 /* unused harmony export parsePage */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_uniqid__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./classes/section */ 10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./classes/chart */ 12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./store/main */ 14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./classes/section */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./classes/chart */ 25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./store/main */ 2);
 
 
 
