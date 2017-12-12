@@ -12,6 +12,10 @@ docute.init({
             {
                 title: 'Samples',
                 path: '/samples/'
+            },
+            {
+                title: 'API',
+                path: '/api'
             }
         ]
     },
