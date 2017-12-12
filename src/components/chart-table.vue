@@ -109,7 +109,7 @@ export default class ChartTable extends Vue {
         // render table can only be called after the chart has been rendered
         if (!this.dvchart.highchart) {
             log.warn(
-                `[chart-table='${this
+                `[chart-table='${this.id}' chart='${this
                     .chartId}'] something's wrong - trying to render the table before chart is ready`
             );
             return;
@@ -117,11 +117,18 @@ export default class ChartTable extends Vue {
 
         this.highchartsDataTable.innerHTML = (<EnhancedChartObject>this.dvchart
             .highchart).getTable();
+
+        // if custom css classes are specified for the table, apply them onto the node
         if (typeof this.tableClass !== 'undefined') {
             this.highchartsDataTable.querySelector('table')!.classList.add(
                 ...this.tableClass.split(' ')
             );
         }
+
+        log.info(
+            `[chart-table='${this.id}' chart='${this.chartId}'] rendering chart table on`,
+            this.highchartsDataTable
+        );
     }
 }
 </script>
