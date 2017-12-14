@@ -18,7 +18,6 @@ export interface DVSectionOptions {
     id: string;
     template?: string | Promise<string>;
     data?: object | Promise<object>;
-    charts?: DVChart[] | DVChart;
     mount?: HTMLElement;
     automount?: boolean;
 }
@@ -231,11 +230,9 @@ export class DVSection {
         // el = document.createElement('div'); el.insertAdjacentHTML('afterbegin', '<div></div>'); el.querySelectorAll('dv-section')
         this._vm = new Vue({
             template: <string>this.template,
-            computed: { charts: () => this.charts },
             data: <object>this.data || {}, // if no data object is provided, return an empty object
             provide: {
                 rootSectionId: this.id
-                // charts: this.charts
             },
             components: {
                 'dv-section': Section,

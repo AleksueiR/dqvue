@@ -2,9 +2,11 @@
 search: english
 ---
 
-### Initialization / Bootstrapping
+# API
 
-#### Declarative
+## Initialization / Bootstrapping
+
+### Declarative
 
 The template is defined on the HTML page itself and data is passed to it by reference.
 
@@ -12,7 +14,7 @@ Here, the chart data is provided as part of the chart's config object which is r
 global scope:
 
 ```html
-// index.html
+<!-- index.html -->
 <!-- data (section and chart both) and chart config objects available on the global scope directly referenced in the template -->
 <script>
 window.dvData1 = {
@@ -21,18 +23,16 @@ window.dvData1 = {
 };
 
 window.dvChartConfig1 = {
-      xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-        ]
-      },
-      series: [{
-        data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-        type: 'column'
-      }]
-    }
+    xAxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ]
+    },
+    series: [{
+      data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+      type: 'column'
+    }]
 };
 </script>
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <dv-section dv-data="dvData1" id="dv1">
   <h2>{{ title }}</h2>
@@ -65,7 +65,6 @@ window.dvChartConfig2 = {
 };
 window.dvChartData2 = [[29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]];
 </script>
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <dv-section dv-data="dvData2" id="dv2">
   <h2>{{ title }}</h2>
@@ -94,7 +93,6 @@ window.getDVChartConfig4_1 = () => ({
     }
   });
 </script>
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <dv-section>
   <dv-chart dv-config="getDVChartConfig4_1()"></dv-chart>
@@ -111,7 +109,6 @@ window.getDVData4_2 = {
     message: "This is the first DV instance and a simple chart."
 };
 </script>
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <dv-section dv-data="dvData4_2">
   {{ title }}
@@ -129,7 +126,7 @@ DV Sections can be retrieved using their ids specified in the template:
 DQV.sections: { [name: string]: DVSection }
 ```
 
-#### Programmatic
+### Programmatic
 
 The template, data and chart config can be provided using API calls. DQV exposes a single global
 object name `DQV` which which provides constructors for Section and Chart.
@@ -140,7 +137,6 @@ If there are several charts in a DV Template, each DV Chart needs to be created 
 
 ```html
 // index.html
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <div id="dvMountPoint1"></div>
 ```
@@ -181,10 +177,8 @@ const chartConfig = {
 const dvchart1: DVChart = new DQV.Chart({ id: 'dvChart5_1', config: chartConfig.dvChart5_1 });
 const dvchart2: DVChart = new DQV.Chart({ id: 'dvChart5_2', config: chartConfig.dvChart5_2 });
 
-const charts = [dvchart1, dvchart2];
-
 // create a new DV Section and pass the charts into it
-const dvsection: DVSection = new DQV.Section({ id: 'dv5', template, data, charts });
+const dvsection: DVSection = new DQV.Section({ id: 'dv5', template, data });
 
 // mount it to an HTML element
 dvsection.mount(document.getElementById('dvMountPoint1'));
@@ -199,7 +193,6 @@ dvchart.config = chartConfig;
 const dvSection: DVSection = new DQV.Section({ id });
 dvSection.data = data;
 dvSection.template = template;
-dvSection.addChart(dvchart);
 
 dvSection.mount(document.getElementById('dvMountPoint1'));
 ```
@@ -208,7 +201,8 @@ If chart data is not supplied with the chart config, it needs to be set separate
 
 ```js
 // index.js
-const template = `<dv-section id="dv6">
+const template = `
+<dv-section id="dv6">
   <dv-chart id="dvChart6"></dv-chart>
 </dv-section>`;
 
@@ -249,11 +243,9 @@ const dvchart: DVChart = new DQV.Chart({ id: 'dvChart6', config: chartConfig, da
 
 const dv: DVSection = new DQV.Section({ id: 'dv6' });
 dv.template = template;
-dv.addCharts([dvchart]);
 ```
 
-Setting `data()`, `template()` ,or `charts` after the DV Section is mounted, will re-compile and
-re-mount the instance.
+Setting `data` or `template` after the DV Section is mounted, will re-compile and re-mount the instance.
 
 It's possible to change data belonging to the template inline, without setting `data` on the
 section, but that won't work for charts.
@@ -265,17 +257,16 @@ const data = {
     message: 'This is the first DV instance and a simple chart.'
 };
 
-const dv: DVSection = new DQV({ id, data, template, charts });
+const dv: DVSection = new DQV({ id, data, template });
 data.title = 'Hi, there!';
 ```
 
-#### [under consideration] Hybrid
+### [under consideration] Hybrid
 
 Templates are defined on the HTML page, but data and chart configs are supplied using API calls.
 
 ```html
 // index.html
-<script src="https://eccc.cdn.ca/dqv@1.0.0.js"></script>
 
 <dv-section id="dv8" dv-wait>
   <h2>{{ title }}</h2>
@@ -329,16 +320,15 @@ const dvchart: DVChart = new DQV.Chart({ id: 'dvChart8', config: chartConfig, da
 
 const dvsection = DQV.sections['dv8'];
 dv.data = data;
-dv.addChart(dvchart);
 
 dvsection.mount();
 ```
 
-### API and Markup
+## API and Markup
 
-#### Declarative
+### Declarative
 
-##### dv-section
+#### dv-section: node
 
 Marks the root node of a DV Section. Each DV Section must start with `dv-section` even when setting
 templates programmatically. Nesting DV Sections is not allowed.
@@ -350,9 +340,9 @@ templates programmatically. Nesting DV Sections is not allowed.
 </dv-section>
 ```
 
-##### id: string
+##### id: attribute
 
-Used to retrieve a DV Section using an API call.
+Can be used to retrieve a DV Section using an API call.
 
 ```html
 // index.html
@@ -366,7 +356,7 @@ Used to retrieve a DV Section using an API call.
 const dv = DQV.sections['dv1'];
 ```
 
-##### dv-data: string
+##### dv-data: attribute
 
 Points to the data source (object) for the DV instance on the global scope.
 
@@ -377,7 +367,9 @@ Points to the data source (object) for the DV instance on the global scope.
 </dv-section>
 ```
 
-##### [dv-chart] id: string
+#### dv-chart: node
+
+##### id: attribute
 
 Used to set chart's config and data object; the Highcharts reference can be retreived using an API
 call.
@@ -391,16 +383,10 @@ call.
 
 ```js
 // index.js
-const dvsection = DQV.sections['dv2'];
-const chart: DVChart = dvsection.charts['chart2'];
-const highchart = chart.highchart; // returns an instance of Highcharts chart
-
-// or
-
 const chart: DVChart = DQV.charts['chart2'];
 ```
 
-##### [dv-chart] dv-config: string
+##### dv-config: attribute
 
 Points to the data source (object) for the DV Chart on the global scope. It's possible to provide
 chart data in the config object.
@@ -412,7 +398,7 @@ chart data in the config object.
 </dv-section>
 ```
 
-##### [dv-chart] dv-data: string
+##### dv-data: attribute
 
 Points to the data source (object) for the DV Chart on the global scope. A chart config must be
 provided separately when using `dv-data`.
@@ -424,33 +410,78 @@ provided separately when using `dv-data`.
 </dv-section>
 ```
 
-#### Programmatic
+##### dv-auto-generate-table: attribute
 
-##### DQV.Section
+If set, all linked chart table nodes are populated with chart's data as soon as the chart itself renders.
 
-###### constructor({ id: string, template?: string | Promise
+```html
+<dv-chart id="chartId" dv-config="dataObject" dv-auto-generate-table></dv-chart>
+<dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+```
 
-<object>, data?: object | Promise
+#### dv-chart-table: node
 
-<object>, charts?: DVChart |DVChart[], mount?: HTMLElement, automount?: boolean }): DVSection
+A node where chart's data table will be rendered upon user request or on initial loading. Because chart ids are unique, `dv-chart-table` nodes are not restricted to the same `dv-section` as their parent chart, and can be placed in any of the `dv-section` nodes.
+
+```html
+<dv-section id="section1">
+    <dv-chart id="chartId" dv-config="configObject"></dv-chart>
+</dv-section>
+
+<dv-section>
+    <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+</dv-section>
+```
+
+Chart table nodes can be placed inside their parent `dv-chart` nodes. In such cases, no `dv-chart-id` attribute is required:
+
+```html
+<dv-section id="section1">
+    <dv-chart id="chartId" dv-config="configObject">
+        <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+    </dv-chart>
+</dv-section>
+```
+
+##### dv-chart-id: attribute
+
+This links a `dv-chart-table` node to its parent chart. It's possible to link multiple chart tables to a single chart, and all chart table nodes will be populated with the same data.
+
+```html
+<dv-section id="section1">
+    <!-- this will render a table before and after the chart node -->
+    <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+
+    <dv-chart id="chartId" dv-config="configObject"></dv-chart>
+
+    <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+</dv-section>
+```
+
+### Programmatic
+
+#### DQSection
+
+##### constructor( options ): DVSection
 
 Creates a new instance of DV Section; takes a single optional argument in the form of:
 
 ```json
-id: string, // required;
-template?: string | Promise<string>, // valid HTML string
-data?: object | Promise<object>, // free form object to provide data to the template,
-charts?: DVChart[] | DVChart,
-mount?: HTMLElement,
-automount?: boolean // if `true`, the section will attempt to mount using the `mount` provided in the constructor
+options: {
+    id: string, // required;
+    template?: string | Promise<string>, // valid HTML string
+    data?: object | Promise<object>, // free form object to provide data to the template,
+    mount?: HTMLElement,
+    automount?: boolean // if `true`, the section will attempt to mount using the `mount` provided in the constructor
+}
 ```
 
 ```js
 // index.js
-const dv: DVSection = new DQV.Section({ template, data, charts });
+const dv: DVSection = new DQV.Section({ template, data });
 ```
 
-###### template: string
+##### template: string
 
 Sets the section's template, re-compiles, and re-mounts it:
 
@@ -462,9 +493,11 @@ const dv: DVSection = new DQV.Section({ ... });
 dv.template = newTemplate;
 ```
 
-###### setTemplate(value: Promise
+##### setTemplate(value): void
 
-<string>): void
+```js
+value: Promise<object>
+```
 
 In cases when the template value is returned by an external promise, use the `setTemplate` function.
 
@@ -476,7 +509,7 @@ const dv: DVSection = new DQV.Section({ ... });
 dv.setTemplate(new Promise(resolve => resolve('{{ message }}')));
 ```
 
-###### data: object
+##### data: object
 
 Sets the section's data, re-compiles, and re-mounts it:
 
@@ -486,9 +519,11 @@ const dv: DVSection = new DQV.Section({ ... });
 dv.data = newData;
 ```
 
-###### setData(value: Promise
+##### setData(value): void
 
-<object>): void
+```js
+value: Promise<object>
+```
 
 In cases when the data value is returned by an external promise, use the `setData` function.
 
@@ -498,27 +533,11 @@ const dv: DVSection = new DQV.Section({ ... });
 dv.setData(new Promise(resolve => resolve('{ message: "hello" }')));
 ```
 
-###### readonly: charts: { [name: string]: DVChart }
-
-Exposes all charts added to the DVSection:
+##### mount(element): DVSection
 
 ```js
-// index.js
-const dv: DVSection = new DQV.Section({ ... });
-const dvchart = dv.charts['dvchartid'];
+element: : HTMLelement | null
 ```
-
-###### addChart: DVChart | DVChart[]
-
-Adds a single or a collection of charts to the existing section charts.
-
-```js
-// index.js
-const dv: DVSection = new DQV.Section({ ... });
-dv.addChart(dvchart);
-```
-
-###### mount(element: HTMLelement | null): DVSection
 
 Called against a DV Section. Compiles and mounts this section replacing the element provided:
 
@@ -540,7 +559,7 @@ const dv: DVSection = new DQV.Section({ ..., mount: element });
 dv.mount();
 ```
 
-###### dismount(): DVSection
+##### dismount(): DVSection
 
 Removes the DV Section from the page (the mount element is left intact); after dismounting, the
 instance is available to be mounted on the new target.
@@ -553,7 +572,7 @@ dv.mount(element1);
 dv.dismount().mount(element2);
 ```
 
-###### destroy(): DVSection
+##### destroy(): DVSection
 
 Removes the DV Section at its mount element from the page; after destroying, the instance is
 available to be mounted on the new target.
@@ -566,7 +585,7 @@ dv.mount(element1);
 dv.destroy().mount(element2);
 ```
 
-###### remount(): DVSection
+##### remount(): DVSection
 
 A shortcut to dismount and mount the DV Section on the same element.
 
@@ -578,7 +597,7 @@ dv.mount(element);
 dv.remount(element);
 ```
 
-###### duplicate(): DVSection
+##### [under consideration] duplicate(): DVSection
 
 Creates a shallow copy of the current DV Section with a new id.
 
@@ -593,20 +612,17 @@ dv.clone().mount(element2);
 If the original `data` object is modified, the changes will affect all copies of the DV Section.
 Only works if `data` is set using a setter, not through a Promise.
 
-##### DVChart
+#### DVChart
 
-###### constructor({ id: string, config: object | Promise
-
-<object>, data: object | Promise
-
-<object> }): DVChart
+##### constructor(options): DVChart
 
 Creates a new instance of DV Chart; takes a single optional argument in the form of:
 
 ```json
-id: string, // must be provided and match id on one of the <dv-chart> nodes in the template
-config: object | Promise<object>,
-data: object | Promise<object>
+options: {
+    id: string, // must be provided and match id on one of the <dv-chart> nodes in the template
+    config: object | Promise<object>,
+    data: object | Promise<object>
 ```
 
 ```js
@@ -614,7 +630,7 @@ data: object | Promise<object>
 const dv: DVChart = new DQV.Chart({ id, config, data });
 ```
 
-###### config: object
+##### config: object
 
 Sets chart config optionally including chart data.
 
@@ -643,9 +659,11 @@ dv.charts = { [dvchart.id]: dvchart };
 
 Setting the `config` value will update the chart's appearance by calling `.update()` internally.
 
-###### setConfig(value: Promise
+##### setConfig(value): void
 
-<object>): void
+```js
+value: Promise<object>
+```
 
 In cases when the `config` value is returned by an external promise, use the `setConfig` function.
 Chart config object can optionally including chart data.
@@ -675,7 +693,7 @@ dv.charts = { [dvchart.id]: dvchart };
 
 This call will update the chart's appearance by calling `.update()` internally.
 
-###### data: object
+##### data: object
 
 Sets chart data. Chart must have config and data to be mounted properly
 
@@ -699,9 +717,11 @@ dv.charts = { [dvchart.id]: dvchart };
 
 Setting the `data` value will update the chart's appearance by calling `.update()` internally.
 
-###### setData(value: Promise
+##### setData(value): void
 
-<object>): void
+```js
+value: Promise<object>
+```
 
 In cases when the data value is returned by an external promise, use the `setData` function. Chart
 must have config and data to be mounted properly.
@@ -726,7 +746,7 @@ dv.charts = { [dvchart.id]: dvchart };
 
 This call will update the chart's appearance by calling `.update()` internally.
 
-###### duplicate(): DVChart
+##### [under consideration] duplicate(): DVChart
 
 Creates a shallow copy of the current DV Chart with a new id.
 
@@ -738,21 +758,15 @@ dvchart1.data = newData;
 const dvchart2 = dvchart1.clone();
 
 const dv: DVSection = new DQV.Section({ ... });
-dv.charts = { [dvchart1.id]: dvchart1, [dvchart2.id]: dvchart };
 ```
 
-If the original `data` or `config` values are modified, it will affect all duplicates. Only works if
-`data` or `config` values are set using a setter, not through a Promise.
+If the original `data` or `config` values are modified, it will affect all duplicates. Only works if `data` or `config` values are set using a setter, not through a Promise.
 
-Need to call `update` on the DVChart instance or `remount` on its parent DVSection instance to have
-the changes to the `config` or `data` properties reflected on the page. Highcharts does create
-direct binding and cannot detect changes automatically.
+Need to call `update` on the DVChart instance or `remount` on its parent DVSection instance to have the changes to the `config` or `data` properties reflected on the page. Highcharts does create direct binding and cannot detect changes automatically.
 
-###### refresh(): void
+##### refresh(): void
 
-Reloads the Highcharts instance reflowing the chart if its container changed dimensions. Highcharts
-does create direct binding and cannot detect changes to the `config` and `data` properties
-automatically.
+Reloads the Highcharts instance reflowing the chart if its container changed dimensions. Highcharts does create direct binding and cannot detect changes to the `config` and `data` properties automatically.
 
 This is cheaper then calling `remount` on the parent DV Instance.
 
@@ -766,18 +780,17 @@ newConfig.title = 'new title';
 dvchart.refresh();
 ```
 
-###### highchart: Highcharts
+##### highchart: Highcharts
 
 Returns a Highcharts reference.
 
 ```js
 // index.js
-const dvsection = DQV.sections['dv2'];
-const chart: DVChart = dvsection.charts['chart2'];
+const chart: DVChart = DQV.charts['chart2'];
 const highchart = chart.highchart; // returns an instance of Highcharts chart
 ```
 
-### Future Enhancements
+## Future Enhancements
 
 ### Deep linking
 
