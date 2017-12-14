@@ -13559,7 +13559,7 @@ var DVChart = (function () {
 /*! all exports used */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\aleksueir\Klingon\Development\GitHub\dqv-starter\src\index.ts */27);
+module.exports = __webpack_require__(/*! C:\Users\Aleksuei Riabtsev\ownCloud\Development\GitHub\dqv-starter\src\index.ts */27);
 
 
 /***/ }),
