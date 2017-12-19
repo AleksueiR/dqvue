@@ -67,8 +67,7 @@ export class DVChart {
             this.data = data;
         }
 
-        this._renderedSubject.next();
-
+        // TODO: merge observable from the chart view to the rendered observable here
         // every time the chart is re-rendered, store the reference to the highchart object
         Chart.rendered
             .filter(event => event.chartId === this.id)

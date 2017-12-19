@@ -1,20 +1,21 @@
 import Vue from 'vue';
-//import app from '../../src/components/app.vue';
 import assert from 'assert';
 
 import { DVSection } from '../../src/classes/section';
-import { parsePage } from './../../src/bootstrap';
+// import { parsePage } from './../../src/bootstrap';
 import api from './../../src/api/main';
+
+const a = new DVSection({ id: 'dfsd' });
 
 interface EnhancedWindow extends Window {
     DQV: {
-        Section: any,
-        Chart: any,
-        sections: { [name: string]: DVSection }
-    },
+        Section: any;
+        Chart: any;
+        sections: { [name: string]: DVSection };
+    };
 
-    dvdata1: object
-};
+    dvdata1: object;
+}
 
 // the following can be used to prep the page before running tests
 /* beforeEach(function () {
@@ -43,7 +44,6 @@ afterEach(function () {
     document.body.removeChild(node as HTMLElement);
 }); */
 describe('ok', () => {
-
     xit('ok', () => {
         const id = 'dv1';
         const dvtemplate1 = `
@@ -62,7 +62,7 @@ describe('ok', () => {
         (<EnhancedWindow>window).dvdata1 = dvdata1;
 
         // since the page has already loaded, trigger the page parse manually
-        parsePage();
+        //parsePage();
 
         // get the section by id
         const dvsection = api.sections[id];
@@ -70,5 +70,4 @@ describe('ok', () => {
         assert(dvsection.id === id);
         assert(document.getElementById(id)!.innerHTML.trim() === dvdata1.message);
     });
-
 });

@@ -1,6 +1,6 @@
 {
     "name": "dqvue",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "",
     "main": "./dist/dqvue.js",
     "types": "./index.d.ts",
@@ -8,6 +8,7 @@
         "test": "poi test",
         "dev": "poi --port 3001 src/index.ts",
         "build": "poi build src/index.ts && poi build src/index.ts --minimize",
+        "docs": "http-server ./docs -p 3002",
         "vuetype": "vuetype src"
     },
     "author": "",
@@ -22,6 +23,7 @@
         "@types/uniqid": "4.1.2",
         "deepmerge": "2.0.1",
         "highcharts": "6.0.2",
+        "http-server": "^0.10.0",
         "karma-ie-launcher": "1.0.0",
         "loglevel": "1.5.1",
         "node-sass": "4.5.3",

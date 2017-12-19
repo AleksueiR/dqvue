@@ -29,20 +29,17 @@ function parsePage(): void {
 
         // find all the `dv-chart` nodes declared inside a section and boot them first
         const chartNodes: NodeListOf<Element> = sectionNode.querySelectorAll(DV_CHART_ELEMENT);
-        let charts: DVChart[] | undefined;
-        if (chartNodes.length > 0) {
-            charts = [];
 
+        if (chartNodes.length > 0) {
             for (let i = 0; i < chartNodes.length; i++) {
                 let chartNode: HTMLElement = chartNodes[i] as HTMLElement;
 
                 const dvchart = bootChartDeclaration(chartNode);
-                charts.push(dvchart);
             }
         }
 
-        // boot the section itself using already booted charts
-        bootSectionDeclaration(sectionNode, charts);
+        // boot the section itself; all referenced charts should be booted already
+        bootSectionDeclaration(sectionNode);
     }
 }
 
@@ -50,7 +47,7 @@ function parsePage(): void {
  * Creates and returns a DV Section from the DOM node provided and a collection of DV Chart objects.
  * If the DV Section on the supplied node is already initialized (it's present on `DQV.sections`), no new sections will be created, and the existing object will be returned instead.
  */
-function bootSectionDeclaration(sectionNode: HTMLElement, charts?: DVChart[]): DVSection {
+function bootSectionDeclaration(sectionNode: HTMLElement): DVSection {
     // scrape all attributes from the node
     const attributes: NamedNodeMap = sectionNode.attributes;
 
@@ -67,8 +64,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement, charts?: DVChart[]): D
 
     const sectionOptions: DVSectionOptions = {
         id: idValue,
-        mount: sectionNode,
-        charts
+        mount: sectionNode
     };
 
     // get data from the global scope

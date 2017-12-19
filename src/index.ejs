@@ -16,16 +16,11 @@
             <!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
 
             <script>
-                dv1data = {
+                sample1data = {
                     message: 'Declarative section with sync data from global scope'
                 };
 
-                dvchart1config = {
-                    /* exporting: {
-                        menuItemDefinitions: {
-                            viewData: null
-                        }
-                    }, */
+                sample1chartConfig = {
                     title: {
                         text: 'Solar Employment Growth by Sector, 2010-2016'
                     },
@@ -87,7 +82,7 @@
 
                 };
 
-                dvchart1data = [
+                sample1chartData = [
                     [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175],
                     [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434],
                     [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387],
@@ -95,17 +90,24 @@
                     [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111],
                 ];
 
-                dv2data = new Promise(function (resolve) {
+                sample2data = new Promise(function (resolve) {
                     const data = { message: 'Declarative section with async data using Promise from global scope', seconds: 6 }
                     window.setInterval(function () { data.seconds--; }, 1000);
                     resolve(data);
                 });
 
-                dvchart2config = new Promise(function (resolve) {
+                sample2chartConfig = new Promise(function (resolve) {
                     setTimeout(function () {
                         resolve({
                             chart: {
                                 type: 'bar'
+                            },
+                            // if the export-data module is loaded, but a specific chart should not have a "View Data" menu option,
+                            // it needs to be disabled manually
+                            exporting: {
+                                menuItemDefinitions: {
+                                    viewData: null
+                                }
                             },
                             title: {
                                 text: 'Fruit Consumption'
@@ -117,6 +119,9 @@
                                 title: {
                                     text: 'Fruit eaten'
                                 }
+                            },
+                            credits: {
+                                enabled: false
                             },
                             series: [{
                                 name: 'Jane',
@@ -132,7 +137,7 @@
 
                 // testing programmatic bootstrap
                 window.addEventListener('load', function () {
-                    const testTemplate =
+                    const sample3template =
                         '    <dv-section id="dv3">' +
                         '        <h3>{{ message }}</h3>' +
 
@@ -145,12 +150,12 @@
                         '    </dv-section>'
                         ;
 
-                    const data = {
+                    const sample3data = {
                         message: 'Programmatic section with sync data',
                         count: 0
                     };
 
-                    const chartConfig = {
+                    const sample3chartConifg = {
                         chart: {
                             type: 'area'
                         },
@@ -181,6 +186,9 @@
                         },
                         tooltip: {
                             pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+                        },
+                        credits: {
+                            enabled: false
                         },
                         plotOptions: {
                             area: {
@@ -218,13 +226,124 @@
                         }]
                     };
 
-                    window.setInterval(function () { data.count++; }, 6000);
+                    window.setInterval(function () { sample3data.count++; }, 6000);
 
-                    const dvc = new DQV.Chart({ id: 'nuclear', config: chartConfig });
-                    const dvs = new DQV.Section({ data: data, id: 'dv33', template: testTemplate/* , charts: [dvc] */ });
-                    dvs.mount(document.getElementById('target1'));
+                    const dvc = new DQV.Chart({ id: 'nuclear', config: sample3chartConifg });
+                    const dvs = new DQV.Section({ data: sample3data, id: 'dv33', template: sample3template/* , charts: [dvc] */ });
+                    dvs.mount(document.getElementById('sample3target'));
 
-                })
+                });
+
+                sample4data = {
+                    message: 'Tables, tables everywhere...'
+                };
+
+                sample4chartConfig = {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Browser market shares January, 2015 to May, 2015'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: 'Brands',
+                        colorByPoint: true,
+                        data: [{
+                            name: 'IE',
+                            y: 56.33
+                        }, {
+                            name: 'Chrome',
+                            y: 24.03,
+                            sliced: true,
+                            selected: true
+                        }, {
+                            name: 'Firefox',
+                            y: 10.38
+                        }, {
+                            name: 'Safari',
+                            y: 4.77
+                        }, {
+                            name: 'Opera',
+                            y: 0.91
+                        }, {
+                            name: 'Other',
+                            y: 0.2
+                        }]
+                    }]
+                };
+
+                sample5chartConfig = {
+                    chart: {
+                        type: 'variablepie'
+                    },
+                    title: {
+                        text: 'Countries compared by population density and total area.'
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
+                            'Area (square km): <b>{point.y}</b><br/>' +
+                            'Population density (people per square km): <b>{point.z}</b><br/>'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        minPointSize: 10,
+                        innerSize: '20%',
+                        zMin: 0,
+                        name: 'countries',
+                        data: [{
+                            name: 'Spain',
+                            y: 505370,
+                            z: 92.9
+                        }, {
+                            name: 'France',
+                            y: 551500,
+                            z: 118.7
+                        }, {
+                            name: 'Poland',
+                            y: 312685,
+                            z: 124.6
+                        }, {
+                            name: 'Czech Republic',
+                            y: 78867,
+                            z: 137.5
+                        }, {
+                            name: 'Italy',
+                            y: 301340,
+                            z: 201.8
+                        }, {
+                            name: 'Switzerland',
+                            y: 41277,
+                            z: 214.5
+                        }, {
+                            name: 'Germany',
+                            y: 357022,
+                            z: 235.6
+                        }]
+                    }]
+                };
+
             </script>
 
             <style>
@@ -341,12 +460,10 @@
 
 <body>
     <section class="main-section">
-        <dv-section id="app1" dv-data="dv1data">
+        <dv-section id="sample1" dv-data="sample1data">
             <h3>{{ message }}</h3>
 
-            <dv-chart-table dv-chart-id="notchart"></dv-chart-table>
-
-            <dv-chart id="app1chart1" class="chart1" dv-data='dvchart1data' dv-config="dvchart1config">
+            <dv-chart id="sample1chart1" class="chart1" dv-data='sample1chartData' dv-config="sample1chartConfig">
                 <details>
                     <summary>View chart data</summary>
                     <div class="summary">
@@ -357,22 +474,43 @@
             </dv-chart>
         </dv-section>
 
-        <dv-section dv-data="dv2data">
+        <dv-section dv-data="sample2data">
             <h3>{{ message }} </h3>
             <div v-if="seconds > 0" class="delay-message">Chart will load in {{ seconds }} second{{ seconds > 1 ? 's' : '' }}</div>
 
-            <dv-chart dv-config="dvchart2config" class="chart2"></dv-chart>
+            <dv-chart dv-config="sample2chartConfig" class="chart2"></dv-chart>
 
         </dv-section>
 
-        <div id="target1"></div>
+        <div id="sample3target"></div>
 
-        <div>dfdsfdsfs</div>
+        <dv-section id="sample4" dv-data="sample4data">
+            <h3>{{ message }}</h3>
+
+            <p>A chart table can be placed outside its parent `dv-chart` node and even place in separate `dv-section`s; multiple
+                tables can be rendered for the same chart.</p>
+            <dv-chart-table dv-chart-id="sample4chart1"></dv-chart-table>
+
+            <dv-chart id="sample4chart1" dv-config="sample4chartConfig"></dv-chart>
+
+            <dv-chart-table dv-chart-id="sample4chart1"></dv-chart-table>
+        </dv-section>
+
+        <dv-section>
+            <h3>Auto generated table</h3>
+
+            <dv-chart-table dv-chart-id="sample4chart1"></dv-chart-table>
+
+            <dv-chart id="sample5chart1" dv-config="sample5chartConfig" dv-auto-generate-table></dv-chart>
+            <dv-chart-table dv-chart-id="sample5chart1"></dv-chart-table>
+        </dv-section>
     </section>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.src.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.src.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.src.js"></script>
+
+    <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
 
 </body>
 
