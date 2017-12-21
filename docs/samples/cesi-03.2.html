@@ -279,25 +279,6 @@
                         menuItemDefinitions: {
                             viewData: null
                         }
-                    },
-                    chart: {
-                        events: {
-                            load: function () {
-                                var oldFormatter = this.options.exporting.csv.columnHeaderFormatter;
-
-                                this.options.exporting.csv.columnHeaderFormatter = function (item, key, keyLength) {
-                                    var isSingleLine = key == 'y' && keyLength == 1;
-
-                                    var oldFormat = oldFormatter(
-                                        item,
-                                        key,
-                                        isSingleLine ? 2 : keyLength
-                                    );
-
-                                    return isSingleLine ? key : oldFormat;
-                                }
-                            }
-                        }
                     }
                 };
             </script>
