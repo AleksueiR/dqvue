@@ -2,19 +2,18 @@
     <div dv-chart-slider-container>
         <input type="text" v-model.number="minValue" pattern="[0-9]"
             @change="updateSlider"
-            class="dv-slider-input dv-slider-min" v-autowidth="{ maxWidth: '90px', minWidth: '30px', comfortZone: 6 }">
+            class="dv-slider-input dv-slider-min">
 
         <div class="noUi-target"></div>
 
         <input type="text" v-model.number="maxValue" pattern="[0-9]"
             @change="updateSlider"
-            class="dv-slider-input dv-slider-max" v-autowidth="{ maxWidth: '90px', minWidth: '30px', comfortZone: 6 }">
+            class="dv-slider-input dv-slider-max">
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Inject } from 'vue-property-decorator';
-import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 import { DVHighcharts } from './../api/main';
 
@@ -29,12 +28,13 @@ import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/sampleTime';
 
 import { DVChart } from './../classes/chart';
 
+import { keyCodes } from './../utils';
+
 const CHART_SLIDER_CLASS = '.noUi-target';
-// - const CHART_SLIDER_MIN = '.dv-slider-min';
-// - const CHART_SLIDER_MAX = '.dv-slider-max';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-slider');
 
@@ -52,10 +52,13 @@ export default class ChartSlider extends Vue {
 
     dvchart: DVChart;
 
+    // axis linked to the slider
     get axisObject(): DVHighcharts.AxisObject {
+        // TODO: decide what to do and handle cases with multiple X/Y axes
         return this.dvchart.highchart![this.axis][0] as DVHighcharts.AxisObject;
     }
 
+    // extremes of the axis linked to the slider
     get extremes(): Highcharts.Extremes {
         const extremes: Highcharts.Extremes = this.axisObject.getExtremes();
 
@@ -74,6 +77,9 @@ export default class ChartSlider extends Vue {
         this.dvchart = charts[this.chartId] as DVChart;
     }
 
+    /**
+     * Set up listeners on `rendered` and `setExtremes` event streams.
+     */
     mounted(): void {
         if (!this.dvchart) {
             log.info(`[chart-slider chart='${this.chartId}'] referenced chart does not exist`);
@@ -102,6 +108,7 @@ export default class ChartSlider extends Vue {
             connect: true,
             // tooltips: [wNumb({ decimals: 2 }), wNumb({ decimals: 2 })],
             behaviour: 'tap-drag',
+            animate: false,
             // step: 1,
             // margin: 20,
             margin: this.axisObject.minRange, // respect min range of the axis
@@ -131,16 +138,26 @@ export default class ChartSlider extends Vue {
             return;
         }
 
+        // get `chart` section from the config chart
+        const chartChartConfig: DVHighcharts.ChartOptions | undefined = this.dvchart!.config!.chart;
+
+        // get zoomType from the chart config
+        // if zoomType doesn't match this slider axis, self-destruct
+        const zoomType = chartChartConfig!.zoomType || '';
+        if (zoomType.indexOf(this.axis.charAt(0)) === -1) {
+            log.info(`${this.logMarker} ${this.axis} zoom is not enabled for this chart`);
+            this.selfDestruct();
+            return;
+        }
+
         // get the user-defined zoom slider config
         // if null, the slider will not be rendered
         // if undefined, the default slider config is used
-        const chartChartConfig = this.dvchart!.config!.chart;
-        const userSliderConfig: noUiSlider.Options | null | undefined | {} = this.dvchart!.config!
-            .chart
+        const userSliderConfig: noUiSlider.Options | null | undefined | {} = chartChartConfig
             ? (<any>chartChartConfig).zoomSlider
             : {};
 
-        // kill the slider node
+        // kill the slider node if the slider option is explicitly set to null
         if (userSliderConfig === null) {
             log.info(`${this.logMarker} ${this.axis} zoom slider is disabled in the chart config`);
             this.selfDestruct();
@@ -152,6 +169,8 @@ export default class ChartSlider extends Vue {
             deepmerge(this.defaultSliderConfig, userSliderConfig || {})
         );
 
+        this.enableKeyboardSupport();
+
         log.info(`${this.logMarker} ${this.axis} slider has initialized`);
 
         // listen to 'update' events on the slider ober
@@ -160,6 +179,112 @@ export default class ChartSlider extends Vue {
             'update',
             (values: string[], handle: number) => ({ values, handle })
         ).subscribe(this.sliderUpdateHandler);
+    }
+
+    //
+    enableKeyboardSupport(): void {
+        const step: number = this.sliderNode.noUiSlider.options.step || 0.01;
+        const configMargin: number = this.sliderNode.noUiSlider.options.margin!;
+        const handles: NodeListOf<Element> = this.sliderNode.querySelectorAll('.noUi-handle');
+
+        const eventList: number[] = [
+            keyCodes.RIGHT_ARROW,
+            keyCodes.DOWN_ARROW,
+            keyCodes.LEFT_ARROW,
+            keyCodes.UP_ARROW,
+            keyCodes.HOME,
+            keyCodes.END
+        ];
+
+        // create observable from event stream and filter out events which are not used
+        const keydownEvents: Observable<KeyboardEvent> = Observable.fromEvent(
+            handles,
+            'keydown'
+        ).filter((event: KeyboardEvent) => {
+            return eventList.indexOf(event.keyCode) !== -1;
+        }) as Observable<KeyboardEvent>;
+
+        // stop defaults and propagations all selected keyboard events
+        keydownEvents.subscribe((event: KeyboardEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        // to avoid firing to many slider/chart updates to quickly, process only one event every 30 ms
+        keydownEvents.sampleTime(30).subscribe((event: KeyboardEvent) => {
+            // holding shift key modifies the size of the step
+            const modifier: number = event.shiftKey ? 10 : 1;
+
+            // assume we always have only two handles on the slider
+            // get returns strings, not numbers as per definitions
+            const values: number[] = (this.sliderNode.noUiSlider.get() as any[]).map(value =>
+                parseFloat(value)
+            );
+            const currentMargin: number = values[1] - values[0];
+            const handleId: number = parseInt((<HTMLElement>event.target).getAttribute(
+                'data-handle'
+            ) as string);
+
+            // holding ctrl key moves both handles at the same time, shifting the selected range
+            if (event.keyCode === keyCodes.UP_ARROW || event.keyCode === keyCodes.RIGHT_ARROW) {
+                // up/right arrow moves the handles to the right
+                values[handleId] += step * modifier;
+
+                if (event.ctrlKey) {
+                    values[1 - handleId] += step * modifier;
+                }
+            } else if (
+                event.keyCode === keyCodes.DOWN_ARROW ||
+                event.keyCode === keyCodes.LEFT_ARROW
+            ) {
+                // down/left arrow moves the handles to the right
+                values[handleId] -= step * modifier;
+
+                if (event.ctrlKey) {
+                    values[1 - handleId] -= step * modifier;
+                }
+            }
+
+            if (event.keyCode === keyCodes.END) {
+                // end key moves the handle all the way to the right
+                values[handleId] = this.extremes.dataMax;
+
+                if (event.ctrlKey) {
+                    [values[0], values[1]] = [
+                        this.extremes.dataMax - currentMargin,
+                        this.extremes.dataMax
+                    ];
+                }
+            } else if (event.keyCode === keyCodes.HOME) {
+                // home key moves the handle all the way to the left
+                values[handleId] = this.extremes.dataMin;
+
+                if (event.ctrlKey) {
+                    [values[0], values[1]] = [
+                        this.extremes.dataMin,
+                        this.extremes.dataMin + currentMargin
+                    ];
+                }
+            }
+
+            // handle values cannot exceed extremes
+            [values[0], values[1]] = [
+                Math.max(this.extremes.dataMin, values[0]),
+                Math.min(this.extremes.dataMax, values[1])
+            ];
+
+            // two handles cannot be closer than the `configMargin`
+            // if the ctrl key is pressed, closer than the `currentMargin`
+            const margin: number = event.ctrlKey ? currentMargin : configMargin;
+            if (values[1] - values[0] < margin) {
+                values[handleId] = handleId === 0 ? values[1] - margin : values[0] + margin;
+            }
+
+            [this.minValue, this.maxValue] = values;
+
+            this.updateExtremes();
+            this.updateSlider();
+        });
     }
 
     // handles the SetExtremesEvent streamed by the parent Chart object
@@ -205,7 +330,7 @@ export default class ChartSlider extends Vue {
         } else {
             // show zoom reset button, if not already visible
             if (!resetZoomButton) {
-                (<any>this.dvchart.highchart!).showResetZoom();
+                this.dvchart.highchart!.showResetZoom();
             }
         }
 
@@ -243,6 +368,10 @@ export default class ChartSlider extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.dv-slider-input {
+    width: 50px;
+}
+
 div[dv-chart-slider-container] /deep/ {
     // margin: 10px 20px;
 

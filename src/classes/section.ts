@@ -73,6 +73,7 @@ export class DVSection {
         }
     }
 
+    // ---
     /**
      * Deprecated - charts no longer need to be added directly to the sections
      *
@@ -80,6 +81,7 @@ export class DVSection {
      * --- Existing charts with the same ids will be overwritten.
      */
     addChart(): void {}
+    // ---
 
     get charts(): { [name: string]: DVChart } {
         // TODO: find all the DVCharts mentioned in the current section and return them.

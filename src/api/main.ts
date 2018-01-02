@@ -34,8 +34,15 @@ function importHighcharts(): void {
 export namespace DVHighcharts {
     export interface ChartObject extends Highcharts.ChartObject {
         // https://api.highcharts.com/highcharts/chart.resetZoomButton
-        resetZoomButton?: Highcharts.ElementObject;
-        showResetZoom?: () => void;
+        resetZoomButton: Highcharts.ElementObject | undefined;
+        showResetZoom: () => void;
+
+        // `getTable` is not included in default Highcharts types
+        getTable?: () => string;
+    }
+
+    export interface ChartOptions extends Highcharts.ChartOptions {
+        zoomSlider?: noUiSlider.Options;
     }
 
     export interface AxisObject extends Highcharts.AxisObject {

@@ -1,7 +1,8 @@
 import { Vue } from 'vue-property-decorator';
 import { DVChart } from './../classes/chart';
 import { Observable } from 'rxjs/Observable';
-export type RenderedEvent = { chartId: string; highchartObject: Highcharts.ChartObject };
+import { DVHighcharts } from './../api/main';
+export type RenderedEvent = { chartId: string; highchartObject: DVHighcharts.ChartObject };
 export type ViewDataEvent = { chartId: string };
 export default class Chart extends Vue {
     static rendered: Observable<RenderedEvent>;

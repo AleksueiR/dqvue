@@ -98,6 +98,7 @@ export default class Chart extends Vue {
     }
 
     simulateViewDataClick(tableId?: string): void {
+        // check if data-export modules has been loaded
         if (!api.Highcharts.Chart.prototype.viewData) {
             log.error(`[chart='${this.id}'] export-data module required for chart data table`);
             return;
@@ -179,7 +180,10 @@ export default class Chart extends Vue {
             .config as Highcharts.Options);
         this.isLoading = false;
 
-        Chart._rendered.next({ chartId: this.id, highchartObject: this.highchartObject });
+        Chart._rendered.next({
+            chartId: this.id,
+            highchartObject: this.highchartObject as DVHighcharts.ChartObject
+        });
 
         if (this.autoGenerateTable) {
             this.simulateViewDataClick();
