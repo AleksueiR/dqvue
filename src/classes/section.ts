@@ -298,6 +298,7 @@ export class DVSection {
         return this;
     }
 
+    // TODO: when remounting, do not re-initialize chart and slider components
     remount(): DVSection {
         log.info(`[section='${this.id}'] attempting to re-mount`);
 

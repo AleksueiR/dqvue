@@ -20,6 +20,7 @@
         "@types/loglevel": "1.5.1",
         "@types/mocha": "2.2.43",
         "@types/node": "8.0.28",
+        "@types/nouislider": "^9.0.3",
         "@types/uniqid": "4.1.2",
         "deepmerge": "2.0.1",
         "highcharts": "6.0.2",
@@ -27,6 +28,7 @@
         "karma-ie-launcher": "1.0.0",
         "loglevel": "1.5.1",
         "node-sass": "4.5.3",
+        "nouislider": "^10.1.0",
         "poi": "9.5.2",
         "poi-preset-babel-minify": "1.0.3",
         "poi-preset-karma": "9.2.1",
@@ -35,8 +37,10 @@
         "sass-loader": "6.0.6",
         "typescript": "2.6.1",
         "uniqid": "4.1.1",
+        "vue-input-autowidth": "^1.0.2",
         "vue-property-decorator": "6.0.0",
         "vuetype": "0.2.2",
+        "wnumb": "^1.1.0",
         "yargs": "9.0.1"
     }
 }

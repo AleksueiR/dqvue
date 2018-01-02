@@ -10,7 +10,7 @@ import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 import api from './../api/main';
 
-import Chart, { RenderedEventType, ViewDataClickedEventType } from './../components/chart.vue';
+import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 import { charts } from './../store/main';
 
 import 'rxjs/add/operator/filter';
@@ -93,13 +93,13 @@ export default class ChartTable extends Vue {
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
             Chart.rendered
-                .filter((event: RenderedEventType) => event.chartId === this.chartId)
+                .filter((event: RenderedEvent) => event.chartId === this.chartId)
                 .subscribe(() => this.generateTable());
         }
         // ---
 
-        Chart.viewDataClicked
-            .filter((event: ViewDataClickedEventType) => {
+        Chart.viewData
+            .filter((event: ViewDataEvent) => {
                 return event.chartId === this.chartId;
             })
             .subscribe(() => this.generateTable());

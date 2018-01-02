@@ -5,12 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
-import api from './../api/main';
+import { DVHighcharts } from './../api/main';
 
 import { chartCreatedSubject } from './../observable-bus';
 
 import { isPromise } from './../utils';
-import Chart, { RenderedEventType, ViewDataClickedEventType } from './../components/chart.vue';
+import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -36,12 +36,12 @@ export class DVChart {
 
     private _isTableGenerated: boolean = false;
 
-    private _highchartObject: Highcharts.ChartObject | null = null;
+    private _highchartObject: DVHighcharts.ChartObject | null = null;
 
-    private _renderedSubject: Subject<Highcharts.ChartObject> = new Subject<
-        Highcharts.ChartObject
+    private _renderedSubject: Subject<DVHighcharts.ChartObject> = new Subject<
+        DVHighcharts.ChartObject
     >();
-    get rendered(): Observable<Highcharts.ChartObject> {
+    get rendered(): Observable<DVHighcharts.ChartObject> {
         return this._renderedSubject.asObservable();
     }
 
@@ -71,13 +71,13 @@ export class DVChart {
         // every time the chart is re-rendered, store the reference to the highchart object
         Chart.rendered
             .filter(event => event.chartId === this.id)
-            .subscribe((event: RenderedEventType) => {
+            .subscribe((event: RenderedEvent) => {
                 this._highchartObject = event.highchartObject;
                 this._renderedSubject.next(this._highchartObject);
             });
 
-        Chart.viewDataClicked
-            .filter((event: ViewDataClickedEventType) => {
+        Chart.viewData
+            .filter((event: ViewDataEvent) => {
                 return event.chartId === this.id;
             })
             .subscribe(() => (this._isTableGenerated = true));
@@ -89,7 +89,7 @@ export class DVChart {
         return this._isTableGenerated;
     }
 
-    get highchart(): Highcharts.ChartObject | null {
+    get highchart(): DVHighcharts.ChartObject | null {
         if (!this._highchartObject) {
             log.warn(`[chart='${this.id}'] chart has not been rendered yet`);
         }
