@@ -143,7 +143,7 @@ export default class ChartSlider extends Vue {
 
         // get zoomType from the chart config
         // if zoomType doesn't match this slider axis, self-destruct
-        const zoomType = chartChartConfig!.zoomType || '';
+        const zoomType = chartChartConfig ? chartChartConfig.zoomType || '' : '';
         if (zoomType.indexOf(this.axis.charAt(0)) === -1) {
             log.info(`${this.logMarker} ${this.axis} zoom is not enabled for this chart`);
             this.selfDestruct();
