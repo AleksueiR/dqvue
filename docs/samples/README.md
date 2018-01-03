@@ -21,3 +21,7 @@ search: english
 ## Other Samples
 
 [Random Charts](./samples/index.html)
+
+### Zoom Slider
+
+[Slider 01](./samples/slider-01.html)
