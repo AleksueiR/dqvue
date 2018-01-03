@@ -37,10 +37,10 @@
         "sass-loader": "6.0.6",
         "typescript": "2.6.1",
         "uniqid": "4.1.1",
-        "vue-input-autowidth": "^1.0.2",
         "vue-property-decorator": "6.0.0",
         "vuetype": "0.2.2",
         "wnumb": "^1.1.0",
         "yargs": "9.0.1"
-    }
+    },
+    "dependencies": {}
 }
