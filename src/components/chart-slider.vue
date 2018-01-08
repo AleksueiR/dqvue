@@ -1,13 +1,13 @@
 <template>
     <div dv-chart-slider-container>
         <input type="text" v-model.number="minValue" pattern="[0-9]"
-            @change="updateSlider"
+            @change="updateRange"
             class="dv-slider-input dv-slider-min">
 
         <div class="noUi-target"></div>
 
         <input type="text" v-model.number="maxValue" pattern="[0-9]"
-            @change="updateSlider"
+            @change="updateRange"
             class="dv-slider-input dv-slider-max">
     </div>
 </template>
@@ -282,8 +282,7 @@ export default class ChartSlider extends Vue {
 
             [this.minValue, this.maxValue] = values;
 
-            this.updateExtremes();
-            this.updateSlider();
+            this.updateRange();
         });
     }
 
@@ -340,6 +339,12 @@ export default class ChartSlider extends Vue {
     // update slider value with the currently selected range
     updateSlider(): void {
         this.sliderNode.noUiSlider.set([this.minValue, this.maxValue]);
+    }
+
+    // update both slider and chart's extremes
+    updateRange(): void {
+        this.updateExtremes();
+        this.updateSlider();
     }
 
     // checks if the currently selected range is the same as the provided range
