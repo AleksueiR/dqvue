@@ -103,7 +103,7 @@
                         }, {});
                     }
 
-                    // collect the properties in an array 
+                    // collect the properties in an array
                     function collectProperties(groups, properties) {
                         var collection = {};
                         for (var key in groups) {
@@ -166,8 +166,21 @@
         ahccdChartConfig01 = new Promise(resolve =>
             $.getJSON('./AHCCD_Mean_Temp.json', data => {
                 const stationData = JSONGroupBy(data, ['stnid'], [period, 'Year_Annee', 'station_name_nom'])[stnid];
+                const stationTrendValue = 2.35;
 
                 const seriesData = stationData[period].map(value => value !== -9999.9 ? value : null);
+                const smoothSeriesData = seriesData.map((value, index) =>
+                    index < 4 || index > (seriesData.length - 5) ?
+                        null :
+                        +(0.0039 * seriesData[index - 4] +
+                            0.0313 * seriesData[index - 3] +
+                            0.1094 * seriesData[index - 2] +
+                            0.2187 * seriesData[index - 1] +
+                            0.2734 * seriesData[index] +
+                            0.2187 * seriesData[index + 1] +
+                            0.1094 * seriesData[index + 2] +
+                            0.0313 * seriesData[index + 3] +
+                            0.0039 * seriesData[index + 4]).toFixed(2));
 
                 const config = {
                     chart: {
@@ -175,7 +188,25 @@
                         zoomSlider: {
                             step: 1
 
-                        }
+                        },
+                        events: {
+                            load: function () {
+                                const ren = this.renderer;
+
+                                // const point = chart.series[0].points[0];
+                                ren.label(`Trend value: <b>${stationTrendValue}</b>`, 80, 50)
+                                    .css({
+                                        color: '#ecf0f1'
+                                    })
+                                    .attr({
+                                        fill: '#2c3e50',
+                                        padding: 8,
+                                        zIndex: 6
+                                    })
+                                    .add();
+
+                            }
+                        },
                     },
                     credits: {
                         enabled: false
@@ -200,6 +231,10 @@
                             text: 'Mean Temperature, °C'
                         }
                     },
+                    tooltip: {
+                        shared: true,
+                        valueSuffix: '°C'
+                    },
                     legend: {
                         layout: 'vertical',
                         align: 'right',
@@ -217,7 +252,18 @@
 
                     series: [{
                         name: period,
-                        data: seriesData
+                        data: seriesData,
+                        type: 'column',
+                        pointPadding: 0.1,
+                        groupPadding: 0.1
+                    },
+                    {
+                        name: `${period} smoothed`,
+                        data: smoothSeriesData,
+                        type: 'spline',
+                        marker: {
+                            enabled: false
+                        }
                     }]
 
                 };
