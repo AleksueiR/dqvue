@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -157,6 +157,8 @@
     <dv-section>
         <dv-chart dv-config="ahccdChartConfig01" id="ahcdd1"></dv-chart>
         <dv-chart-table dv-chart-id="ahcdd1"></dv-chart-table>
+        <dv-chart dv-config="ahccdChartConfig02" id="ahcdd2"></dv-chart>
+        <dv-chart-table dv-chart-id="ahcdd2"></dv-chart-table>
     </dv-section>
 
     <script>
@@ -168,19 +170,7 @@
                 const stationData = JSONGroupBy(data, ['stnid'], [period, 'Year_Annee', 'station_name_nom'])[stnid];
                 const stationTrendValue = 2.35;
 
-                const seriesData = stationData[period].map(value => value !== -9999.9 ? value : null);
-                const smoothSeriesData = seriesData.map((value, index) =>
-                    index < 4 || index > (seriesData.length - 5) ?
-                        null :
-                        +(0.0039 * seriesData[index - 4] +
-                            0.0313 * seriesData[index - 3] +
-                            0.1094 * seriesData[index - 2] +
-                            0.2187 * seriesData[index - 1] +
-                            0.2734 * seriesData[index] +
-                            0.2187 * seriesData[index + 1] +
-                            0.1094 * seriesData[index + 2] +
-                            0.0313 * seriesData[index + 3] +
-                            0.0039 * seriesData[index + 4]).toFixed(2));
+                const seriesData = stationData[period].map(value => value > -9999 ? value : null);
 
                 const config = {
                     chart: {
@@ -195,6 +185,16 @@
 
                                 // const point = chart.series[0].points[0];
                                 ren.label(`Trend value: <b>${stationTrendValue}</b>`, 80, 50)
+                                    .css({
+                                        color: '#ecf0f1'
+                                    })
+                                    .attr({
+                                        fill: '#2c3e50',
+                                        padding: 8,
+                                        zIndex: 6
+                                    })
+                                    .add();
+                                ren.label(`Trend value: <b>${stationTrendValue}</b>`, 80, 90)
                                     .css({
                                         color: '#ecf0f1'
                                     })
@@ -229,7 +229,9 @@
                     yAxis: {
                         title: {
                             text: 'Mean Temperature, °C'
-                        }
+                        },
+                        min: Math.min(0, ...seriesData),
+                        max: Math.max(...seriesData)
                     },
                     tooltip: {
                         shared: true,
@@ -256,20 +258,127 @@
                         type: 'column',
                         pointPadding: 0.1,
                         groupPadding: 0.1
-                    },
-                    {
-                        name: `${period} smoothed`,
-                        data: smoothSeriesData,
-                        type: 'spline',
-                        marker: {
-                            enabled: false
-                        }
                     }]
 
                 };
 
                 resolve(config);
             }));
+    </script>
+
+    <script>
+        let stnid2 = '10253G0';
+        let period2 = 'Annual_Annuel'; // Annual_Annuel, Mar_March
+
+        ahccdChartConfig02 = new Promise(resolve =>
+            $.getJSON('./AHCCD_Precip.json', data => {
+                const stationData = JSONGroupBy(data, ['stnid'], [period2, 'Year_Annee'])[stnid2];
+        const stationTrendValue = 2.35;
+
+        const seriesData = stationData[period].map(value => value > -9999 ? value : null);
+        const smoothSeriesData = seriesData.map((value, index) =>
+            index < 4 || index > (seriesData.length - 5) ?
+                null :
+                +(0.0039 * seriesData[index - 4] +
+                    0.0313 * seriesData[index - 3] +
+                    0.1094 * seriesData[index - 2] +
+                    0.2187 * seriesData[index - 1] +
+                    0.2734 * seriesData[index] +
+                    0.2187 * seriesData[index + 1] +
+                    0.1094 * seriesData[index + 2] +
+                    0.0313 * seriesData[index + 3] +
+                    0.0039 * seriesData[index + 4]).toFixed(2));
+
+        const config = {
+            chart: {
+                zoomType: 'x',
+                zoomSlider: {
+                    step: 1
+
+                },
+                events: {
+                    load: function () {
+                        const ren = this.renderer;
+
+                        // const point = chart.series[0].points[0];
+                        ren.label(`Trend value: <b>${stationTrendValue}</b>`, 80, 50)
+                            .css({
+                                color: '#ecf0f1'
+                            })
+                            .attr({
+                                fill: '#2c3e50',
+                                padding: 8,
+                                zIndex: 6
+                            })
+                            .add();
+
+                    }
+                },
+            },
+            credits: {
+                enabled: false
+            },
+
+            title: {
+                text: `Precipitation, ${stationData.Year_Annee[0]} - ${stationData.Year_Annee[stationData.Year_Annee.length - 1]}`
+        },
+            subtitle: {
+            text: 'ccpid.ca'
+            },
+        xAxis: {
+            // categories: stationData.Year_Annee,
+                title: {
+                    text: 'Year'
+                },
+            minRange: 20,
+            crosshair: true
+        },
+        yAxis: {
+            title: {
+                text: 'Precipitation, cm'
+            },
+            min: Math.min(0, ...seriesData),
+            max: Math.max(...seriesData)
+        },
+        tooltip: {
+                shared: true,
+                valueSuffix: 'cm'
+        },
+        legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+                series: {
+                    label: {
+                            connectorAllowed: false
+                    },
+                    pointStart: stationData.Year_Annee[0]
+                }
+        },
+
+        series: [{
+            name: period2,
+            data: seriesData,
+            type: 'column',
+            pointPadding: 0.1,
+            groupPadding: 0.1
+        },
+        {
+            name: `${period2} smoothed`,
+                data: smoothSeriesData,
+        type: 'spline',
+        marker: {
+            enabled: false
+        }
+        }]
+
+        };
+
+        resolve(config);
+        }));
     </script>
 
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
