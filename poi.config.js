@@ -2,6 +2,8 @@ const pkg = require('./package.json');
 const argv = require('yargs').argv;
 const webpack = require('webpack');
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 const minimize = argv.minimize === true;
 
 module.exports = {
@@ -31,6 +33,9 @@ module.exports = {
             .set('highcharts', 'highcharts/highcharts.src.js'); // include non-minified highcharts into the dev build
 
         config.output.set('library', 'DQV').set('libraryExport', 'default'); // exposes the default export directly on the global library variable: https://webpack.js.org/configuration/output/#output-libraryexport
+
+        // enable to see the bundle structure
+        // config.plugin('bundleAnalyzer').use(BundleAnalyzerPlugin);
     },
     karma: {
         mime: {
