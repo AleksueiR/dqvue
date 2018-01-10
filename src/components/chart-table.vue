@@ -10,7 +10,7 @@ import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 import api from './../api/main';
 
-import Chart, { RenderedEventType, ViewDataClickedEventType } from './../components/chart.vue';
+import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 import { charts } from './../store/main';
 
 import 'rxjs/add/operator/filter';
@@ -20,11 +20,6 @@ import { DVChart } from './../classes/chart';
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 
 const HIGHCHARTS_DATA_TABLE_CLASS = '.highcharts-data-table';
-
-// `getTable` is not included in default Highcharts types
-interface EnhancedChartObject extends Highcharts.ChartObject {
-    getTable: () => string;
-}
 
 @Component
 export default class ChartTable extends Vue {
@@ -40,10 +35,11 @@ export default class ChartTable extends Vue {
         return this.rootChartId || this.$attrs['dv-chart-id'];
     }
 
-    // TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
+    // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
     get autoRender(): boolean {
         return typeof this.$attrs['dv-auto-render'] !== 'undefined';
     }
+    // ---
 
     get tableClass(): string {
         return this.$attrs['dv-table-class'];
@@ -93,13 +89,13 @@ export default class ChartTable extends Vue {
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
             Chart.rendered
-                .filter((event: RenderedEventType) => event.chartId === this.chartId)
+                .filter((event: RenderedEvent) => event.chartId === this.chartId)
                 .subscribe(() => this.generateTable());
         }
         // ---
 
-        Chart.viewDataClicked
-            .filter((event: ViewDataClickedEventType) => {
+        Chart.viewData
+            .filter((event: ViewDataEvent) => {
                 return event.chartId === this.chartId;
             })
             .subscribe(() => this.generateTable());
@@ -115,8 +111,8 @@ export default class ChartTable extends Vue {
             return;
         }
 
-        this.highchartsDataTable.innerHTML = (<EnhancedChartObject>this.dvchart
-            .highchart).getTable();
+        // presence of data-export is checked in chart.vue - assume `getTable` is defined
+        this.highchartsDataTable.innerHTML = this.dvchart.highchart.getTable!();
 
         // if custom css classes are specified for the table, apply them onto the node
         if (typeof this.tableClass !== 'undefined') {

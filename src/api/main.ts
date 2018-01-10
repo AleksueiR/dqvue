@@ -30,6 +30,33 @@ function importHighcharts(): void {
     }
 }
 
+// semi-public functionality not exposed on the HC declarations
+export namespace DVHighcharts {
+    export interface ChartObject extends Highcharts.ChartObject {
+        // https://api.highcharts.com/highcharts/chart.resetZoomButton
+        resetZoomButton: Highcharts.ElementObject | undefined;
+        showResetZoom: () => void;
+
+        // `getTable` is not included in default Highcharts types
+        getTable?: () => string;
+    }
+
+    export interface ChartOptions extends Highcharts.ChartOptions {
+        zoomSlider?: noUiSlider.Options;
+    }
+
+    export interface AxisObject extends Highcharts.AxisObject {
+        // https://api.highcharts.com/highcharts/xAxis.minRange
+        minRange: number;
+    }
+
+    // https://api.highcharts.com/highcharts/exporting.menuItemDefinitions
+    export interface MenuItem extends Highcharts.MenuItem {
+        text: string;
+        onclick: (highchartObject?: Highcharts.ChartObject) => void;
+    }
+}
+
 export default {
     get Highcharts(): typeof Highcharts {
         if (hc) {

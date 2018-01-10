@@ -1,6 +1,6 @@
 {
     "name": "dqvue",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "",
     "main": "./dist/dqvue.js",
     "types": "./index.d.ts",
@@ -20,16 +20,18 @@
         "@types/loglevel": "1.5.1",
         "@types/mocha": "2.2.43",
         "@types/node": "8.0.28",
+        "@types/nouislider": "^9.0.3",
         "@types/uniqid": "4.1.2",
         "deepmerge": "2.0.1",
-        "highcharts": "6.0.2",
         "http-server": "^0.10.0",
         "karma-ie-launcher": "1.0.0",
+        "karma-typescript": "^3.0.9",
         "loglevel": "1.5.1",
         "node-sass": "4.5.3",
-        "poi": "9.5.2",
+        "nouislider": "^10.1.0",
+        "poi": "^9.6.12",
         "poi-preset-babel-minify": "1.0.3",
-        "poi-preset-karma": "9.2.1",
+        "poi-preset-karma": "^9.2.3",
         "poi-preset-typescript": "9.0.2",
         "rxjs": "^5.5.3",
         "sass-loader": "6.0.6",
@@ -37,6 +39,11 @@
         "uniqid": "4.1.1",
         "vue-property-decorator": "6.0.0",
         "vuetype": "0.2.2",
+        "webpack-bundle-analyzer": "^2.9.2",
+        "wnumb": "^1.1.0",
         "yargs": "9.0.1"
+    },
+    "dependencies": {
+        "vue-template-compiler": "^2.5.13"
     }
 }
