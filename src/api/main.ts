@@ -32,6 +32,15 @@ function importHighcharts(): void {
 
 // semi-public functionality not exposed on the HC declarations
 export namespace DVHighcharts {
+    export interface Options extends Highcharts.Options {
+        exporting: ExportingOptions;
+    }
+
+    export interface ExportingOptions extends Highcharts.ExportingOptions {
+        // `menuItemDefinitions` is not included in the `ExportingOptions` type
+        menuItemDefinitions: { [name: string]: MenuItem | null };
+    }
+
     export interface ChartObject extends Highcharts.ChartObject {
         // https://api.highcharts.com/highcharts/chart.resetZoomButton
         resetZoomButton: Highcharts.ElementObject | undefined;
@@ -49,6 +58,8 @@ export namespace DVHighcharts {
         // https://api.highcharts.com/highcharts/xAxis.minRange
         minRange: number;
     }
+
+    export interface AxisEvent extends Highcharts.AxisEvent {}
 
     // https://api.highcharts.com/highcharts/exporting.menuItemDefinitions
     export interface MenuItem extends Highcharts.MenuItem {

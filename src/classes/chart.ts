@@ -1,5 +1,6 @@
 import uniqid from 'uniqid';
 import loglevel from 'loglevel';
+import deepmerge from 'deepmerge';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -28,17 +29,28 @@ export type SeriesData =
 
 export interface DVChartOptions {
     id?: string;
-    config?: Highcharts.Options | Promise<Highcharts.Options>;
+    config?: DVHighcharts.Options | Promise<DVHighcharts.Options>;
     data?: SeriesData | Promise<SeriesData>;
 }
 
 export class DVChart {
+    private static configDefaults: DVHighcharts.Options = {
+        xAxis: {
+            events: {
+                setExtremes: () => {}
+            }
+        },
+        exporting: {
+            menuItemDefinitions: {}
+        }
+    };
+
     readonly id: string;
 
     private _isConfigValid: boolean = false;
 
-    private _config: Highcharts.Options | null = null;
-    private _configPromise: Promise<Highcharts.Options> | null = null;
+    private _config: DVHighcharts.Options | null = null;
+    private _configPromise: Promise<DVHighcharts.Options> | null = null;
     private _data: SeriesData | null = null;
     private _dataPromise: Promise<SeriesData> | null = null;
 
@@ -51,7 +63,7 @@ export class DVChart {
 
         log.info(`[chart='${this.id}'] new chart is created`);
 
-        if (isPromise<Highcharts.Options>(config)) {
+        if (isPromise<DVHighcharts.Options>(config)) {
             this.setConfig(config);
         } else if (config !== null) {
             this.config = config;
@@ -90,8 +102,8 @@ export class DVChart {
         return this._highchartObject;
     }
 
-    set config(value: Highcharts.Options | null) {
-        this._config = value;
+    set config(value: DVHighcharts.Options | null) {
+        this._config = this._addConfigDefaults(value);
         this._configPromise = null;
 
         log.info(`[chart='${this.id}'] config value is set successfully`);
@@ -100,7 +112,7 @@ export class DVChart {
         this._validateConfig();
     }
 
-    setConfig(value: Promise<Highcharts.Options>): DVChart {
+    setConfig(value: Promise<DVHighcharts.Options>): DVChart {
         log.info(`[chart='${this.id}'] waiting for config promise to resolve`);
 
         this._configPromise = value;
@@ -113,8 +125,23 @@ export class DVChart {
         return this;
     }
 
-    get config(): Highcharts.Options | null {
+    get config(): DVHighcharts.Options | null {
         return this._config;
+    }
+
+    /**
+     * apply some default/empty values to the config which are used by internal compoenents
+     * this makes it easier to access them without have to check if they exist all the time
+     *
+     * @private
+     * @memberof DVChart
+     */
+    private _addConfigDefaults(config: DVHighcharts.Options | null): DVHighcharts.Options | null {
+        if (!config) {
+            return null;
+        }
+
+        return deepmerge(DVChart.configDefaults, config);
     }
 
     set data(value: SeriesData | null) {

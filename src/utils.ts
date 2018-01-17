@@ -16,6 +16,10 @@ function isPromise<T>(x: any): x is Promise<T> {
     );
 }
 
+function isArray<T>(x: any): x is T[] {
+    return Array.isArray(x);
+}
+
 enum keyCodes {
     'BREAK' = 3,
     'BACKSPACE_/_DELETE' = 8,
@@ -174,4 +178,4 @@ enum keyCodes {
     'TOGGLE_TOUCHPAD' = 255
 }
 
-export { isFunction, isString, isObject, isPromise, keyCodes };
+export { isFunction, isString, isObject, isPromise, isArray, keyCodes };

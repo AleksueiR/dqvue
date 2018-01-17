@@ -99,18 +99,10 @@ export default class ChartTable extends Vue {
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
             chartRendered.filter(this._filterStream, this).subscribe(this.generateTable);
-            /* Chart.rendered
-                .filter((event: RenderedEvent) => event.chartId === this.chartId)
-                .subscribe(() => this.generateTable()); */
         }
         // ---
 
         chartViewData.filter(this._filterStream, this).subscribe(this.generateTable);
-        /* Chart.viewData
-            .filter((event: ViewDataEvent) => {
-                return event.chartId === this.chartId;
-            })
-            .subscribe(() => this.generateTable()); */
     }
 
     generateTable(): void {

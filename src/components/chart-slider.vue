@@ -53,12 +53,15 @@ export default class ChartSlider extends Vue {
 
     @Prop() axis: ChartSetExtremesEvent['axis'];
 
+    // TODO: since the slider is always inside the chart node, pass chart id as a prop
     get chartId(): string {
         return this.rootChartId;
     }
 
     dvchart: DVChart | null = null;
 
+    // returns a highcharts from the current dvchart object
+    // this should only be called after the chart is rendered
     get highchart(): DVHighcharts.ChartObject {
         if (!this.dvchart) {
             throw new TypeError(`${this.logMarker} dvchart ${this.chartId} is not defined`);
@@ -87,6 +90,7 @@ export default class ChartSlider extends Vue {
         return extremes;
     }
 
+    // a reference to the main slider node
     sliderNode: noUiSlider.Instance;
 
     minValue: number = 0;
@@ -113,6 +117,7 @@ export default class ChartSlider extends Vue {
         chartRendered.filter(this._filterStream, this).subscribe(this.initializeSlider);
 
         // listen to extremes changed by the user
+        // TODO: move subscription into the init function - subscribe only if there is a slider ready
         chartSetExtremes.filter(this._filterStream, this).subscribe(this.setExtremesHandler);
     }
 
@@ -138,15 +143,14 @@ export default class ChartSlider extends Vue {
     }
 
     initializeSlider(event: ChartRenderedEvent): void {
-        // this.highchart = event.highchartObject;
-
-        // do not intialize the slider twice; this will happen when a chart is refreshed
+        // if the slider is alreayd initialize, destroy it and create a new one
+        // this is needed in case the slider config portion of the chart config was changed or is not compatible with the old slider configuration
         if (this.sliderNode) {
-            log.info(`${this.logMarker} slider already initialized`);
-            return;
-        }
+            log.info(`${this.logMarker} slider already initialized; re-creating`);
 
-        this.sliderNode = this.$el.querySelector(CHART_SLIDER_CLASS) as noUiSlider.Instance;
+            this.sliderNode.noUiSlider.destroy();
+            this.sliderNode.classList.add('noUi-target');
+        }
 
         // TODO: vet using a list of chart types that can have extremes sliders
         if (typeof this.extremes.dataMin === 'undefined') {
@@ -181,6 +185,9 @@ export default class ChartSlider extends Vue {
             return;
         }
 
+        // cached the slider node after all checks succeed
+        this.sliderNode = this.$el.querySelector(CHART_SLIDER_CLASS) as noUiSlider.Instance;
+
         noUiSlider.create(
             this.sliderNode,
             deepmerge(this.defaultSliderConfig, userSliderConfig || {})
@@ -198,7 +205,14 @@ export default class ChartSlider extends Vue {
         ).subscribe(this.sliderUpdateHandler);
     }
 
-    //
+    // add keyboard support to the slider
+    // - right/up keys move the handle to the right by a single step
+    // - left/down keys move the handle to the left by a single step
+    // - home key moves the handle all the way to the left
+    // - end key moves the handles all the way to the right
+    // - +shift holding key moves the handle by ten steps at a time
+    // - +ctrl holding key moves both handles at the same time
+    // ctrl and shift modifier keys work together all with all movement keys
     enableKeyboardSupport(): void {
         const step: number = this.sliderNode.noUiSlider.options.step || 0.01;
         const configMargin: number = this.sliderNode.noUiSlider.options.margin!;
@@ -378,6 +392,8 @@ export default class ChartSlider extends Vue {
     }
 
     selfDestruct(): void {
+        // TODO: instead of removing the slider controls, hide them; it's possible to refresh the chart with a proper slider config
+        // in this can, the slider can be initialized normally
         this.$destroy();
 
         while (this.$el.firstChild) {
