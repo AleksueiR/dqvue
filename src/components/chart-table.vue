@@ -10,7 +10,15 @@ import uniqid from 'uniqid';
 import loglevel from 'loglevel';
 import api from './../api/main';
 
-import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
+import {
+    chartRendered,
+    chartViewData,
+    ChartEvent,
+    ChartRenderedEvent,
+    ChartViewDataEvent
+} from './../observable-bus';
+
+//import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 import { charts } from './../store/main';
 
 import 'rxjs/add/operator/filter';
@@ -48,15 +56,17 @@ export default class ChartTable extends Vue {
     created(): void {
         if (!this.chartId) {
             log.error(
-                `[chart-table='${this.id}' section='${this
-                    .rootSectionId}'] table cannot be linked because it is missing a parent chart id`
+                `[chart-table='${this.id}' section='${
+                    this.rootSectionId
+                }'] table cannot be linked because it is missing a parent chart id`
             );
         }
 
         if (!charts[this.chartId]) {
             log.error(
-                `[chart-table='${this.id}' chart='${this.chartId}' section='${this
-                    .rootSectionId}'] referenced chart does not exist`
+                `[chart-table='${this.id}' chart='${this.chartId}' section='${
+                    this.rootSectionId
+                }'] referenced chart does not exist`
             );
             return;
         }
@@ -88,25 +98,28 @@ export default class ChartTable extends Vue {
 
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
-            Chart.rendered
+            chartRendered.filter(this._filterStream, this).subscribe(this.generateTable);
+            /* Chart.rendered
                 .filter((event: RenderedEvent) => event.chartId === this.chartId)
-                .subscribe(() => this.generateTable());
+                .subscribe(() => this.generateTable()); */
         }
         // ---
 
-        Chart.viewData
+        chartViewData.filter(this._filterStream, this).subscribe(this.generateTable);
+        /* Chart.viewData
             .filter((event: ViewDataEvent) => {
                 return event.chartId === this.chartId;
             })
-            .subscribe(() => this.generateTable());
+            .subscribe(() => this.generateTable()); */
     }
 
     generateTable(): void {
         // render table can only be called after the chart has been rendered
         if (!this.dvchart.highchart) {
             log.warn(
-                `[chart-table='${this.id}' chart='${this
-                    .chartId}'] something's wrong - trying to render the table before chart is ready`
+                `[chart-table='${this.id}' chart='${
+                    this.chartId
+                }'] something's wrong - trying to render the table before chart is ready`
             );
             return;
         }
@@ -126,11 +139,13 @@ export default class ChartTable extends Vue {
             this.highchartsDataTable
         );
     }
+
+    private _filterStream(event: ChartEvent): boolean {
+        return event.chartId === this.chartId;
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 
 </style>
-
-

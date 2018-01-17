@@ -1,7 +1,12 @@
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 
-import { sectionCreatedSubject, chartCreatedSubject } from './../observable-bus';
+import {
+    sectionCreated,
+    chartCreated,
+    SectionCreatedEvent,
+    ChartCreatedEvent
+} from './../observable-bus';
 
 import { isString } from './../utils';
 
@@ -13,26 +18,26 @@ const charts: { [name: string]: DVChart } = {};
 /**
  * Adds a DV Section to the reference container if another section with the same id does not exist.
  */
-function addSection(section: DVSection): void {
-    if (sections[section.id]) {
+function addSection(event: SectionCreatedEvent): void {
+    if (sections[event.sectionId]) {
         return;
     }
 
-    sections[section.id] = section;
+    sections[event.sectionId] = event.dvsection;
 }
 
 /**
  * Adds a DV Chart to the reference container if another chart with the same id does not exist.
  */
-function addChart(chart: DVChart): void {
-    if (charts[chart.id]) {
+function addChart(event: ChartCreatedEvent): void {
+    if (charts[event.chartId]) {
         return;
     }
 
-    charts[chart.id] = chart;
+    charts[event.chartId] = event.dvchart;
 }
 
-sectionCreatedSubject.subscribe(addSection);
-chartCreatedSubject.subscribe(addChart);
+sectionCreated.subscribe(addSection);
+chartCreated.subscribe(addChart);
 
 export { sections, charts };

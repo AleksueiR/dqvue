@@ -9,7 +9,7 @@
         <input type="text" v-model.number="maxValue" pattern="[0-9]"
             @change="updateRange"
             class="dv-slider-input dv-slider-max">
-    </div>
+    </div>    
 </template>
 
 <script lang="ts">
@@ -21,7 +21,14 @@ import noUiSlider from 'nouislider';
 import wNumb from 'wnumb';
 import deepmerge from 'deepmerge';
 
-import Chart, { RenderedEvent, SetExtremesEvent } from './../components/chart.vue';
+import {
+    chartRendered,
+    chartSetExtremes,
+    ChartEvent,
+    ChartRenderedEvent,
+    ChartSetExtremesEvent
+} from './../observable-bus';
+
 import { charts } from './../store/main';
 
 import { Observable } from 'rxjs/Observable';
@@ -44,18 +51,33 @@ export default class ChartSlider extends Vue {
 
     @Inject() rootChartId: string;
 
-    @Prop() axis: SetExtremesEvent['axis'];
+    @Prop() axis: ChartSetExtremesEvent['axis'];
 
     get chartId(): string {
         return this.rootChartId;
     }
 
-    dvchart: DVChart;
+    dvchart: DVChart | null = null;
+
+    get highchart(): DVHighcharts.ChartObject {
+        if (!this.dvchart) {
+            throw new TypeError(`${this.logMarker} dvchart ${this.chartId} is not defined`);
+        }
+
+        if (!this.dvchart.highchart) {
+            throw new TypeError(
+                `${this.logMarker} Highchart is not defined on ${this.chartId} dvchart`
+            );
+        }
+
+        return this.dvchart.highchart;
+    }
 
     // axis linked to the slider
     get axisObject(): DVHighcharts.AxisObject {
         // TODO: decide what to do and handle cases with multiple X/Y axes
-        return this.dvchart.highchart![this.axis][0] as DVHighcharts.AxisObject;
+        // return this.highchart![this.axis][0] as DVHighcharts.AxisObject;
+        return this.highchart[this.axis][0] as DVHighcharts.AxisObject;
     }
 
     // extremes of the axis linked to the slider
@@ -88,17 +110,10 @@ export default class ChartSlider extends Vue {
         }
 
         // initialize the noUI slider when the parent chart renders
-        Chart.rendered
-            .filter((event: RenderedEvent) => event.chartId === this.chartId)
-            .subscribe(this.initializeSlider);
+        chartRendered.filter(this._filterStream, this).subscribe(this.initializeSlider);
 
         // listen to extremes changed by the user
-        Chart.setExtremes
-            .filter(
-                (event: SetExtremesEvent) =>
-                    event.chartId === this.chartId && event.axis === this.axis
-            )
-            .subscribe(this.setExtremesHandler);
+        chartSetExtremes.filter(this._filterStream, this).subscribe(this.setExtremesHandler);
     }
 
     // default slider config will be used if no slider options are specified in the user config
@@ -122,7 +137,9 @@ export default class ChartSlider extends Vue {
         };
     }
 
-    initializeSlider(): void {
+    initializeSlider(event: ChartRenderedEvent): void {
+        // this.highchart = event.highchartObject;
+
         // do not intialize the slider twice; this will happen when a chart is refreshed
         if (this.sliderNode) {
             log.info(`${this.logMarker} slider already initialized`);
@@ -287,7 +304,7 @@ export default class ChartSlider extends Vue {
     }
 
     // handles the SetExtremesEvent streamed by the parent Chart object
-    setExtremesHandler(event: SetExtremesEvent): void {
+    setExtremesHandler(event: ChartSetExtremesEvent): void {
         const newMinValue = event.min || this.extremes.dataMin;
         const newMaxValue = event.max || this.extremes.dataMax;
 
@@ -317,19 +334,19 @@ export default class ChartSlider extends Vue {
 
     // udpate the parent chart's extremes on the corresponding axis
     updateExtremes(): void {
-        const resetZoomButton: Highcharts.ElementObject | undefined = this.dvchart.highchart!
+        const resetZoomButton: Highcharts.ElementObject | undefined = this.highchart
             .resetZoomButton;
 
         if (this.isFullRange()) {
             // destroy and disable the reset zoom button if the currently selected range is the same as the maximum range
             if (resetZoomButton && resetZoomButton.destroy) {
                 resetZoomButton.destroy();
-                this.dvchart.highchart!.resetZoomButton = undefined;
+                this.highchart.resetZoomButton = undefined;
             }
         } else {
             // show zoom reset button, if not already visible
             if (!resetZoomButton) {
-                this.dvchart.highchart!.showResetZoom();
+                this.highchart.showResetZoom();
             }
         }
 
@@ -368,6 +385,10 @@ export default class ChartSlider extends Vue {
         }
 
         this.$el.parentNode!.removeChild(this.$el);
+    }
+
+    private _filterStream(event: ChartEvent): boolean {
+        return event.chartId === this.chartId;
     }
 }
 </script>

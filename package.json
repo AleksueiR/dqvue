@@ -1,6 +1,6 @@
 {
     "name": "dqvue",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "",
     "main": "./dist/dqvue.js",
     "types": "./index.d.ts",
@@ -42,8 +42,5 @@
         "webpack-bundle-analyzer": "^2.9.2",
         "wnumb": "^1.1.0",
         "yargs": "9.0.1"
-    },
-    "dependencies": {
-        "vue-template-compiler": "^2.5.13"
     }
 }

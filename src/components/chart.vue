@@ -15,8 +15,17 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
 import api, { DVHighcharts } from './../api/main';
+import {
+    chartRendered,
+    chartConfigUpdated,
+    chartViewData,
+    chartSetExtremes,
+    ChartConfigUpdatedEvent
+} from './../observable-bus';
+
 import { DVChart } from './../classes/chart';
 import { charts } from './../store/main';
+
 import ChartSlider from './../components/chart-slider.vue';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
@@ -44,14 +53,14 @@ interface EnhancedExportingOptions extends Highcharts.ExportingOptions {
     }
 })
 export default class Chart extends Vue {
-    private static _rendered: Subject<RenderedEvent> = new Subject<RenderedEvent>();
+    /* private static _rendered: Subject<RenderedEvent> = new Subject<RenderedEvent>();
     static rendered = Chart._rendered.asObservable();
 
     private static _viewData: Subject<ViewDataEvent> = new Subject<ViewDataEvent>();
     static viewData = Chart._viewData.asObservable();
 
     private static _setExtremes: Subject<SetExtremesEvent> = new Subject<SetExtremesEvent>();
-    static setExtremes = Chart._setExtremes.asObservable();
+    static setExtremes = Chart._setExtremes.asObservable(); */
 
     dvchart: DVChart;
     isLoading: boolean = true;
@@ -109,7 +118,8 @@ export default class Chart extends Vue {
             return;
         }
 
-        Chart._viewData.next({ chartId: this.id });
+        // Chart._viewData.next({ chartId: this.id });
+        chartViewData.next({ chartId: this.id, dvchart: this.dvchart });
     }
 
     /**
@@ -133,8 +143,8 @@ export default class Chart extends Vue {
         // find chart and table containers
         this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT) as HTMLElement;
 
-        this.dvchart.configUpdated
-            .filter(dvchart => dvchart.id === this.id)
+        chartConfigUpdated
+            .filter((event: ChartConfigUpdatedEvent) => event.chartId === this.id)
             .subscribe(() => this.renderChart());
 
         if (this.dvchart.isConfigValid) {
@@ -163,12 +173,19 @@ export default class Chart extends Vue {
             {
                 events: {
                     setExtremes: (event: { max: number; min: number }) => {
-                        Chart._setExtremes.next({
+                        chartSetExtremes.next({
                             chartId: this.id,
+                            dvchart: this.dvchart,
                             axis: 'xAxis',
                             max: event.max,
                             min: event.min
                         });
+                        /* Chart._setExtremes.next({
+                            chartId: this.id,
+                            axis: 'xAxis',
+                            max: event.max,
+                            min: event.min
+                        }); */
                     }
                 }
             } as Object,
@@ -180,10 +197,16 @@ export default class Chart extends Vue {
             .config as Highcharts.Options);
         this.isLoading = false;
 
-        Chart._rendered.next({
+        chartRendered.next({
             chartId: this.id,
+            dvchart: this.dvchart,
             highchartObject: this.highchartObject as DVHighcharts.ChartObject
         });
+
+        /* Chart._rendered.next({
+            chartId: this.id,
+            highchartObject: this.highchartObject as DVHighcharts.ChartObject
+        }); */
 
         if (this.autoGenerateTable) {
             this.simulateViewDataClick();

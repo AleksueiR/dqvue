@@ -6,7 +6,7 @@ import { DVChart } from './chart';
 import Chart from './../components/chart.vue';
 import ChartTable from './../components/chart-table.vue';
 
-import { sectionCreatedSubject } from './../observable-bus';
+import { sectionCreated } from './../observable-bus';
 
 import { isPromise, isFunction, isString, isObject } from './../utils';
 // TODO: constrain logging to 'warn' in production builds
@@ -60,7 +60,7 @@ export class DVSection {
         }
 
         // push the new section through the stream
-        sectionCreatedSubject.next(this);
+        sectionCreated.next({ sectionId: this.id, dvsection: this });
 
         if (mount) {
             this._mount = mount;
@@ -287,6 +287,7 @@ export class DVSection {
         }
 
         // TODO: when dismouning a section, remove all the chart tables originating from charts in this section, even ones that are in different sections
+        // TODO: maybe instead of removing all the chart tables in other sections, just hide them and reactivate them if the section with their parent chart is remounted
         this._vm.$destroy();
         this._isMounted = false;
 
