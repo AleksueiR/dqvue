@@ -28,9 +28,7 @@ module.exports = {
         })
     ],
     extendWebpack(config) {
-        config.resolve.alias
-            .set('vue$', 'vue/dist/vue.esm.js') // vue.esm include template compiler; without it all templates need to be pre-compiled
-            .set('highcharts', 'highcharts/highcharts.src.js'); // include non-minified highcharts into the dev build
+        config.resolve.alias.set('vue$', 'vue/dist/vue.esm.js'); // vue.esm include template compiler; without it all templates need to be pre-compiled
 
         config.output.set('library', 'DQV').set('libraryExport', 'default'); // exposes the default export directly on the global library variable: https://webpack.js.org/configuration/output/#output-libraryexport
 
@@ -40,6 +38,7 @@ module.exports = {
     karma: {
         mime: {
             'text/x-typescript': ['ts']
-        }
+        },
+        karmaTypescriptConfig: undefined
     }
 };

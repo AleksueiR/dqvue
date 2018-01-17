@@ -1,5 +1,6 @@
 import uniqid from 'uniqid';
 import loglevel from 'loglevel';
+import deepmerge from 'deepmerge';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -7,10 +8,18 @@ import 'rxjs/add/operator/filter';
 
 import { DVHighcharts } from './../api/main';
 
-import { chartCreatedSubject } from './../observable-bus';
+import {
+    chartCreated,
+    chartRendered,
+    chartViewData,
+    chartConfigUpdated,
+    ChartEvent,
+    ChartRenderedEvent,
+    ChartViewDataEvent
+} from './../observable-bus';
 
 import { isPromise } from './../utils';
-import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
+import { DVSection } from './section';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -20,17 +29,28 @@ export type SeriesData =
 
 export interface DVChartOptions {
     id?: string;
-    config?: Highcharts.Options | Promise<Highcharts.Options>;
+    config?: DVHighcharts.Options | Promise<DVHighcharts.Options>;
     data?: SeriesData | Promise<SeriesData>;
 }
 
 export class DVChart {
+    private static configDefaults: DVHighcharts.Options = {
+        xAxis: {
+            events: {
+                setExtremes: () => {}
+            }
+        },
+        exporting: {
+            menuItemDefinitions: {}
+        }
+    };
+
     readonly id: string;
 
     private _isConfigValid: boolean = false;
 
-    private _config: Highcharts.Options | null = null;
-    private _configPromise: Promise<Highcharts.Options> | null = null;
+    private _config: DVHighcharts.Options | null = null;
+    private _configPromise: Promise<DVHighcharts.Options> | null = null;
     private _data: SeriesData | null = null;
     private _dataPromise: Promise<SeriesData> | null = null;
 
@@ -38,24 +58,12 @@ export class DVChart {
 
     private _highchartObject: DVHighcharts.ChartObject | null = null;
 
-    private _renderedSubject: Subject<DVHighcharts.ChartObject> = new Subject<
-        DVHighcharts.ChartObject
-    >();
-    get rendered(): Observable<DVHighcharts.ChartObject> {
-        return this._renderedSubject.asObservable();
-    }
-
-    private _configUpdatedSubject: Subject<DVChart> = new Subject<DVChart>();
-    get configUpdated(): Observable<DVChart> {
-        return this._configUpdatedSubject.asObservable();
-    }
-
     constructor({ id = uniqid.time(), config = null, data = null }: DVChartOptions = {}) {
         this.id = id;
 
         log.info(`[chart='${this.id}'] new chart is created`);
 
-        if (isPromise<Highcharts.Options>(config)) {
+        if (isPromise<DVHighcharts.Options>(config)) {
             this.setConfig(config);
         } else if (config !== null) {
             this.config = config;
@@ -69,20 +77,17 @@ export class DVChart {
 
         // TODO: merge observable from the chart view to the rendered observable here
         // every time the chart is re-rendered, store the reference to the highchart object
-        Chart.rendered
-            .filter(event => event.chartId === this.id)
-            .subscribe((event: RenderedEvent) => {
-                this._highchartObject = event.highchartObject;
-                this._renderedSubject.next(this._highchartObject);
-            });
+        chartRendered
+            .filter(this._filterStream, this)
+            .subscribe(
+                (event: ChartRenderedEvent) => (this._highchartObject = event.highchartObject)
+            );
 
-        Chart.viewData
-            .filter((event: ViewDataEvent) => {
-                return event.chartId === this.id;
-            })
+        chartViewData
+            .filter(this._filterStream, this)
             .subscribe(() => (this._isTableGenerated = true));
 
-        chartCreatedSubject.next(this);
+        chartCreated.next({ chartId: this.id, dvchart: this });
     }
 
     get isTableGenerated(): boolean {
@@ -97,8 +102,8 @@ export class DVChart {
         return this._highchartObject;
     }
 
-    set config(value: Highcharts.Options | null) {
-        this._config = value;
+    set config(value: DVHighcharts.Options | null) {
+        this._config = this._addConfigDefaults(value);
         this._configPromise = null;
 
         log.info(`[chart='${this.id}'] config value is set successfully`);
@@ -107,7 +112,7 @@ export class DVChart {
         this._validateConfig();
     }
 
-    setConfig(value: Promise<Highcharts.Options>): DVChart {
+    setConfig(value: Promise<DVHighcharts.Options>): DVChart {
         log.info(`[chart='${this.id}'] waiting for config promise to resolve`);
 
         this._configPromise = value;
@@ -120,8 +125,23 @@ export class DVChart {
         return this;
     }
 
-    get config(): Highcharts.Options | null {
+    get config(): DVHighcharts.Options | null {
         return this._config;
+    }
+
+    /**
+     * apply some default/empty values to the config which are used by internal compoenents
+     * this makes it easier to access them without have to check if they exist all the time
+     *
+     * @private
+     * @memberof DVChart
+     */
+    private _addConfigDefaults(config: DVHighcharts.Options | null): DVHighcharts.Options | null {
+        if (!config) {
+            return null;
+        }
+
+        return deepmerge(DVChart.configDefaults, config);
     }
 
     set data(value: SeriesData | null) {
@@ -212,7 +232,7 @@ export class DVChart {
         log.info(`[chart='${this.id}'] chart config is valid`);
 
         this._isConfigValid = true;
-        this._configUpdatedSubject.next(this);
+        chartConfigUpdated.next({ chartId: this.id, dvchart: this });
     }
 
     get isConfigValid(): boolean {
@@ -228,4 +248,8 @@ export class DVChart {
 
         return this;
     } */
+
+    private _filterStream(event: ChartEvent): boolean {
+        return event.chartId === this.id;
+    }
 }

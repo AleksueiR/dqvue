@@ -15,8 +15,19 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 
 import api, { DVHighcharts } from './../api/main';
+import {
+    chartRendered,
+    chartConfigUpdated,
+    chartViewData,
+    chartSetExtremes,
+    ChartConfigUpdatedEvent
+} from './../observable-bus';
+
 import { DVChart } from './../classes/chart';
 import { charts } from './../store/main';
+
+import { isArray } from './../utils';
+
 import ChartSlider from './../components/chart-slider.vue';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
@@ -24,35 +35,12 @@ const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 const DV_CHART_CONTAINER_ELEMENT = '[dv-chart-container]';
 const DV_CHART_TABLE_CONTAINER_ELEMENT = '[dv-chart-table-container]';
 
-export type RenderedEvent = { chartId: string; highchartObject: DVHighcharts.ChartObject };
-export type ViewDataEvent = { chartId: string };
-export type SetExtremesEvent = {
-    chartId: string;
-    axis: 'xAxis' | 'yAxis';
-    max: number;
-    min: number;
-};
-
-// `menuItemDefinitions` is not included in default Highcharts exporting options types
-interface EnhancedExportingOptions extends Highcharts.ExportingOptions {
-    menuItemDefinitions: { [name: string]: DVHighcharts.MenuItem | null };
-}
-
 @Component({
     components: {
         'dv-chart-slider': ChartSlider
     }
 })
 export default class Chart extends Vue {
-    private static _rendered: Subject<RenderedEvent> = new Subject<RenderedEvent>();
-    static rendered = Chart._rendered.asObservable();
-
-    private static _viewData: Subject<ViewDataEvent> = new Subject<ViewDataEvent>();
-    static viewData = Chart._viewData.asObservable();
-
-    private static _setExtremes: Subject<SetExtremesEvent> = new Subject<SetExtremesEvent>();
-    static setExtremes = Chart._setExtremes.asObservable();
-
     dvchart: DVChart;
     isLoading: boolean = true;
 
@@ -109,7 +97,8 @@ export default class Chart extends Vue {
             return;
         }
 
-        Chart._viewData.next({ chartId: this.id });
+        // Chart._viewData.next({ chartId: this.id });
+        chartViewData.next({ chartId: this.id, dvchart: this.dvchart });
     }
 
     /**
@@ -133,8 +122,8 @@ export default class Chart extends Vue {
         // find chart and table containers
         this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT) as HTMLElement;
 
-        this.dvchart.configUpdated
-            .filter(dvchart => dvchart.id === this.id)
+        chartConfigUpdated
+            .filter((event: ChartConfigUpdatedEvent) => event.chartId === this.id)
             .subscribe(() => this.renderChart());
 
         if (this.dvchart.isConfigValid) {
@@ -145,49 +134,81 @@ export default class Chart extends Vue {
     renderChart(): void {
         log.info(`[chart='${this.id}'] rendering chart`);
 
-        // merge the custom `viewData` export option into the chart config
-        // if no exporting options exist, they will be created
-        // if the config author has specified `viewData` export option, it will not be overwritten
-        this.dvchart.config!.exporting = deepmerge.all([
-            {
-                menuItemDefinitions: {
-                    viewData: this._viewDataExportOption
-                }
-            } as EnhancedExportingOptions,
-            (this.dvchart.config!.exporting || {}) as Object
-        ]) as Highcharts.ExportingOptions;
+        // create a deep copy of the original config for reference
+        const originalConfig: DVHighcharts.Options = deepmerge({}, this.dvchart.config);
 
-        // TODO: handle yAxis
-        // TODO: if a 'setExtreme' event handler is already specified on the in the chart config, wrap it and execute it after the main handler
-        this.dvchart.config!.xAxis = deepmerge.all([
-            {
+        const originalViewDataOption: DVHighcharts.MenuItem | undefined = originalConfig.exporting
+            .menuItemDefinitions.viewData!;
+
+        // create an update snippet for the config based on the DQV options (table generation is the only one for now)
+        const configUpdates: DVHighcharts.Options = {
+            exporting: {
+                menuItemDefinitions: {
+                    viewData:
+                        // if no exporting options exist (`undefined` only, `null` has meaning in chart config - hide option), an internal one will be supplied
+                        // if the config author has specified `viewData` export option, it will not be overwritten
+                        typeof originalViewDataOption === 'undefined'
+                            ? this._viewDataExportOption
+                            : originalViewDataOption
+                }
+            },
+            // TODO: handle yAxis
+            // TODO: handle multipl x axes
+            // it's possible to specify several x axes for a chart
+            // in this case, each axis's options needs to be overwritten separately
+
+            /* const axes = isArray<Highcharts.AxisOptions>(originalConfig.xAxis)
+                ? originalConfig.xAxis
+                : [originalConfig.xAxis];
+
+            axes.forEach((axis: Highcharts.AxisOptions) =>
+                this._setExtremesHandler(event, axis.events!.setExtremes!)
+            ); */
+            xAxis: {
                 events: {
-                    setExtremes: (event: { max: number; min: number }) => {
-                        Chart._setExtremes.next({
-                            chartId: this.id,
-                            axis: 'xAxis',
-                            max: event.max,
-                            min: event.min
-                        });
+                    setExtremes: (event: Highcharts.AxisEvent) => {
+                        this._setExtremesHandler(
+                            event,
+                            (<Highcharts.AxisOptions>originalConfig.xAxis!).events!.setExtremes!
+                        );
                     }
                 }
-            } as Object,
-            (this.dvchart.config!.xAxis || {}) as Object
-        ]) as Object;
+            }
+        };
+
+        // update the original config
+        const modifiedConfig: DVHighcharts.Options = deepmerge(this.dvchart.config, configUpdates);
 
         // create an actual Highcharts object
-        this.highchartObject = api.Highcharts.chart(this._chartContainer, this.dvchart
-            .config as Highcharts.Options);
+        this.highchartObject = api.Highcharts.chart(this._chartContainer, modifiedConfig);
         this.isLoading = false;
 
-        Chart._rendered.next({
+        // push an event into the chart rendered stream
+        chartRendered.next({
             chartId: this.id,
+            dvchart: this.dvchart,
             highchartObject: this.highchartObject as DVHighcharts.ChartObject
         });
 
         if (this.autoGenerateTable) {
             this.simulateViewDataClick();
         }
+    }
+
+    // execute the original `setExtremes` handler specified in the chart config and push a `setExtremes` event into the corresponding stream
+    private _setExtremesHandler(
+        event: DVHighcharts.AxisEvent,
+        originalHandler: (event: DVHighcharts.AxisEvent) => void
+    ): void {
+        originalHandler.call(event.target, event);
+
+        chartSetExtremes.next({
+            chartId: this.id,
+            dvchart: this.dvchart,
+            axis: 'xAxis',
+            max: event.max,
+            min: event.min
+        });
     }
 }
 </script>

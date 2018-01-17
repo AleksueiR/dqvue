@@ -151,7 +151,7 @@
                         '        <dv-chart></dv-chart>' +
                         '        <dv-chart id="dfdf"></dv-chart>' +
 
-                        '        [{{ count }}]' +
+                        '        [{{ count }}] <span id="nuclear-extreme"></span>' +
                         '    </dv-section>'
                         ;
 
@@ -291,7 +291,13 @@
                                     return this.value; // clean, unformatted number for year
                                 }
                             },
-                            type: 'datetime'
+                            type: 'datetime',
+                            events: {
+                                setExtremes: function (event) {
+                                    console.log('nuclear `setExtremes` external handle');
+                                    document.getElementById('nuclear-extreme').innerHTML = Math.random().toFixed(2);
+                                }
+                            }
                         },
                         yAxis: {
                             title: {

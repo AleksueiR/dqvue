@@ -6,7 +6,7 @@ import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
 
-import { sectionCreatedSubject, chartCreatedSubject } from './../observable-bus';
+import { sectionCreated, chartCreated } from './../observable-bus';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -32,6 +32,15 @@ function importHighcharts(): void {
 
 // semi-public functionality not exposed on the HC declarations
 export namespace DVHighcharts {
+    export interface Options extends Highcharts.Options {
+        exporting: ExportingOptions;
+    }
+
+    export interface ExportingOptions extends Highcharts.ExportingOptions {
+        // `menuItemDefinitions` is not included in the `ExportingOptions` type
+        menuItemDefinitions: { [name: string]: MenuItem | null };
+    }
+
     export interface ChartObject extends Highcharts.ChartObject {
         // https://api.highcharts.com/highcharts/chart.resetZoomButton
         resetZoomButton: Highcharts.ElementObject | undefined;
@@ -49,6 +58,8 @@ export namespace DVHighcharts {
         // https://api.highcharts.com/highcharts/xAxis.minRange
         minRange: number;
     }
+
+    export interface AxisEvent extends Highcharts.AxisEvent {}
 
     // https://api.highcharts.com/highcharts/exporting.menuItemDefinitions
     export interface MenuItem extends Highcharts.MenuItem {
@@ -73,8 +84,8 @@ export default {
     Section: DVSection,
     Chart: DVChart,
 
-    sectionCreated: sectionCreatedSubject.asObservable(),
-    chartCreated: chartCreatedSubject.asObservable(),
+    sectionCreated: sectionCreated.asObservable(),
+    chartCreated: chartCreated.asObservable(),
 
     get sections(): { [name: string]: DVSection } {
         // TODO: return a clone instead of original object so users can't mess with it
