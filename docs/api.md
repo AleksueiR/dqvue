@@ -419,6 +419,18 @@ If set, all linked chart table nodes are populated with chart's data as soon as 
 <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
 ```
 
+###### Note:
+
+When auto generating a chart table, consider disabling Highcharts `View data table` menu option. It longer serves no purpose after the table is created. To do that, add the following to the top level of the chart config:
+
+```json
+exporting: {
+    menuItemDefinitions: {
+      viewData: null
+    }
+}
+```
+
 #### dv-chart-table: node
 
 A node where chart's data table will be rendered upon user request or on initial loading. Because chart ids are unique, `dv-chart-table` nodes are not restricted to the same `dv-section` as their parent chart, and can be placed in any of the `dv-section` nodes.
@@ -456,6 +468,30 @@ This links a `dv-chart-table` node to its parent chart. It's possible to link mu
 
     <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
 </dv-section>
+```
+
+##### dv-table-class: attribute
+
+A space separated list of CSS class names which will be applied to the actual `table` node when it is rendered. This can be useful if there is other code which uses a specific selector to manipulate the table.
+
+```html
+<dv-section id="section1">
+    <dv-chart id="chartId" dv-config="configObject">
+        <dv-chart-table dv-table-class="fancy-table zebra"></dv-chart-table>    
+    </dv-chart>
+</dv-section>
+```
+
+This example will be rendered as:
+
+```html
+<div ... dv-table-class="fancy-table zebra">
+    <div ... class="highcharts-data-table">
+        <table ... class="fancy-table zebra">
+            ...
+        </table>
+    </div>
+</div>
 ```
 
 ### Programmatic
@@ -789,6 +825,87 @@ Returns a Highcharts reference.
 const chart: DVChart = DQV.charts['chart2'];
 const highchart = chart.highchart; // returns an instance of Highcharts chart
 ```
+
+## Chart Configuration
+
+DV Chart object accepts any Highcharts configuration valid under the currently loaded Highcharts version.
+
+### Zoom Range Slider
+
+Highcharts provides an ability for the user to zoom into the data along X, Y, or both dimensions. This is done by dragging a rectangle on top of the chart. This is done by setting `zoomType` to `x`, `y` or `xy` on the `chart` section of the chart config:
+
+```json
+chart: {
+    zoomType: 'xy'
+}
+```
+
+DQV will automatically provide a keyboard-accessible double-sided slider control to modify the chart range when zoom type is set (X axis only for now). To not show the slider, set `zoomSlider` to `null` on the `chart` section of the chart config:
+
+```json
+chart: {
+    zoomType: 'x',
+    zoomSlider: null
+}
+```
+
+The slider is created using the [noUiSlider](https://refreshless.com/nouislider/) library and is highly configurable. To change the appearance or behaviour of the slider, set `zoomSlider` to a valid noUiSlider config object.
+
+```json
+chart: {
+    zoomType: 'x',
+    zoomSlider: {
+        step: 2,
+        connect: false,
+        tooltips: [ false, true ],
+        pips: {
+          mode: 'range',
+          density: 3
+      }
+    }
+}
+```
+
+If no slider options are provided, it configuration defaults to the following:
+
+```json
+{
+    // axisObject = highchart.xAxis;
+    // extremes = axisObject.getExtremes();
+    // https://api.highcharts.com/class-reference/Highcharts.Axis#getExtremes
+    
+    start: [extremes.dataMin, extremes.dataMax],
+    connect: true,
+    behaviour: 'tap-drag',
+    animate: false,
+    margin: axisObject.minRange
+    range: {
+        min: extremes.dataMin,
+        max: extremes.dataMax
+    }
+}
+```
+
+#### Keyboard Navigation
+
+Focus on a slider handle by clicking on or tabbing to it to activate keyboard support:
+
+##### Movement Keys
+
+- `Right` and `Up` keys move the focused handle to the right by a single step
+- `Left` and `Down` keys move the focused handle to the left by a single step
+- `Home` key moves the focused handle all the way to the left
+- `End` key moves the focused handles all the way to the right
+
+##### Modifier Keys
+
+- holding `Shift` key while pressing a movement key moves the focused handle by ten steps at a time
+- holding `Ctrl` key while pressing a moment key moves both handles at the same time effectively shifting the current range
+
+##### Key Combinations
+
+- `Ctrl` + `Home|End`  moves the selected range all the way to the left|right
+- `Shift` + `Ctrl` + `Right|Up|Left|Down` moves the selected range left|right by ten steps
 
 ## Future Enhancements
 
