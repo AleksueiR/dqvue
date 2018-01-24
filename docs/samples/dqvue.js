@@ -61,7 +61,7 @@ var DQV =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -681,9 +681,9 @@ exports.Observable = Observable;
 Object.defineProperty(exports, "__esModule", { value: true });
 var isArray_1 = __webpack_require__(/*! ./util/isArray */ 46);
 var isObject_1 = __webpack_require__(/*! ./util/isObject */ 47);
-var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 16);
-var tryCatch_1 = __webpack_require__(/*! ./util/tryCatch */ 25);
-var errorObject_1 = __webpack_require__(/*! ./util/errorObject */ 17);
+var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 17);
+var tryCatch_1 = __webpack_require__(/*! ./util/tryCatch */ 26);
+var errorObject_1 = __webpack_require__(/*! ./util/errorObject */ 18);
 var UnsubscriptionError_1 = __webpack_require__(/*! ./util/UnsubscriptionError */ 48);
 /**
  * Represents a disposable resource, such as the execution of an Observable. A
@@ -907,9 +907,9 @@ __WEBPACK_IMPORTED_MODULE_0__observable_bus__["b" /* chartCreated */].subscribe(
 
 /***/ }),
 /* 5 */
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
+/*!************************************************!*\
+  !*** ./node_modules/webpack/buildin/global.js ***!
+  \************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
 /***/ (function(module, exports) {
@@ -1576,10 +1576,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 16);
+var isFunction_1 = __webpack_require__(/*! ./util/isFunction */ 17);
 var Subscription_1 = __webpack_require__(/*! ./Subscription */ 3);
-var Observer_1 = __webpack_require__(/*! ./Observer */ 26);
-var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 18);
+var Observer_1 = __webpack_require__(/*! ./Observer */ 27);
+var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 19);
 /**
  * Implements the {@link Observer} interface and extends the
  * {@link Subscription} class. While the {@link Observer} is the public API for
@@ -12636,10 +12636,75 @@ Vue$3.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue$3);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 5), __webpack_require__(/*! ./../../timers-browserify/main.js */ 33).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 5), __webpack_require__(/*! ./../../timers-browserify/main.js */ 14).setImmediate))
 
 /***/ }),
 /* 14 */
+/*!************************************************!*\
+  !*** ./node_modules/timers-browserify/main.js ***!
+  \************************************************/
+/*! dynamic exports provided */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(/*! setimmediate */ 34);
+exports.setImmediate = setImmediate;
+exports.clearImmediate = clearImmediate;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./main.js */ 14).setImmediate, __webpack_require__(/*! ./main.js */ 14).clearImmediate))
+
+/***/ }),
+/* 15 */
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
   \*****************************************/
@@ -12834,7 +12899,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /*!*******************************************!*\
   !*** ./node_modules/deepmerge/dist/es.js ***!
   \*******************************************/
@@ -12935,7 +13000,7 @@ var deepmerge_1 = deepmerge;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /*!**********************************************!*\
   !*** ./node_modules/rxjs/util/isFunction.js ***!
   \**********************************************/
@@ -12953,7 +13018,7 @@ exports.isFunction = isFunction;
 //# sourceMappingURL=isFunction.js.map
 
 /***/ }),
-/* 17 */
+/* 18 */
 /*!***********************************************!*\
   !*** ./node_modules/rxjs/util/errorObject.js ***!
   \***********************************************/
@@ -12969,7 +13034,7 @@ exports.errorObject = { e: {} };
 //# sourceMappingURL=errorObject.js.map
 
 /***/ }),
-/* 18 */
+/* 19 */
 /*!**************************************************!*\
   !*** ./node_modules/rxjs/symbol/rxSubscriber.js ***!
   \**************************************************/
@@ -12991,7 +13056,7 @@ exports.$$rxSubscriber = exports.rxSubscriber;
 //# sourceMappingURL=rxSubscriber.js.map
 
 /***/ }),
-/* 19 */
+/* 20 */
 /*!**********************!*\
   !*** ./src/utils.ts ***!
   \**********************/
@@ -13183,7 +13248,7 @@ var keyCodes;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /*!**************************************!*\
   !*** ./node_modules/uniqid/index.js ***!
   \**************************************/
@@ -13229,10 +13294,10 @@ function macHandler(error){
     }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 14), __webpack_require__(/*! ./../webpack/buildin/module.js */ 76)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 15), __webpack_require__(/*! ./../webpack/buildin/module.js */ 76)(module)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /*!*************************!*\
   !*** ./src/api/main.ts ***!
   \*************************/
@@ -13243,8 +13308,8 @@ function macHandler(error){
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel__ = __webpack_require__(/*! loglevel */ 1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./../classes/section */ 22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./../classes/chart */ 30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./../classes/section */ 23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./../classes/chart */ 31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./../store/main */ 4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 0);
 
@@ -13289,7 +13354,7 @@ function importHighcharts() {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /*!********************************!*\
   !*** ./src/classes/section.ts ***!
   \********************************/
@@ -13306,7 +13371,7 @@ function importHighcharts() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_chart_vue__ = __webpack_require__(/*! ./../components/chart.vue */ 42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_chart_table_vue__ = __webpack_require__(/*! ./../components/chart-table.vue */ 73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(/*! ./../utils */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils__ = __webpack_require__(/*! ./../utils */ 20);
 
 
 
@@ -13528,7 +13593,7 @@ var DVSection = (function () {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /*!***************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/section.vue ***!
   \***************************************************************************************************************************/
@@ -13573,7 +13638,7 @@ var Section = (function (_super) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /*!*************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/chart.vue ***!
   \*************************************************************************************************************************/
@@ -13586,10 +13651,10 @@ var Section = (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__ = __webpack_require__(/*! rxjs/add/operator/filter */ 10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_main__ = __webpack_require__(/*! ./../api/main */ 21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__api_main__ = __webpack_require__(/*! ./../api/main */ 22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__store_main__ = __webpack_require__(/*! ./../store/main */ 4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_chart_slider_vue__ = __webpack_require__(/*! ./../components/chart-slider.vue */ 57);
@@ -13752,7 +13817,7 @@ var Chart = (function (_super) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /*!********************************************!*\
   !*** ./node_modules/rxjs/util/tryCatch.js ***!
   \********************************************/
@@ -13763,7 +13828,7 @@ var Chart = (function (_super) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var errorObject_1 = __webpack_require__(/*! ./errorObject */ 17);
+var errorObject_1 = __webpack_require__(/*! ./errorObject */ 18);
 var tryCatchTarget;
 function tryCatcher() {
     try {
@@ -13783,7 +13848,7 @@ exports.tryCatch = tryCatch;
 //# sourceMappingURL=tryCatch.js.map
 
 /***/ }),
-/* 26 */
+/* 27 */
 /*!***************************************!*\
   !*** ./node_modules/rxjs/Observer.js ***!
   \***************************************/
@@ -13803,7 +13868,7 @@ exports.empty = {
 //# sourceMappingURL=Observer.js.map
 
 /***/ }),
-/* 27 */
+/* 28 */
 /*!********************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/chart-slider.vue ***!
   \********************************************************************************************************************************/
@@ -13818,7 +13883,7 @@ exports.empty = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_nouislider__ = __webpack_require__(/*! nouislider */ 60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_nouislider___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_nouislider__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_deepmerge__ = __webpack_require__(/*! deepmerge */ 15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_deepmerge__ = __webpack_require__(/*! deepmerge */ 16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_main__ = __webpack_require__(/*! ./../store/main */ 4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_rxjs_Observable__ = __webpack_require__(/*! rxjs/Observable */ 2);
@@ -13829,7 +13894,7 @@ exports.empty = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_filter__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_sampleTime__ = __webpack_require__(/*! rxjs/add/operator/sampleTime */ 64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_sampleTime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_sampleTime__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__utils__ = __webpack_require__(/*! ./../utils */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__utils__ = __webpack_require__(/*! ./../utils */ 20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -14110,7 +14175,7 @@ var ChartSlider = (function (_super) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /*!**********************************************!*\
   !*** ./node_modules/rxjs/scheduler/async.js ***!
   \**********************************************/
@@ -14169,7 +14234,7 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 //# sourceMappingURL=async.js.map
 
 /***/ }),
-/* 29 */
+/* 30 */
 /*!*******************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./src/components/chart-table.vue ***!
   \*******************************************************************************************************************************/
@@ -14180,7 +14245,7 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__ = __webpack_require__(/*! vue-property-decorator */ 9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_property_decorator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_property_decorator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_uniqid__ = __webpack_require__(/*! uniqid */ 20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_uniqid__ = __webpack_require__(/*! uniqid */ 21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_uniqid__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_loglevel__ = __webpack_require__(/*! loglevel */ 1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_loglevel__);
@@ -14269,16 +14334,19 @@ var ChartTable = (function (_super) {
         __WEBPACK_IMPORTED_MODULE_3__observable_bus__["e" /* chartViewData */].filter(this._filterStream, this).subscribe(this.generateTable);
     };
     ChartTable.prototype.generateTable = function () {
+        var _this = this;
         if (!this.dvchart.highchart) {
             log.warn("[chart-table='" + this.id + "' chart='" + this.chartId + "'] something's wrong - trying to render the table before chart is ready");
             return;
         }
         this.highchartsDataTable.innerHTML = this.dvchart.highchart.getTable();
         if (typeof this.tableClass !== 'undefined') {
-            (_a = this.highchartsDataTable.querySelector('table').classList).add.apply(_a, this.tableClass.split(' '));
+            var classes = this.tableClass.split(' ');
+            classes.forEach(function (element) {
+                _this.highchartsDataTable.querySelector('table').classList.add(element);
+            });
         }
         log.info("[chart-table='" + this.id + "' chart='" + this.chartId + "'] rendering chart table on", this.highchartsDataTable);
-        var _a;
     };
     ChartTable.prototype._filterStream = function (event) {
         return event.chartId === this.chartId;
@@ -14298,7 +14366,7 @@ var ChartTable = (function (_super) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /*!******************************!*\
   !*** ./src/classes/chart.ts ***!
   \******************************/
@@ -14308,15 +14376,15 @@ var ChartTable = (function (_super) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DVChart; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_uniqid__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel__ = __webpack_require__(/*! loglevel */ 1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_loglevel___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_loglevel__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_deepmerge__ = __webpack_require__(/*! deepmerge */ 16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__ = __webpack_require__(/*! rxjs/add/operator/filter */ 10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_filter__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observable_bus__ = __webpack_require__(/*! ./../observable-bus */ 0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils__ = __webpack_require__(/*! ./../utils */ 19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils__ = __webpack_require__(/*! ./../utils */ 20);
 
 
 
@@ -14490,7 +14558,7 @@ var DVChart = (function () {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /*!****************************!*\
   !*** multi ./src/index.ts ***!
   \****************************/
@@ -14498,11 +14566,11 @@ var DVChart = (function () {
 /*! all exports used */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\aleksueir\Klingon\Development\GitHub\dqv-starter\src\index.ts */32);
+module.exports = __webpack_require__(/*! C:\users\wahls\code\dqv\src\index.ts */33);
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
@@ -14512,75 +14580,11 @@ module.exports = __webpack_require__(/*! C:\Users\aleksueir\Klingon\Development\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_main__ = __webpack_require__(/*! ./api/main */ 21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api_main__ = __webpack_require__(/*! ./api/main */ 22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap__ = __webpack_require__(/*! ./bootstrap */ 79);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__api_main__["a" /* default */]);
-
-
-/***/ }),
-/* 33 */
-/*!************************************************!*\
-  !*** ./node_modules/timers-browserify/main.js ***!
-  \************************************************/
-/*! dynamic exports provided */
-/*! all exports used */
-/***/ (function(module, exports, __webpack_require__) {
-
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(/*! setimmediate */ 34);
-exports.setImmediate = setImmediate;
-exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
@@ -14779,7 +14783,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 5), __webpack_require__(/*! ./../process/browser.js */ 14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 5), __webpack_require__(/*! ./../process/browser.js */ 15)))
 
 /***/ }),
 /* 35 */
@@ -14791,7 +14795,7 @@ exports.clearImmediate = clearImmediate;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_section_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./section.vue */ 23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_section_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./section.vue */ 24);
 /* unused harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4cbe88be_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_section_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-4cbe88be","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./section.vue */ 41);
 function injectStyle (ssrContext) {
@@ -16192,7 +16196,7 @@ var Reflect;
             Function("return this;")());
 })(Reflect || (Reflect = {}));
 //# sourceMappingURL=Reflect.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 14), __webpack_require__(/*! ./../webpack/buildin/global.js */ 5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../process/browser.js */ 15), __webpack_require__(/*! ./../webpack/buildin/global.js */ 5)))
 
 /***/ }),
 /* 41 */
@@ -16219,7 +16223,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart.vue */ 24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart.vue */ 25);
 /* unused harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c6416816_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-c6416816","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart.vue */ 72);
 function injectStyle (ssrContext) {
@@ -16301,8 +16305,8 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Subscriber_1 = __webpack_require__(/*! ../Subscriber */ 12);
-var rxSubscriber_1 = __webpack_require__(/*! ../symbol/rxSubscriber */ 18);
-var Observer_1 = __webpack_require__(/*! ../Observer */ 26);
+var rxSubscriber_1 = __webpack_require__(/*! ../symbol/rxSubscriber */ 19);
+var Observer_1 = __webpack_require__(/*! ../Observer */ 27);
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -16686,7 +16690,7 @@ var Subscriber_1 = __webpack_require__(/*! ./Subscriber */ 12);
 var Subscription_1 = __webpack_require__(/*! ./Subscription */ 3);
 var ObjectUnsubscribedError_1 = __webpack_require__(/*! ./util/ObjectUnsubscribedError */ 55);
 var SubjectSubscription_1 = __webpack_require__(/*! ./SubjectSubscription */ 56);
-var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 18);
+var rxSubscriber_1 = __webpack_require__(/*! ./symbol/rxSubscriber */ 19);
 /**
  * @class SubjectSubscriber<T>
  */
@@ -16961,7 +16965,7 @@ exports.SubjectSubscription = SubjectSubscription;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_slider_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-slider.vue */ 27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_slider_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-slider.vue */ 28);
 /* unused harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7ba543d1_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_slider_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-7ba543d1","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart-slider.vue */ 71);
 function injectStyle (ssrContext) {
@@ -17025,7 +17029,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n.dv-slider-input[data-v-7ba543d1] {\n  width: 50px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  margin: 10px 0;\n  /*! nouislider - 10.1.0 - 2017-07-28 17:11:18 */\n  /* Functional styling;\r\n * These styles are required for noUiSlider to function.\r\n * You don't need to change these rules to apply your design.\r\n */\n  /* Painting and performance;\r\n * Browsers can paint handles in their own layer.\r\n */\n  /* Slider size and handle placement;\r\n */\n  /* Styling;\r\n */\n  /* Handles and cursors;\r\n */\n  /* Handle stripes;\r\n */\n  /* Disabled state;\r\n */\n  /* Base;\r\n *\r\n */\n  /* Values;\r\n *\r\n */\n  /* Markings;\r\n *\r\n */\n  /* Horizontal layout;\r\n *\r\n */\n  /* Vertical layout;\r\n *\r\n */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .dv-slider-input {\n    text-align: center;\n    padding-top: 2px;\n    padding-bottom: 2px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    margin: 0 20px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-target * {\n    -webkit-touch-callout: none;\n    -webkit-tap-highlight-color: transparent;\n    -webkit-user-select: none;\n    -ms-touch-action: none;\n    touch-action: none;\n    -ms-user-select: none;\n    -moz-user-select: none;\n    user-select: none;\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    position: relative;\n    direction: ltr;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base {\n    width: 100%;\n    height: 100%;\n    position: relative;\n    z-index: 1;\n    /* Fix 401 */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    position: absolute;\n    right: 0;\n    top: 0;\n    left: 0;\n    bottom: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-origin {\n    position: absolute;\n    height: 0;\n    width: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    position: relative;\n    z-index: 1;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-connect,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-origin {\n    -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n    transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-drag * {\n    cursor: inherit !important;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal {\n    height: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-handle {\n    width: 34px;\n    height: 28px;\n    left: -17px;\n    top: -6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical {\n    width: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle {\n    width: 28px;\n    height: 34px;\n    left: -6px;\n    top: -17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    background: #fafafa;\n    border-radius: 4px;\n    border: 1px solid #d3d3d3;\n    -webkit-box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    background: #3fb8af;\n    border-radius: 4px;\n    -webkit-box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n            box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n    -webkit-transition: background 450ms;\n    transition: background 450ms;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-draggable {\n    cursor: ew-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-draggable {\n    cursor: ns-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    cursor: default;\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-active {\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    content: '';\n    display: block;\n    position: absolute;\n    height: 14px;\n    width: 1px;\n    background: #e8e7e6;\n    left: 14px;\n    top: 6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    left: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    width: 14px;\n    height: 1px;\n    left: 6px;\n    top: 14px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    top: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-connect {\n    background: #b8b8b8;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-handle,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-handle {\n    cursor: not-allowed;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips * {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips {\n    position: absolute;\n    color: #999;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value {\n    position: absolute;\n    white-space: nowrap;\n    text-align: center;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-sub {\n    color: #ccc;\n    font-size: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker {\n    position: absolute;\n    background: #ccc;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-sub {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-large {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-horizontal {\n    padding: 10px 0;\n    height: 80px;\n    top: 100%;\n    left: 0;\n    width: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-horizontal {\n    -webkit-transform: translate3d(-50%, 50%, 0);\n    transform: translate3d(-50%, 50%, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker {\n    margin-left: -1px;\n    width: 2px;\n    height: 5px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-sub {\n    height: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-large {\n    height: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-vertical {\n    padding: 0 10px;\n    height: 100%;\n    top: 0;\n    left: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-vertical {\n    -webkit-transform: translate3d(0, 50%, 0);\n    transform: translate3d(0, 50%, 0);\n    padding-left: 25px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker {\n    width: 5px;\n    height: 2px;\n    margin-top: -1px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-sub {\n    width: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-large {\n    width: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-tooltip {\n    display: block;\n    position: absolute;\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    color: #000;\n    padding: 5px;\n    text-align: center;\n    white-space: nowrap;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-tooltip {\n    -webkit-transform: translate(-50%, 0);\n    -ms-transform: translate(-50%, 0);\n        transform: translate(-50%, 0);\n    left: 50%;\n    bottom: 120%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-tooltip {\n    -webkit-transform: translate(0, -50%);\n    -ms-transform: translate(0, -50%);\n        transform: translate(0, -50%);\n    top: 50%;\n    right: 120%;\n}\n", "", {"version":3,"sources":["C:/Users/aleksueir/Klingon/Development/GitHub/dqv-starter/src/components/chart-slider.vue"],"names":[],"mappings":";AACA;EACE,YAAY;CACb;AACD;EACE,qBAAqB;EACrB,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,uBAAuB;UACnB,oBAAoB;EAC5B,eAAe;EACf,gDAAgD;EAChD;;;GAGC;EACD;;GAEC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;CACF;AACD;IACI,mBAAmB;IACnB,iBAAiB;IACjB,oBAAoB;CACvB;AACD;IACI,oBAAoB;QAChB,YAAY;YACR,QAAQ;IAChB,eAAe;CAClB;AACD;;IAEI,4BAA4B;IAC5B,yCAAyC;IACzC,0BAA0B;IAC1B,uBAAuB;IACvB,mBAAmB;IACnB,sBAAsB;IACtB,uBAAuB;IACvB,kBAAkB;IAClB,+BAA+B;YACvB,uBAAuB;CAClC;AACD;IACI,mBAAmB;IACnB,eAAe;CAClB;AACD;IACI,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,WAAW;IACX,aAAa;CAChB;AACD;IACI,mBAAmB;IACnB,SAAS;IACT,OAAO;IACP,QAAQ;IACR,UAAU;CACb;AACD;IACI,mBAAmB;IACnB,UAAU;IACV,SAAS;CACZ;AACD;IACI,mBAAmB;IACnB,WAAW;CACd;AACD;;IAEI,iEAAiE;IACjE,yDAAyD;CAC5D;AACD;IACI,2BAA2B;CAC9B;AACD;;IAEI,wCAAwC;IACxC,gCAAgC;CACnC;AACD;IACI,aAAa;CAChB;AACD;IACI,YAAY;IACZ,aAAa;IACb,YAAY;IACZ,UAAU;CACb;AACD;IACI,YAAY;CACf;AACD;IACI,YAAY;IACZ,aAAa;IACb,WAAW;IACX,WAAW;CACd;AACD;IACI,oBAAoB;IACpB,mBAAmB;IACnB,0BAA0B;IAC1B,iEAAiE;YACzD,yDAAyD;CACpE;AACD;IACI,oBAAoB;IACpB,mBAAmB;IACnB,yDAAyD;YACjD,iDAAiD;IACzD,qCAAqC;IACrC,6BAA6B;CAChC;AACD;IACI,kBAAkB;CACrB;AACD;IACI,kBAAkB;CACrB;AACD;IACI,0BAA0B;IAC1B,mBAAmB;IACnB,iBAAiB;IACjB,gBAAgB;IAChB,qFAAqF;YAC7E,6EAA6E;CACxF;AACD;IACI,kFAAkF;YAC1E,0EAA0E;CACrF;AACD;;IAEI,YAAY;IACZ,eAAe;IACf,mBAAmB;IACnB,aAAa;IACb,WAAW;IACX,oBAAoB;IACpB,WAAW;IACX,SAAS;CACZ;AACD;IACI,WAAW;CACd;AACD;;IAEI,YAAY;IACZ,YAAY;IACZ,UAAU;IACV,UAAU;CACb;AACD;IACI,UAAU;CACb;AACD;IACI,oBAAoB;CACvB;AACD;;;IAGI,oBAAoB;CACvB;AACD;;IAEI,+BAA+B;YACvB,uBAAuB;CAClC;AACD;IACI,mBAAmB;IACnB,YAAY;CACf;AACD;IACI,mBAAmB;IACnB,oBAAoB;IACpB,mBAAmB;CACtB;AACD;IACI,YAAY;IACZ,gBAAgB;CACnB;AACD;IACI,mBAAmB;IACnB,iBAAiB;CACpB;AACD;IACI,iBAAiB;CACpB;AACD;IACI,iBAAiB;CACpB;AACD;IACI,gBAAgB;IAChB,aAAa;IACb,UAAU;IACV,QAAQ;IACR,YAAY;CACf;AACD;IACI,6CAA6C;IAC7C,qCAAqC;CACxC;AACD;IACI,kBAAkB;IAClB,WAAW;IACX,YAAY;CACf;AACD;IACI,aAAa;CAChB;AACD;IACI,aAAa;CAChB;AACD;IACI,gBAAgB;IAChB,aAAa;IACb,OAAO;IACP,WAAW;CACd;AACD;IACI,0CAA0C;IAC1C,kCAAkC;IAClC,mBAAmB;CACtB;AACD;IACI,WAAW;IACX,YAAY;IACZ,iBAAiB;CACpB;AACD;IACI,YAAY;CACf;AACD;IACI,YAAY;CACf;AACD;IACI,eAAe;IACf,mBAAmB;IACnB,0BAA0B;IAC1B,mBAAmB;IACnB,iBAAiB;IACjB,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,oBAAoB;CACvB;AACD;IACI,sCAAsC;IACtC,kCAAkC;QAC9B,8BAA8B;IAClC,UAAU;IACV,aAAa;CAChB;AACD;IACI,sCAAsC;IACtC,kCAAkC;QAC9B,8BAA8B;IAClC,SAAS;IACT,YAAY;CACf","file":"chart-slider.vue","sourcesContent":["\n.dv-slider-input[data-v-7ba543d1] {\n  width: 50px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  margin: 10px 0;\n  /*! nouislider - 10.1.0 - 2017-07-28 17:11:18 */\n  /* Functional styling;\r\n * These styles are required for noUiSlider to function.\r\n * You don't need to change these rules to apply your design.\r\n */\n  /* Painting and performance;\r\n * Browsers can paint handles in their own layer.\r\n */\n  /* Slider size and handle placement;\r\n */\n  /* Styling;\r\n */\n  /* Handles and cursors;\r\n */\n  /* Handle stripes;\r\n */\n  /* Disabled state;\r\n */\n  /* Base;\r\n *\r\n */\n  /* Values;\r\n *\r\n */\n  /* Markings;\r\n *\r\n */\n  /* Horizontal layout;\r\n *\r\n */\n  /* Vertical layout;\r\n *\r\n */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .dv-slider-input {\n    text-align: center;\n    padding-top: 2px;\n    padding-bottom: 2px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    margin: 0 20px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-target * {\n    -webkit-touch-callout: none;\n    -webkit-tap-highlight-color: transparent;\n    -webkit-user-select: none;\n    -ms-touch-action: none;\n    touch-action: none;\n    -ms-user-select: none;\n    -moz-user-select: none;\n    user-select: none;\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    position: relative;\n    direction: ltr;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base {\n    width: 100%;\n    height: 100%;\n    position: relative;\n    z-index: 1;\n    /* Fix 401 */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    position: absolute;\n    right: 0;\n    top: 0;\n    left: 0;\n    bottom: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-origin {\n    position: absolute;\n    height: 0;\n    width: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    position: relative;\n    z-index: 1;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-connect,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-origin {\n    -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n    transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-drag * {\n    cursor: inherit !important;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal {\n    height: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-handle {\n    width: 34px;\n    height: 28px;\n    left: -17px;\n    top: -6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical {\n    width: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle {\n    width: 28px;\n    height: 34px;\n    left: -6px;\n    top: -17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    background: #fafafa;\n    border-radius: 4px;\n    border: 1px solid #d3d3d3;\n    -webkit-box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    background: #3fb8af;\n    border-radius: 4px;\n    -webkit-box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n            box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n    -webkit-transition: background 450ms;\n    transition: background 450ms;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-draggable {\n    cursor: ew-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-draggable {\n    cursor: ns-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    cursor: default;\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-active {\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    content: '';\n    display: block;\n    position: absolute;\n    height: 14px;\n    width: 1px;\n    background: #e8e7e6;\n    left: 14px;\n    top: 6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    left: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    width: 14px;\n    height: 1px;\n    left: 6px;\n    top: 14px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    top: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-connect {\n    background: #b8b8b8;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-handle,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-handle {\n    cursor: not-allowed;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips * {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips {\n    position: absolute;\n    color: #999;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value {\n    position: absolute;\n    white-space: nowrap;\n    text-align: center;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-sub {\n    color: #ccc;\n    font-size: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker {\n    position: absolute;\n    background: #ccc;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-sub {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-large {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-horizontal {\n    padding: 10px 0;\n    height: 80px;\n    top: 100%;\n    left: 0;\n    width: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-horizontal {\n    -webkit-transform: translate3d(-50%, 50%, 0);\n    transform: translate3d(-50%, 50%, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker {\n    margin-left: -1px;\n    width: 2px;\n    height: 5px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-sub {\n    height: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-large {\n    height: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-vertical {\n    padding: 0 10px;\n    height: 100%;\n    top: 0;\n    left: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-vertical {\n    -webkit-transform: translate3d(0, 50%, 0);\n    transform: translate3d(0, 50%, 0);\n    padding-left: 25px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker {\n    width: 5px;\n    height: 2px;\n    margin-top: -1px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-sub {\n    width: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-large {\n    width: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-tooltip {\n    display: block;\n    position: absolute;\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    color: #000;\n    padding: 5px;\n    text-align: center;\n    white-space: nowrap;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-tooltip {\n    -webkit-transform: translate(-50%, 0);\n    -ms-transform: translate(-50%, 0);\n        transform: translate(-50%, 0);\n    left: 50%;\n    bottom: 120%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-tooltip {\n    -webkit-transform: translate(0, -50%);\n    -ms-transform: translate(0, -50%);\n        transform: translate(0, -50%);\n    top: 50%;\n    right: 120%;\n}\n"],"sourceRoot":""}]);
+exports.push([module.i, "\n.dv-slider-input[data-v-7ba543d1] {\n  width: 50px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  margin: 10px 0;\n  /*! nouislider - 10.1.0 - 2017-07-28 17:11:18 */\n  /* Functional styling;\r\n * These styles are required for noUiSlider to function.\r\n * You don't need to change these rules to apply your design.\r\n */\n  /* Painting and performance;\r\n * Browsers can paint handles in their own layer.\r\n */\n  /* Slider size and handle placement;\r\n */\n  /* Styling;\r\n */\n  /* Handles and cursors;\r\n */\n  /* Handle stripes;\r\n */\n  /* Disabled state;\r\n */\n  /* Base;\r\n *\r\n */\n  /* Values;\r\n *\r\n */\n  /* Markings;\r\n *\r\n */\n  /* Horizontal layout;\r\n *\r\n */\n  /* Vertical layout;\r\n *\r\n */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .dv-slider-input {\n    text-align: center;\n    padding-top: 2px;\n    padding-bottom: 2px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    margin: 0 20px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-target * {\n    -webkit-touch-callout: none;\n    -webkit-tap-highlight-color: transparent;\n    -webkit-user-select: none;\n    -ms-touch-action: none;\n    touch-action: none;\n    -ms-user-select: none;\n    -moz-user-select: none;\n    user-select: none;\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    position: relative;\n    direction: ltr;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base {\n    width: 100%;\n    height: 100%;\n    position: relative;\n    z-index: 1;\n    /* Fix 401 */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    position: absolute;\n    right: 0;\n    top: 0;\n    left: 0;\n    bottom: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-origin {\n    position: absolute;\n    height: 0;\n    width: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    position: relative;\n    z-index: 1;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-connect,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-origin {\n    -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n    transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-drag * {\n    cursor: inherit !important;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal {\n    height: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-handle {\n    width: 34px;\n    height: 28px;\n    left: -17px;\n    top: -6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical {\n    width: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle {\n    width: 28px;\n    height: 34px;\n    left: -6px;\n    top: -17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    background: #fafafa;\n    border-radius: 4px;\n    border: 1px solid #d3d3d3;\n    -webkit-box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    background: #3fb8af;\n    border-radius: 4px;\n    -webkit-box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n            box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n    -webkit-transition: background 450ms;\n    transition: background 450ms;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-draggable {\n    cursor: ew-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-draggable {\n    cursor: ns-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    cursor: default;\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-active {\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    content: '';\n    display: block;\n    position: absolute;\n    height: 14px;\n    width: 1px;\n    background: #e8e7e6;\n    left: 14px;\n    top: 6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    left: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    width: 14px;\n    height: 1px;\n    left: 6px;\n    top: 14px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    top: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-connect {\n    background: #b8b8b8;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-handle,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-handle {\n    cursor: not-allowed;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips * {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips {\n    position: absolute;\n    color: #999;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value {\n    position: absolute;\n    white-space: nowrap;\n    text-align: center;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-sub {\n    color: #ccc;\n    font-size: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker {\n    position: absolute;\n    background: #ccc;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-sub {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-large {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-horizontal {\n    padding: 10px 0;\n    height: 80px;\n    top: 100%;\n    left: 0;\n    width: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-horizontal {\n    -webkit-transform: translate3d(-50%, 50%, 0);\n    transform: translate3d(-50%, 50%, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker {\n    margin-left: -1px;\n    width: 2px;\n    height: 5px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-sub {\n    height: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-large {\n    height: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-vertical {\n    padding: 0 10px;\n    height: 100%;\n    top: 0;\n    left: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-vertical {\n    -webkit-transform: translate3d(0, 50%, 0);\n    transform: translate3d(0, 50%, 0);\n    padding-left: 25px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker {\n    width: 5px;\n    height: 2px;\n    margin-top: -1px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-sub {\n    width: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-large {\n    width: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-tooltip {\n    display: block;\n    position: absolute;\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    color: #000;\n    padding: 5px;\n    text-align: center;\n    white-space: nowrap;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-tooltip {\n    -webkit-transform: translate(-50%, 0);\n    -ms-transform: translate(-50%, 0);\n        transform: translate(-50%, 0);\n    left: 50%;\n    bottom: 120%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-tooltip {\n    -webkit-transform: translate(0, -50%);\n    -ms-transform: translate(0, -50%);\n        transform: translate(0, -50%);\n    top: 50%;\n    right: 120%;\n}\n", "", {"version":3,"sources":["C:/users/wahls/code/dqv/src/components/chart-slider.vue"],"names":[],"mappings":";AACA;EACE,YAAY;CACb;AACD;EACE,qBAAqB;EACrB,qBAAqB;EACrB,cAAc;EACd,0BAA0B;MACtB,uBAAuB;UACnB,oBAAoB;EAC5B,eAAe;EACf,gDAAgD;EAChD;;;GAGC;EACD;;GAEC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;GACC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;EACD;;GAEC;CACF;AACD;IACI,mBAAmB;IACnB,iBAAiB;IACjB,oBAAoB;CACvB;AACD;IACI,oBAAoB;QAChB,YAAY;YACR,QAAQ;IAChB,eAAe;CAClB;AACD;;IAEI,4BAA4B;IAC5B,yCAAyC;IACzC,0BAA0B;IAC1B,uBAAuB;IACvB,mBAAmB;IACnB,sBAAsB;IACtB,uBAAuB;IACvB,kBAAkB;IAClB,+BAA+B;YACvB,uBAAuB;CAClC;AACD;IACI,mBAAmB;IACnB,eAAe;CAClB;AACD;IACI,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,WAAW;IACX,aAAa;CAChB;AACD;IACI,mBAAmB;IACnB,SAAS;IACT,OAAO;IACP,QAAQ;IACR,UAAU;CACb;AACD;IACI,mBAAmB;IACnB,UAAU;IACV,SAAS;CACZ;AACD;IACI,mBAAmB;IACnB,WAAW;CACd;AACD;;IAEI,iEAAiE;IACjE,yDAAyD;CAC5D;AACD;IACI,2BAA2B;CAC9B;AACD;;IAEI,wCAAwC;IACxC,gCAAgC;CACnC;AACD;IACI,aAAa;CAChB;AACD;IACI,YAAY;IACZ,aAAa;IACb,YAAY;IACZ,UAAU;CACb;AACD;IACI,YAAY;CACf;AACD;IACI,YAAY;IACZ,aAAa;IACb,WAAW;IACX,WAAW;CACd;AACD;IACI,oBAAoB;IACpB,mBAAmB;IACnB,0BAA0B;IAC1B,iEAAiE;YACzD,yDAAyD;CACpE;AACD;IACI,oBAAoB;IACpB,mBAAmB;IACnB,yDAAyD;YACjD,iDAAiD;IACzD,qCAAqC;IACrC,6BAA6B;CAChC;AACD;IACI,kBAAkB;CACrB;AACD;IACI,kBAAkB;CACrB;AACD;IACI,0BAA0B;IAC1B,mBAAmB;IACnB,iBAAiB;IACjB,gBAAgB;IAChB,qFAAqF;YAC7E,6EAA6E;CACxF;AACD;IACI,kFAAkF;YAC1E,0EAA0E;CACrF;AACD;;IAEI,YAAY;IACZ,eAAe;IACf,mBAAmB;IACnB,aAAa;IACb,WAAW;IACX,oBAAoB;IACpB,WAAW;IACX,SAAS;CACZ;AACD;IACI,WAAW;CACd;AACD;;IAEI,YAAY;IACZ,YAAY;IACZ,UAAU;IACV,UAAU;CACb;AACD;IACI,UAAU;CACb;AACD;IACI,oBAAoB;CACvB;AACD;;;IAGI,oBAAoB;CACvB;AACD;;IAEI,+BAA+B;YACvB,uBAAuB;CAClC;AACD;IACI,mBAAmB;IACnB,YAAY;CACf;AACD;IACI,mBAAmB;IACnB,oBAAoB;IACpB,mBAAmB;CACtB;AACD;IACI,YAAY;IACZ,gBAAgB;CACnB;AACD;IACI,mBAAmB;IACnB,iBAAiB;CACpB;AACD;IACI,iBAAiB;CACpB;AACD;IACI,iBAAiB;CACpB;AACD;IACI,gBAAgB;IAChB,aAAa;IACb,UAAU;IACV,QAAQ;IACR,YAAY;CACf;AACD;IACI,6CAA6C;IAC7C,qCAAqC;CACxC;AACD;IACI,kBAAkB;IAClB,WAAW;IACX,YAAY;CACf;AACD;IACI,aAAa;CAChB;AACD;IACI,aAAa;CAChB;AACD;IACI,gBAAgB;IAChB,aAAa;IACb,OAAO;IACP,WAAW;CACd;AACD;IACI,0CAA0C;IAC1C,kCAAkC;IAClC,mBAAmB;CACtB;AACD;IACI,WAAW;IACX,YAAY;IACZ,iBAAiB;CACpB;AACD;IACI,YAAY;CACf;AACD;IACI,YAAY;CACf;AACD;IACI,eAAe;IACf,mBAAmB;IACnB,0BAA0B;IAC1B,mBAAmB;IACnB,iBAAiB;IACjB,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,oBAAoB;CACvB;AACD;IACI,sCAAsC;IACtC,kCAAkC;QAC9B,8BAA8B;IAClC,UAAU;IACV,aAAa;CAChB;AACD;IACI,sCAAsC;IACtC,kCAAkC;QAC9B,8BAA8B;IAClC,SAAS;IACT,YAAY;CACf","file":"chart-slider.vue","sourcesContent":["\n.dv-slider-input[data-v-7ba543d1] {\n  width: 50px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  margin: 10px 0;\n  /*! nouislider - 10.1.0 - 2017-07-28 17:11:18 */\n  /* Functional styling;\r\n * These styles are required for noUiSlider to function.\r\n * You don't need to change these rules to apply your design.\r\n */\n  /* Painting and performance;\r\n * Browsers can paint handles in their own layer.\r\n */\n  /* Slider size and handle placement;\r\n */\n  /* Styling;\r\n */\n  /* Handles and cursors;\r\n */\n  /* Handle stripes;\r\n */\n  /* Disabled state;\r\n */\n  /* Base;\r\n *\r\n */\n  /* Values;\r\n *\r\n */\n  /* Markings;\r\n *\r\n */\n  /* Horizontal layout;\r\n *\r\n */\n  /* Vertical layout;\r\n *\r\n */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .dv-slider-input {\n    text-align: center;\n    padding-top: 2px;\n    padding-bottom: 2px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n    margin: 0 20px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-target * {\n    -webkit-touch-callout: none;\n    -webkit-tap-highlight-color: transparent;\n    -webkit-user-select: none;\n    -ms-touch-action: none;\n    touch-action: none;\n    -ms-user-select: none;\n    -moz-user-select: none;\n    user-select: none;\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    position: relative;\n    direction: ltr;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base {\n    width: 100%;\n    height: 100%;\n    position: relative;\n    z-index: 1;\n    /* Fix 401 */\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    position: absolute;\n    right: 0;\n    top: 0;\n    left: 0;\n    bottom: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-origin {\n    position: absolute;\n    height: 0;\n    width: 0;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    position: relative;\n    z-index: 1;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-connect,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-tap .noUi-origin {\n    -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n    transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-state-drag * {\n    cursor: inherit !important;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-base,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal {\n    height: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-handle {\n    width: 34px;\n    height: 28px;\n    left: -17px;\n    top: -6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical {\n    width: 18px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle {\n    width: 28px;\n    height: 34px;\n    left: -6px;\n    top: -17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-target {\n    background: #fafafa;\n    border-radius: 4px;\n    border: 1px solid #d3d3d3;\n    -webkit-box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n            box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-connect {\n    background: #3fb8af;\n    border-radius: 4px;\n    -webkit-box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n            box-shadow: inset 0 0 3px rgba(51, 51, 51, 0.45);\n    -webkit-transition: background 450ms;\n    transition: background 450ms;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-draggable {\n    cursor: ew-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-draggable {\n    cursor: ns-resize;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle {\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    cursor: default;\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-active {\n    -webkit-box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n            box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    content: '';\n    display: block;\n    position: absolute;\n    height: 14px;\n    width: 1px;\n    background: #e8e7e6;\n    left: 14px;\n    top: 6px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-handle:after {\n    left: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:before,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    width: 14px;\n    height: 1px;\n    left: 6px;\n    top: 14px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-handle:after {\n    top: 17px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-connect {\n    background: #b8b8b8;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-target,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled].noUi-handle,\n  div[dv-chart-slider-container][data-v-7ba543d1] [disabled] .noUi-handle {\n    cursor: not-allowed;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips,\n  div[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips * {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips {\n    position: absolute;\n    color: #999;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value {\n    position: absolute;\n    white-space: nowrap;\n    text-align: center;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-sub {\n    color: #ccc;\n    font-size: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker {\n    position: absolute;\n    background: #ccc;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-sub {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-large {\n    background: #aaa;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-horizontal {\n    padding: 10px 0;\n    height: 80px;\n    top: 100%;\n    left: 0;\n    width: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-horizontal {\n    -webkit-transform: translate3d(-50%, 50%, 0);\n    transform: translate3d(-50%, 50%, 0);\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker {\n    margin-left: -1px;\n    width: 2px;\n    height: 5px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-sub {\n    height: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-horizontal.noUi-marker-large {\n    height: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-pips-vertical {\n    padding: 0 10px;\n    height: 100%;\n    top: 0;\n    left: 100%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-value-vertical {\n    -webkit-transform: translate3d(0, 50%, 0);\n    transform: translate3d(0, 50%, 0);\n    padding-left: 25px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker {\n    width: 5px;\n    height: 2px;\n    margin-top: -1px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-sub {\n    width: 10px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-marker-vertical.noUi-marker-large {\n    width: 15px;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-tooltip {\n    display: block;\n    position: absolute;\n    border: 1px solid #d9d9d9;\n    border-radius: 3px;\n    background: #fff;\n    color: #000;\n    padding: 5px;\n    text-align: center;\n    white-space: nowrap;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-horizontal .noUi-tooltip {\n    -webkit-transform: translate(-50%, 0);\n    -ms-transform: translate(-50%, 0);\n        transform: translate(-50%, 0);\n    left: 50%;\n    bottom: 120%;\n}\ndiv[dv-chart-slider-container][data-v-7ba543d1] .noUi-vertical .noUi-tooltip {\n    -webkit-transform: translate(0, -50%);\n    -ms-transform: translate(0, -50%);\n        transform: translate(0, -50%);\n    top: 50%;\n    right: 120%;\n}\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -19410,9 +19414,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Observable_1 = __webpack_require__(/*! ../Observable */ 2);
-var tryCatch_1 = __webpack_require__(/*! ../util/tryCatch */ 25);
-var isFunction_1 = __webpack_require__(/*! ../util/isFunction */ 16);
-var errorObject_1 = __webpack_require__(/*! ../util/errorObject */ 17);
+var tryCatch_1 = __webpack_require__(/*! ../util/tryCatch */ 26);
+var isFunction_1 = __webpack_require__(/*! ../util/isFunction */ 17);
+var errorObject_1 = __webpack_require__(/*! ../util/errorObject */ 18);
 var Subscription_1 = __webpack_require__(/*! ../Subscription */ 3);
 var toString = Object.prototype.toString;
 function isNodeStyleEventEmitter(sourceObj) {
@@ -19649,7 +19653,7 @@ Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var async_1 = __webpack_require__(/*! ../scheduler/async */ 28);
+var async_1 = __webpack_require__(/*! ../scheduler/async */ 29);
 var sampleTime_1 = __webpack_require__(/*! ../operators/sampleTime */ 70);
 /**
  * Emits the most recently emitted value from the source Observable within
@@ -20068,7 +20072,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Subscriber_1 = __webpack_require__(/*! ../Subscriber */ 12);
-var async_1 = __webpack_require__(/*! ../scheduler/async */ 28);
+var async_1 = __webpack_require__(/*! ../scheduler/async */ 29);
 /**
  * Emits the most recently emitted value from the source Observable within
  * periodic time intervals.
@@ -20194,11 +20198,11 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-table.vue */ 29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__ = __webpack_require__(/*! !ts-loader!../../node_modules/vue-loader/lib/selector?type=script&index=0!./chart-table.vue */ 30);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_12747bde_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-12747bde","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart-table.vue */ 77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9cd188f2_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__ = __webpack_require__(/*! !../../node_modules/vue-loader/lib/template-compiler/index?{"id":"data-v-9cd188f2","hasScoped":true,"buble":{"transforms":{}}}!../../node_modules/vue-loader/lib/selector?type=template&index=0!./chart-table.vue */ 77);
 function injectStyle (ssrContext) {
-  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-12747bde","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart-table.vue */ 74)
+  __webpack_require__(/*! !vue-style-loader?{"sourceMap":true}!css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler/index?{"vue":true,"id":"data-v-9cd188f2","scoped":true,"hasInlineConfig":true}!sass-loader?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector?type=styles&index=0!./chart-table.vue */ 74)
 }
 var normalizeComponent = __webpack_require__(/*! ../../node_modules/vue-loader/lib/component-normalizer */ 8)
 /* script */
@@ -20211,12 +20215,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-12747bde"
+var __vue_scopeId__ = "data-v-9cd188f2"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__ts_loader_node_modules_vue_loader_lib_selector_type_script_index_0_chart_table_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_12747bde_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9cd188f2_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_chart_table_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -20229,7 +20233,7 @@ var Component = normalizeComponent(
 /***/ }),
 /* 74 */
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-12747bde","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
+  !*** ./node_modules/vue-style-loader?{"sourceMap":true}!./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-9cd188f2","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
   \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -20238,16 +20242,16 @@ var Component = normalizeComponent(
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-12747bde","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart-table.vue */ 75);
+var content = __webpack_require__(/*! !../../node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!../../node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-9cd188f2","scoped":true,"hasInlineConfig":true}!../../node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./chart-table.vue */ 75);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("0d4eabbf", content, true);
+var update = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ 7)("280d22f4", content, true);
 
 /***/ }),
 /* 75 */
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-12747bde","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
+  !*** ./node_modules/css-loader?{"autoprefixer":false,"sourceMap":true,"minimize":false}!./node_modules/vue-loader/lib/style-compiler?{"vue":true,"id":"data-v-9cd188f2","scoped":true,"hasInlineConfig":true}!./node_modules/sass-loader/lib/loader.js?{"sourceMap":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./src/components/chart-table.vue ***!
   \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
@@ -20265,9 +20269,9 @@ exports.push([module.i, "", "", {"version":3,"sources":[],"names":[],"mappings":
 
 /***/ }),
 /* 76 */
-/*!***********************************!*\
-  !*** (webpack)/buildin/module.js ***!
-  \***********************************/
+/*!************************************************!*\
+  !*** ./node_modules/webpack/buildin/module.js ***!
+  \************************************************/
 /*! dynamic exports provided */
 /*! all exports used */
 /***/ (function(module, exports) {
@@ -20299,7 +20303,7 @@ module.exports = function(module) {
 /***/ }),
 /* 77 */
 /*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-12747bde","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart-table.vue ***!
+  !*** ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-9cd188f2","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/chart-table.vue ***!
   \****************************************************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /*! exports used: default */
@@ -20320,7 +20324,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /*! all exports used */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"dqvue","version":"0.4.2","description":"","main":"./dist/dqvue.js","types":"./index.d.ts","scripts":{"test":"poi test","dev":"poi --port 3001 src/index.ts","build":"poi build src/index.ts && poi build src/index.ts --minimize","docs":"http-server ./docs -p 3002","vuetype":"vuetype src"},"author":"","license":"MIT","devDependencies":{"@reactivex/rxjs":"^5.5.3","@types/deepmerge":"1.3.2","@types/highcharts":"5.0.11","@types/loglevel":"1.5.1","@types/mocha":"2.2.43","@types/node":"8.0.28","@types/nouislider":"^9.0.3","@types/uniqid":"4.1.2","deepmerge":"2.0.1","http-server":"^0.10.0","karma-ie-launcher":"1.0.0","karma-typescript":"^3.0.9","loglevel":"1.5.1","node-sass":"4.5.3","nouislider":"^10.1.0","poi":"^9.6.12","poi-preset-babel-minify":"1.0.3","poi-preset-karma":"^9.2.3","poi-preset-typescript":"9.0.2","rxjs":"^5.5.3","sass-loader":"6.0.6","typescript":"2.6.1","uniqid":"4.1.1","vue-property-decorator":"6.0.0","vuetype":"0.2.2","webpack-bundle-analyzer":"^2.9.2","wnumb":"^1.1.0","yargs":"9.0.1"}}
+module.exports = {"name":"dqvue","version":"0.4.2","description":"","main":"./dist/dqvue.js","types":"./index.d.ts","scripts":{"test":"poi test","dev":"poi --port 3001 src/index.ts","build":"poi build src/index.ts && poi build src/index.ts --minimize","docs":"http-server ./docs -p 3002","vuetype":"vuetype src"},"author":"","license":"MIT","devDependencies":{"@reactivex/rxjs":"^5.5.3","@types/deepmerge":"1.3.2","@types/highcharts":"5.0.11","@types/loglevel":"1.5.1","@types/mocha":"2.2.43","@types/node":"8.0.28","@types/nouislider":"^9.0.3","@types/uniqid":"4.1.2","deepmerge":"2.0.1","http-server":"^0.10.0","karma-ie-launcher":"1.0.0","karma-typescript":"^3.0.9","loglevel":"1.5.1","node-sass":"^4.7.2","nouislider":"^10.1.0","poi":"^9.6.12","poi-preset-babel-minify":"1.0.3","poi-preset-karma":"^9.2.3","poi-preset-typescript":"9.0.2","rxjs":"^5.5.3","sass-loader":"6.0.6","typescript":"2.6.1","uniqid":"4.1.1","vue-property-decorator":"6.0.0","vuetype":"0.2.2","webpack-bundle-analyzer":"^2.9.2","wnumb":"^1.1.0","yargs":"9.0.1"}}
 
 /***/ }),
 /* 79 */
@@ -20332,10 +20336,10 @@ module.exports = {"name":"dqvue","version":"0.4.2","description":"","main":"./di
 
 "use strict";
 /* unused harmony export parsePage */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid__ = __webpack_require__(/*! uniqid */ 21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_uniqid___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_uniqid__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./classes/section */ 22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./classes/chart */ 30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_section__ = __webpack_require__(/*! ./classes/section */ 23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_chart__ = __webpack_require__(/*! ./classes/chart */ 31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_main__ = __webpack_require__(/*! ./store/main */ 4);
 
 
