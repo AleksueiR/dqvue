@@ -17,6 +17,7 @@ module.exports = {
         description: pkg.description,
         template: 'src/index.ejs'
     },
+    homepage: './',
     minimize: minimize,
     presets: [
         require('poi-preset-babel-minify')({}, { comments: false }),
