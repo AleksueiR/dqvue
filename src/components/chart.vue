@@ -13,6 +13,7 @@ import deepmerge from 'deepmerge';
 
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/takeUntil';
 
 import api, { DVHighcharts } from './../api/main';
 import {
@@ -41,6 +42,8 @@ const DV_CHART_TABLE_CONTAINER_ELEMENT = '[dv-chart-table-container]';
     }
 })
 export default class Chart extends Vue {
+    readonly logMarker: string = `[chart='${this.id}']`;
+
     dvchart: DVChart;
     isLoading: boolean = true;
 
@@ -61,6 +64,9 @@ export default class Chart extends Vue {
         return typeof this.$attrs['dv-auto-generate-table'] !== 'undefined';
     }
 
+    // a subject used to stop all other observable subscriptions
+    deactivate: Subject<boolean> = new Subject<boolean>();
+
     created(): void {
         // section is created programmatically and template is missing `id` on a `<dv-chart>` node making it impossible to link in the chart's config
         if (!this.id) {
@@ -70,7 +76,7 @@ export default class Chart extends Vue {
 
         // section is created programmatically and one or more charts were not added to the DVSection object
         if (!charts[this.id]) {
-            log.error(`[chart='${this.id}'] is not defined in [section='${this.rootSectionId}']`);
+            log.error(`${this.logMarker} is not defined in [section='${this.rootSectionId}']`);
             return;
         }
 
@@ -88,7 +94,7 @@ export default class Chart extends Vue {
     simulateViewDataClick(tableId?: string): void {
         // check if data-export modules has been loaded
         if (!api.Highcharts.Chart.prototype.viewData) {
-            log.error(`[chart='${this.id}'] export-data module required for chart data table`);
+            log.error(`${this.logMarker} export-data module required for chart data table`);
             return;
         }
 
@@ -125,6 +131,7 @@ export default class Chart extends Vue {
         // subscribe to stream of config update events and wait for this chart's id
         chartConfigUpdated
             .filter((event: ChartConfigUpdatedEvent) => event.chartId === this.id)
+            .takeUntil(this.deactivate)
             .subscribe(() => this.renderChart());
 
         if (this.dvchart.isConfigValid) {
@@ -133,7 +140,11 @@ export default class Chart extends Vue {
     }
 
     beforeDestroy(event: any): void {
-        console.log('|||||| -> beforeDestroy chart', this.id, event);
+        // deactivate all running subscriptions and unsubscribe from the deactivator subscription
+        this.deactivate.next(true);
+        this.deactivate.unsubscribe();
+
+        log.info(`${this.logMarker} chart destroyed`);
     }
 
     // buid key is used to force remount adjunct component of the DVChart like zoom slider
@@ -141,7 +152,7 @@ export default class Chart extends Vue {
     buildKey: number = 0;
 
     renderChart(): void {
-        log.info(`[chart='${this.id}'] rendering chart`);
+        log.info(`${this.logMarker} rendering chart`);
 
         // create a deep copy of the original config for reference
         const originalConfig: DVHighcharts.Options = deepmerge({}, this.dvchart.config);
@@ -199,7 +210,7 @@ export default class Chart extends Vue {
             highchartObject: this.highchartObject as DVHighcharts.ChartObject
         });
 
-        log.info(`${this.id} chart rendered`);
+        log.info(`${this.logMarker} chart rendered`);
         this.buildKey++;
 
         if (this.autoGenerateTable) {

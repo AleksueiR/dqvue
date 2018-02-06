@@ -397,6 +397,7 @@ export default class ChartSlider extends Vue {
     }
 
     beforeDestroy(): void {
+        // deactivate all running subscriptions and unsubscribe from the deactivator subscription
         this.deactivate.next(true);
         this.deactivate.unsubscribe();
 
