@@ -133,7 +133,9 @@ object name `DQV` which which provides constructors for Section and Chart.
 
 If there are several charts in a DV Template, each DV Chart needs to be created separately.
 
-> The section template should contain exactly one root element.
+<p class="warning">
+  The section template should contain exactly one root element.
+</p>
 
 ```html
 // index.html
@@ -521,7 +523,9 @@ const dv: DVSection = new DQV.Section({ template, data });
 
 Sets the section's template, re-compiles, and re-mounts it:
 
-> The section template should contain exactly one root element.
+<p class="warning">
+  The section template should contain exactly one root element.
+</p>
 
 ```js
 // index.js
@@ -537,7 +541,9 @@ value: Promise<object>
 
 In cases when the template value is returned by an external promise, use the `setTemplate` function.
 
-> The section template should contain exactly one root element.
+<p class="warning">
+  The section template should contain exactly one root element.
+</p>
 
 ```js
 // index.js

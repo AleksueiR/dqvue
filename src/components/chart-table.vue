@@ -18,10 +18,12 @@ import {
     ChartViewDataEvent
 } from './../observable-bus';
 
-//import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 import { charts } from './../store/main';
 
+import { Subject } from 'rxjs/Subject';
+
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
 
@@ -31,6 +33,10 @@ const HIGHCHARTS_DATA_TABLE_CLASS = '.highcharts-data-table';
 
 @Component
 export default class ChartTable extends Vue {
+    readonly logMarker: string = `[chart-table='${this.id}' chart='${this.chartId}' section='${
+        this.rootSectionId
+    }']`;
+
     @Inject() rootSectionId: string;
     @Inject() rootChartId: string;
 
@@ -53,21 +59,18 @@ export default class ChartTable extends Vue {
         return this.$attrs['dv-table-class'];
     }
 
+    // a subject used to stop all other observable subscriptions
+    deactivate: Subject<boolean> = new Subject<boolean>();
+
     created(): void {
         if (!this.chartId) {
             log.error(
-                `[chart-table='${this.id}' section='${
-                    this.rootSectionId
-                }'] table cannot be linked because it is missing a parent chart id`
+                `${this.logMarker} table cannot be linked because it is missing a parent chart id`
             );
         }
 
         if (!charts[this.chartId]) {
-            log.error(
-                `[chart-table='${this.id}' chart='${this.chartId}' section='${
-                    this.rootSectionId
-                }'] referenced chart does not exist`
-            );
+            log.error(`${this.logMarker} referenced chart does not exist`);
             return;
         }
 
@@ -83,7 +86,9 @@ export default class ChartTable extends Vue {
                 this.$el.removeChild(this.$el.firstChild);
             }
 
-            this.$el.parentNode!.removeChild(this.$el);
+            if (this.$el.parentNode) {
+                this.$el.parentNode!.removeChild(this.$el);
+            }
             return;
         }
 
@@ -98,20 +103,26 @@ export default class ChartTable extends Vue {
 
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
-            chartRendered.filter(this._filterStream, this).subscribe(this.generateTable);
+            chartRendered
+                .filter(this._filterStream, this)
+                .takeUntil(this.deactivate)
+                .subscribe(this.generateTable);
         }
         // ---
 
-        chartViewData.filter(this._filterStream, this).subscribe(this.generateTable);
+        chartViewData
+            .filter(this._filterStream, this)
+            .takeUntil(this.deactivate)
+            .subscribe(this.generateTable);
     }
 
     generateTable(): void {
         // render table can only be called after the chart has been rendered
         if (!this.dvchart.highchart) {
             log.warn(
-                `[chart-table='${this.id}' chart='${
-                    this.chartId
-                }'] something's wrong - trying to render the table before chart is ready`
+                `${
+                    this.logMarker
+                } something's wrong - trying to render the table before chart is ready`
             );
             return;
         }
@@ -126,10 +137,15 @@ export default class ChartTable extends Vue {
             });
         }
 
-        log.info(
-            `[chart-table='${this.id}' chart='${this.chartId}'] rendering chart table on`,
-            this.highchartsDataTable
-        );
+        log.info(`${this.logMarker} rendering chart table on`, this.highchartsDataTable);
+    }
+
+    beforeDestroy(): void {
+        // deactivate all running subscriptions and unsubscribe from the deactivator subscription
+        this.deactivate.next(true);
+        this.deactivate.unsubscribe();
+
+        log.info(`${this.logMarker} chart table component destroyed`);
     }
 
     private _filterStream(event: ChartEvent): boolean {
