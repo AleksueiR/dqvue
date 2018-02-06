@@ -32,10 +32,12 @@ import {
 import { charts } from './../store/main';
 
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/sampleTime';
+import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
 
@@ -58,15 +60,11 @@ export default class ChartSlider extends Vue {
         return this.rootChartId;
     }
 
-    dvchart: DVChart | null = null;
+    dvchart: DVChart;
 
     // returns a highcharts from the current dvchart object
     // this should only be called after the chart is rendered
     get highchart(): DVHighcharts.ChartObject {
-        if (!this.dvchart) {
-            throw new TypeError(`${this.logMarker} dvchart ${this.chartId} is not defined`);
-        }
-
         if (!this.dvchart.highchart) {
             throw new TypeError(
                 `${this.logMarker} Highchart is not defined on ${this.chartId} dvchart`
@@ -96,6 +94,9 @@ export default class ChartSlider extends Vue {
     minValue: number = 0;
     maxValue: number = 0;
 
+    // a subject used to stop all other observable subscriptions
+    deactivate: Subject<boolean> = new Subject<boolean>();
+
     /**
      * Cache reference to the corresponding chart object.
      */
@@ -107,18 +108,11 @@ export default class ChartSlider extends Vue {
      * Set up listeners on `rendered` and `setExtremes` event streams.
      */
     mounted(): void {
-        if (!this.dvchart) {
-            log.info(`[chart-slider chart='${this.chartId}'] referenced chart does not exist`);
-            this.selfDestruct();
-            return;
-        }
+        log.info(`${this.logMarker} zoom slider mounted`);
 
+        // it's guaranteed that the chart has been rendered at this point
         // initialize the noUI slider when the parent chart renders
-        chartRendered.filter(this._filterStream, this).subscribe(this.initializeSlider);
-
-        // listen to extremes changed by the user
-        // TODO: move subscription into the init function - subscribe only if there is a slider ready
-        chartSetExtremes.filter(this._filterStream, this).subscribe(this.setExtremesHandler);
+        this.initializeSlider();
     }
 
     // default slider config will be used if no slider options are specified in the user config
@@ -142,7 +136,9 @@ export default class ChartSlider extends Vue {
         };
     }
 
-    initializeSlider(event: ChartRenderedEvent): void {
+    initializeSlider(): void {
+        log.info(`${this.logMarker} attempting to initialize zoom slider`);
+
         // if the slider is alreayd initialize, destroy it and create a new one
         // this is needed in case the slider config portion of the chart config was changed or is not compatible with the old slider configuration
         if (this.sliderNode) {
@@ -155,7 +151,7 @@ export default class ChartSlider extends Vue {
         // TODO: vet using a list of chart types that can have extremes sliders
         if (typeof this.extremes.dataMin === 'undefined') {
             log.info(`${this.logMarker} ${this.axis} zoom slider cannot be used with this chart`);
-            this.selfDestruct();
+            this.destroyItself();
             return;
         }
 
@@ -167,7 +163,7 @@ export default class ChartSlider extends Vue {
         const zoomType = chartChartConfig ? chartChartConfig.zoomType || '' : '';
         if (zoomType.indexOf(this.axis.charAt(0)) === -1) {
             log.info(`${this.logMarker} ${this.axis} zoom is not enabled for this chart`);
-            this.selfDestruct();
+            this.destroyItself();
             return;
         }
 
@@ -181,7 +177,7 @@ export default class ChartSlider extends Vue {
         // kill the slider node if the slider option is explicitly set to null
         if (userSliderConfig === null) {
             log.info(`${this.logMarker} ${this.axis} zoom slider is disabled in the chart config`);
-            this.selfDestruct();
+            this.destroyItself();
             return;
         }
 
@@ -197,12 +193,22 @@ export default class ChartSlider extends Vue {
 
         log.info(`${this.logMarker} ${this.axis} slider has initialized`);
 
-        // listen to 'update' events on the slider ober
+        // listen to extremes changed by the user
+        // TODO: filter by the axis as well as the chart id
+        // `&& event.axis === this.axis`
+        chartSetExtremes
+            .filter(this._filterStream, this)
+            .takeUntil(this.deactivate)
+            .subscribe(this.setExtremesHandler);
+
+        // listen to 'update' events on the slider update
         Observable.fromEvent(
             this.sliderNode.noUiSlider,
             'update',
             (values: string[], handle: number) => ({ values, handle })
-        ).subscribe(this.sliderUpdateHandler);
+        )
+            .takeUntil(this.deactivate)
+            .subscribe(this.sliderUpdateHandler);
     }
 
     // add keyboard support to the slider
@@ -228,12 +234,11 @@ export default class ChartSlider extends Vue {
         ];
 
         // create observable from event stream and filter out events which are not used
-        const keydownEvents: Observable<KeyboardEvent> = Observable.fromEvent(
-            handles,
-            'keydown'
-        ).filter((event: KeyboardEvent) => {
-            return eventList.indexOf(event.keyCode) !== -1;
-        }) as Observable<KeyboardEvent>;
+        const keydownEvents: Observable<KeyboardEvent> = Observable.fromEvent(handles, 'keydown')
+            .filter((event: KeyboardEvent) => {
+                return eventList.indexOf(event.keyCode) !== -1;
+            })
+            .takeUntil(this.deactivate) as Observable<KeyboardEvent>;
 
         // stop defaults and propagations all selected keyboard events
         keydownEvents.subscribe((event: KeyboardEvent) => {
@@ -391,16 +396,32 @@ export default class ChartSlider extends Vue {
         return this.minValue === this.extremes.dataMin && this.maxValue === this.extremes.dataMax;
     }
 
-    selfDestruct(): void {
-        // TODO: instead of removing the slider controls, hide them; it's possible to refresh the chart with a proper slider config
-        // in this can, the slider can be initialized normally
+    beforeDestroy(): void {
+        this.deactivate.next(true);
+        this.deactivate.unsubscribe();
+
+        log.info(`${this.logMarker} zoom slider destroyed`);
+    }
+
+    /**
+     * Destroys the chart slider component, all its elements, and removes itself from the DOM.
+     * The suggested way is to control the lifecycle of child components in a data-driven fashion using v-if and v-for.
+     * This would require moving much logic of determining if the slider should be visible to chart component.
+     */
+    destroyItself(): void {
+        // hm, I think if the config is refreshed, the slider will be re-cretead anyway
+        log.info(`${this.logMarker} attempting to destroy zoom slider`);
+
         this.$destroy();
 
         while (this.$el.firstChild) {
             this.$el.removeChild(this.$el.firstChild);
         }
 
-        this.$el.parentNode!.removeChild(this.$el);
+        // the component might not be yet inserted into the dom, so its parent node might not be defined
+        if (this.$el.parentNode) {
+            this.$el.parentNode!.removeChild(this.$el);
+        }
     }
 
     private _filterStream(event: ChartEvent): boolean {

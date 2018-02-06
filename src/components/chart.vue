@@ -1,7 +1,7 @@
 <template>
     <div dv-chart :class="{ 'dv-loading': isLoading }">
         <div dv-chart-container></div>
-        <dv-chart-slider axis="xAxis"></dv-chart-slider>
+        <dv-chart-slider axis="xAxis" :key="buildKey" v-if="buildKey > 0"></dv-chart-slider><!--  :key="buildKey" -->
         <slot></slot>
     </div>
 </template>
@@ -122,6 +122,7 @@ export default class Chart extends Vue {
         // find chart and table containers
         this._chartContainer = this.$el.querySelector(DV_CHART_CONTAINER_ELEMENT) as HTMLElement;
 
+        // subscribe to stream of config update events and wait for this chart's id
         chartConfigUpdated
             .filter((event: ChartConfigUpdatedEvent) => event.chartId === this.id)
             .subscribe(() => this.renderChart());
@@ -130,6 +131,14 @@ export default class Chart extends Vue {
             this.renderChart();
         }
     }
+
+    beforeDestroy(event: any): void {
+        console.log('|||||| -> beforeDestroy chart', this.id, event);
+    }
+
+    // buid key is used to force remount adjunct component of the DVChart like zoom slider
+    // every time the chart is rendered, the slider is destroyed and rebuilt
+    buildKey: number = 0;
 
     renderChart(): void {
         log.info(`[chart='${this.id}'] rendering chart`);
@@ -189,6 +198,9 @@ export default class Chart extends Vue {
             dvchart: this.dvchart,
             highchartObject: this.highchartObject as DVHighcharts.ChartObject
         });
+
+        log.info(`${this.id} chart rendered`);
+        this.buildKey++;
 
         if (this.autoGenerateTable) {
             this.simulateViewDataClick();

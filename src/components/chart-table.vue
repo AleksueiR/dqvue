@@ -18,7 +18,6 @@ import {
     ChartViewDataEvent
 } from './../observable-bus';
 
-//import Chart, { RenderedEvent, ViewDataEvent } from './../components/chart.vue';
 import { charts } from './../store/main';
 
 import 'rxjs/add/operator/filter';
@@ -31,6 +30,10 @@ const HIGHCHARTS_DATA_TABLE_CLASS = '.highcharts-data-table';
 
 @Component
 export default class ChartTable extends Vue {
+    readonly logMarker: string = `[chart-table='${this.id}' chart='${this.chartId}' section='${
+        this.rootSectionId
+    }']`;
+
     @Inject() rootSectionId: string;
     @Inject() rootChartId: string;
 
@@ -56,18 +59,12 @@ export default class ChartTable extends Vue {
     created(): void {
         if (!this.chartId) {
             log.error(
-                `[chart-table='${this.id}' section='${
-                    this.rootSectionId
-                }'] table cannot be linked because it is missing a parent chart id`
+                `${this.logMarker} table cannot be linked because it is missing a parent chart id`
             );
         }
 
         if (!charts[this.chartId]) {
-            log.error(
-                `[chart-table='${this.id}' chart='${this.chartId}' section='${
-                    this.rootSectionId
-                }'] referenced chart does not exist`
-            );
+            log.error(`${this.logMarker} referenced chart does not exist`);
             return;
         }
 
@@ -109,9 +106,9 @@ export default class ChartTable extends Vue {
         // render table can only be called after the chart has been rendered
         if (!this.dvchart.highchart) {
             log.warn(
-                `[chart-table='${this.id}' chart='${
-                    this.chartId
-                }'] something's wrong - trying to render the table before chart is ready`
+                `${
+                    this.logMarker
+                } something's wrong - trying to render the table before chart is ready`
             );
             return;
         }
@@ -126,10 +123,7 @@ export default class ChartTable extends Vue {
             });
         }
 
-        log.info(
-            `[chart-table='${this.id}' chart='${this.chartId}'] rendering chart table on`,
-            this.highchartsDataTable
-        );
+        log.info(`${this.logMarker} rendering chart table on`, this.highchartsDataTable);
     }
 
     private _filterStream(event: ChartEvent): boolean {
