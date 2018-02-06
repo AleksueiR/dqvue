@@ -17,10 +17,12 @@ import 'rxjs/add/operator/takeUntil';
 
 import api, { DVHighcharts } from './../api/main';
 import {
+    chartDestroyed,
     chartRendered,
     chartConfigUpdated,
     chartViewData,
     chartSetExtremes,
+    ChartDestroyedEvent,
     ChartConfigUpdatedEvent
 } from './../observable-bus';
 
@@ -121,7 +123,9 @@ export default class Chart extends Vue {
                 this.$el.removeChild(this.$el.firstChild);
             }
 
-            this.$el.parentNode!.removeChild(this.$el);
+            if (this.$el.parentNode) {
+                this.$el.parentNode!.removeChild(this.$el);
+            }
             return;
         }
 
@@ -144,7 +148,10 @@ export default class Chart extends Vue {
         this.deactivate.next(true);
         this.deactivate.unsubscribe();
 
-        log.info(`${this.logMarker} chart destroyed`);
+        // push destroy even into the pipe
+        chartDestroyed.next({ chartId: this.id });
+
+        log.info(`${this.logMarker} chart component destroyed`);
     }
 
     // buid key is used to force remount adjunct component of the DVChart like zoom slider

@@ -201,6 +201,14 @@ export class DVSection {
 
         log.info(`[section='${this.id}'] attempting to mount`);
 
+        if (!(this._mount instanceof HTMLElement)) {
+            log.warn(
+                `[section='${this.id}'] cannot mount - the mount point must be an HTMLElement`
+            );
+
+            return this;
+        }
+
         if (!this._mount) {
             // TODO: complain in the console that a mount element needs to be provided
 
@@ -248,6 +256,7 @@ export class DVSection {
         this._isMounted = true;
 
         // when an explicit template is provided, it might not have the `id` attribute set; setting it manually
+        // this will override any `id` set on the template if it doesn't match the one provided in the config
         this._vm.$el.setAttribute('id', this.id);
 
         log.info(`[section='${this.id}'] mounted successfully on`, this._mount);
@@ -268,8 +277,10 @@ export class DVSection {
 
         this.dismount();
 
-        // .remove() is not supported in IE
-        this._mount.parentNode!.removeChild(this._mount);
+        if (this._mount.parentNode) {
+            // .remove() is not supported in IE
+            this._mount.parentNode!.removeChild(this._mount);
+        }
         this._mount = null;
 
         log.info(`[section='${this.id}'] destroyed successfully`);
@@ -316,7 +327,7 @@ export class DVSection {
         if (this._isMounted) {
             this.dismount();
         } else if (!this._automount) {
-            log.info(`[section='${this.id}'] cannot re-mount - automount is disabled`);
+            log.warn(`[section='${this.id}'] cannot re-mount - automount is disabled`);
 
             return this;
         }

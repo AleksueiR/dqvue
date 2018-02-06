@@ -6,7 +6,12 @@ import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
 
-import { sectionCreated, chartCreated } from './../observable-bus';
+import {
+    sectionCreated,
+    chartCreated,
+    sectionDestroyed,
+    chartDestroyed
+} from './../observable-bus';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -86,6 +91,8 @@ export default {
 
     sectionCreated: sectionCreated.asObservable(),
     chartCreated: chartCreated.asObservable(),
+    sectionDestroyed: sectionDestroyed.asObservable(),
+    chartDestroyed: chartDestroyed.asObservable(),
 
     get sections(): { [name: string]: DVSection } {
         // TODO: return a clone instead of original object so users can't mess with it

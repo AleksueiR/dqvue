@@ -20,7 +20,10 @@ import {
 
 import { charts } from './../store/main';
 
+import { Subject } from 'rxjs/Subject';
+
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
 
@@ -56,6 +59,9 @@ export default class ChartTable extends Vue {
         return this.$attrs['dv-table-class'];
     }
 
+    // a subject used to stop all other observable subscriptions
+    deactivate: Subject<boolean> = new Subject<boolean>();
+
     created(): void {
         if (!this.chartId) {
             log.error(
@@ -80,7 +86,9 @@ export default class ChartTable extends Vue {
                 this.$el.removeChild(this.$el.firstChild);
             }
 
-            this.$el.parentNode!.removeChild(this.$el);
+            if (this.$el.parentNode) {
+                this.$el.parentNode!.removeChild(this.$el);
+            }
             return;
         }
 
@@ -95,11 +103,17 @@ export default class ChartTable extends Vue {
 
         // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
         if (this.autoRender) {
-            chartRendered.filter(this._filterStream, this).subscribe(this.generateTable);
+            chartRendered
+                .filter(this._filterStream, this)
+                .takeUntil(this.deactivate)
+                .subscribe(this.generateTable);
         }
         // ---
 
-        chartViewData.filter(this._filterStream, this).subscribe(this.generateTable);
+        chartViewData
+            .filter(this._filterStream, this)
+            .takeUntil(this.deactivate)
+            .subscribe(this.generateTable);
     }
 
     generateTable(): void {
@@ -124,6 +138,14 @@ export default class ChartTable extends Vue {
         }
 
         log.info(`${this.logMarker} rendering chart table on`, this.highchartsDataTable);
+    }
+
+    beforeDestroy(): void {
+        // deactivate all running subscriptions and unsubscribe from the deactivator subscription
+        this.deactivate.next(true);
+        this.deactivate.unsubscribe();
+
+        log.info(`${this.logMarker} chart table component destroyed`);
     }
 
     private _filterStream(event: ChartEvent): boolean {

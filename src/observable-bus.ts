@@ -14,6 +14,10 @@ export interface ChartEvent {
 
 export interface ChartCreatedEvent extends ChartEvent {}
 
+export interface ChartDestroyedEvent {
+    chartId: string;
+}
+
 export interface ChartRenderedEvent extends ChartEvent {
     highchartObject: DVHighcharts.ChartObject;
 }
@@ -29,6 +33,7 @@ export interface ChartSetExtremesEvent extends ChartEvent {
 }
 
 export const chartCreated: Subject<ChartCreatedEvent> = new Subject<ChartCreatedEvent>();
+export const chartDestroyed: Subject<ChartDestroyedEvent> = new Subject<ChartDestroyedEvent>();
 export const chartRendered: Subject<ChartRenderedEvent> = new Subject<ChartRenderedEvent>();
 export const chartConfigUpdated: Subject<ChartConfigUpdatedEvent> = new Subject<
     ChartConfigUpdatedEvent
@@ -50,6 +55,13 @@ export interface SectionCreatedEvent extends SectionEvent {
     dvsection: DVSection;
 }
 
+export interface SectionDestroyedEvent {
+    sectionId: string;
+}
+
 export const sectionCreated: Subject<SectionCreatedEvent> = new Subject<SectionCreatedEvent>();
+export const sectionDestroyed: Subject<SectionDestroyedEvent> = new Subject<
+    SectionDestroyedEvent
+>();
 
 // #endregion

@@ -401,7 +401,7 @@ export default class ChartSlider extends Vue {
         this.deactivate.next(true);
         this.deactivate.unsubscribe();
 
-        log.info(`${this.logMarker} zoom slider destroyed`);
+        log.info(`${this.logMarker} zoom slider component destroyed`);
     }
 
     /**
