@@ -133,6 +133,20 @@ export default class ChartTable extends Vue {
             return;
         }
 
+        let showTable = false;
+
+        this.dvchart.highchart.series.forEach(series => {
+            if (series.visible) {
+                showTable = true;
+                return;
+            }
+        });
+
+        if (showTable == false) {
+            this.highchartsDataTable.innerHTML = '';
+            return;
+        }
+
         // presence of data-export is checked in chart.vue - assume `getTable` is defined
         this.highchartsDataTable.innerHTML = this.dvchart.highchart.getTable!();
 
