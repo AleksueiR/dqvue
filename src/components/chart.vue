@@ -82,6 +82,7 @@ export default class Chart extends Vue {
             return;
         }
 
+        // store reference to the DVChart instance related to this chart component
         this.dvchart = charts[this.id] as DVChart;
 
         // if specified, generate table as soon as the chart renders
@@ -172,7 +173,7 @@ export default class Chart extends Vue {
             exporting: {
                 menuItemDefinitions: {
                     viewData:
-                        // if no exporting options exist (`undefined` only, `null` has meaning in chart config - hide option), an internal one will be supplied
+                        // if no exporting options exist (`undefined` only, `null` has meaning in chart config - it hides that option), an internal one will be supplied
                         // if the config author has specified `viewData` export option, it will not be overwritten
                         typeof originalViewDataOption === 'undefined'
                             ? this._viewDataExportOption
@@ -196,6 +197,10 @@ export default class Chart extends Vue {
                     setExtremes: (event: Highcharts.AxisEvent) => {
                         this._setExtremesHandler(
                             event,
+                            // defaults containing an empty `setExtremes` handler are applied to the chart config using deepmerge
+                            // however, if `xAxi` for examples is explicity set to `undefined` in the config, the defaults will not apply
+                            // which will cause this assertion to fail
+                            // TODO: either apply defaults in a more robust way or find anothe way handling the null/undefined checks
                             (<Highcharts.AxisOptions>originalConfig.xAxis!).events!.setExtremes!
                         );
                     }
