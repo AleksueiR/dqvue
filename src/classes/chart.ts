@@ -40,6 +40,14 @@ export class DVChart {
                 setExtremes: () => {}
             }
         },
+        plotOptions: {
+            series: {
+                events: {
+                    hide: () => {},
+                    show: () => {}
+                }
+            }
+        },
         exporting: {
             menuItemDefinitions: {}
         }

@@ -15,7 +15,8 @@ import {
     chartViewData,
     ChartEvent,
     ChartRenderedEvent,
-    ChartViewDataEvent
+    ChartViewDataEvent,
+    seriesHideShow
 } from './../observable-bus';
 
 import { charts } from './../store/main';
@@ -26,6 +27,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
+import { takeUntil } from 'rxjs/operator/takeUntil';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 
@@ -111,6 +113,10 @@ export default class ChartTable extends Vue {
         // ---
 
         chartViewData
+            .filter(this._filterStream, this)
+            .takeUntil(this.deactivate)
+            .subscribe(this.generateTable);
+        seriesHideShow
             .filter(this._filterStream, this)
             .takeUntil(this.deactivate)
             .subscribe(this.generateTable);
