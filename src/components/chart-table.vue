@@ -15,7 +15,8 @@ import {
     chartViewData,
     ChartEvent,
     ChartRenderedEvent,
-    ChartViewDataEvent
+    ChartViewDataEvent,
+    seriesHideShow
 } from './../observable-bus';
 
 import { charts } from './../store/main';
@@ -26,6 +27,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
+import { takeUntil } from 'rxjs/operator/takeUntil';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 
@@ -114,6 +116,10 @@ export default class ChartTable extends Vue {
             .filter(this._filterStream, this)
             .takeUntil(this.deactivate)
             .subscribe(this.generateTable);
+        seriesHideShow
+            .filter(this._filterStream, this)
+            .takeUntil(this.deactivate)
+            .subscribe(this.generateTable);
     }
 
     generateTable(): void {
@@ -124,6 +130,12 @@ export default class ChartTable extends Vue {
                     this.logMarker
                 } something's wrong - trying to render the table before chart is ready`
             );
+            return;
+        }
+
+        //check to make sure at least one series is visible, if not don't return a table at all
+        if (!this.dvchart.highchart.series.some(series => series.visible)){
+            this.highchartsDataTable.innerHTML = '';
             return;
         }
 

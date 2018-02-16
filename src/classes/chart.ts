@@ -35,9 +35,18 @@ export interface DVChartOptions {
 
 export class DVChart {
     private static configDefaults: DVHighcharts.Options = {
+        // default events so that long existance checks don't need to be made
         xAxis: {
             events: {
                 setExtremes: () => {}
+            }
+        },
+        plotOptions: {
+            series: {
+                events: {
+                    hide: () => {},
+                    show: () => {}
+                }
             }
         },
         exporting: {

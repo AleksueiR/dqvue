@@ -42,6 +42,7 @@ export const chartViewData: Subject<ChartViewDataEvent> = new Subject<ChartViewD
 export const chartSetExtremes: Subject<ChartSetExtremesEvent> = new Subject<
     ChartSetExtremesEvent
 >();
+export const seriesHideShow: Subject<ChartEvent> = new Subject<ChartEvent>();
 
 // #endregion
 

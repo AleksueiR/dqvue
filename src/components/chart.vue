@@ -23,7 +23,8 @@ import {
     chartViewData,
     chartSetExtremes,
     ChartDestroyedEvent,
-    ChartConfigUpdatedEvent
+    ChartConfigUpdatedEvent,
+    seriesHideShow
 } from './../observable-bus';
 
 import { DVChart } from './../classes/chart';
@@ -194,7 +195,7 @@ export default class Chart extends Vue {
             ); */
             xAxis: {
                 events: {
-                    setExtremes: (event: Highcharts.AxisEvent) => {
+                    setExtremes: (event: Highcharts.AxisEvent) =>
                         this._setExtremesHandler(
                             event,
                             // defaults containing an empty `setExtremes` handler are applied to the chart config using deepmerge
@@ -202,7 +203,23 @@ export default class Chart extends Vue {
                             // which will cause this assertion to fail
                             // TODO: either apply defaults in a more robust way or find anothe way handling the null/undefined checks
                             (<Highcharts.AxisOptions>originalConfig.xAxis!).events!.setExtremes!
-                        );
+                        )
+                }
+            },
+            plotOptions: {
+                series: {
+                    events: {
+                        // added to allow re-generating the table on series hide/show
+                        hide: () =>
+                            this._setHideShowHandler(
+                                (<DVHighcharts.Options>originalConfig).plotOptions.series!.events!
+                                    .hide!
+                            ),
+                        show: () =>
+                            this._setHideShowHandler(
+                                (<DVHighcharts.Options>originalConfig).plotOptions.series!.events!
+                                    .show!
+                            )
                     }
                 }
             }
@@ -243,6 +260,16 @@ export default class Chart extends Vue {
             axis: 'xAxis',
             max: event.max,
             min: event.min
+        });
+    }
+
+    // runs the original `hide` or `show` series event and then pushes an event into the stream
+    private _setHideShowHandler(originalHandler: () => void): void {
+        originalHandler.call(this);
+
+        seriesHideShow.next({
+            chartId: this.id,
+            dvchart: this.dvchart
         });
     }
 }
