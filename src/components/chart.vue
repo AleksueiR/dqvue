@@ -264,10 +264,8 @@ export default class Chart extends Vue {
     }
 
     // runs the original `hide` or `show` series event and then pushes an event into the stream
-    private _setHideShowHandler(originalHandler: (() => void) | null): void {
-        if (originalHandler) {
-            originalHandler.call(this);
-        }
+    private _setHideShowHandler(originalHandler: () => void): void {
+        originalHandler.call(this);
 
         seriesHideShow.next({
             chartId: this.id,
