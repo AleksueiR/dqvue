@@ -209,6 +209,7 @@ export default class Chart extends Vue {
             plotOptions: {
                 series: {
                     events: {
+                        // added to allow re-generating the table on series hide/show
                         hide: () =>
                             this._setHideShowHandler(
                                 (<DVHighcharts.Options>originalConfig).plotOptions.series!.events!
@@ -262,6 +263,7 @@ export default class Chart extends Vue {
         });
     }
 
+    // runs the original `hide` or `show` series event and then pushes an event into the stream
     private _setHideShowHandler(originalHandler: (() => void) | null): void {
         if (originalHandler) {
             originalHandler.call(this);

@@ -133,16 +133,8 @@ export default class ChartTable extends Vue {
             return;
         }
 
-        let showTable = false;
-
-        this.dvchart.highchart.series.forEach(series => {
-            if (series.visible) {
-                showTable = true;
-                return;
-            }
-        });
-
-        if (showTable == false) {
+        //check to make sure at least one series is visible, if not don't return a table at all
+        if (!this.dvchart.highchart.series.some(series => series.visible)){
             this.highchartsDataTable.innerHTML = '';
             return;
         }
