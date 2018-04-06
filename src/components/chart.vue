@@ -1,6 +1,7 @@
 <template>
     <div dv-chart :class="{ 'dv-loading': isLoading }">
         <div dv-chart-container></div>
+
         <dv-chart-slider axis="xAxis" :key="buildKey" v-if="buildKey > 0"></dv-chart-slider><!--  :key="buildKey" -->
         <slot></slot>
     </div>
@@ -15,24 +16,25 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 
-import api, { DVHighcharts } from './../api/main';
+import api, { DVHighcharts } from '@/api/main';
 import {
     chartDestroyed,
     chartRendered,
     chartConfigUpdated,
     chartViewData,
+    sectionDismounted,
     chartSetExtremes,
-    ChartDestroyedEvent,
     ChartConfigUpdatedEvent,
+    SectionDismountEvent,
     seriesHideShow
-} from './../observable-bus';
+} from '@/observable-bus';
 
-import { DVChart } from './../classes/chart';
-import { charts } from './../store/main';
+import { DVChart } from '@/classes/chart';
+import { charts } from '@/store/main';
 
-import { isArray } from './../utils';
+import { isArray } from '@/utils';
 
-import ChartSlider from './../components/chart-slider.vue';
+import ChartSlider from '@/components/chart-slider.vue';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart');
 
@@ -69,6 +71,9 @@ export default class Chart extends Vue {
 
     // a subject used to stop all other observable subscriptions
     deactivate: Subject<boolean> = new Subject<boolean>();
+
+    // a flag indicating the section is manually dismounted only, but the parent section has not been destroyed yet
+    dismountOnly: boolean = false;
 
     created(): void {
         // section is created programmatically and template is missing `id` on a `<dv-chart>` node making it impossible to link in the chart's config
@@ -140,6 +145,12 @@ export default class Chart extends Vue {
             .takeUntil(this.deactivate)
             .subscribe(() => this.renderChart());
 
+        // track dismount event and mark this components as dismounted when a corresponding event is fired
+        sectionDismounted
+            .filter((event: SectionDismountEvent) => event.sectionId === this.rootSectionId)
+            .takeUntil(this.deactivate)
+            .subscribe(event => (this.dismountOnly = event.dismountOnly));
+
         if (this.dvchart.isConfigValid) {
             this.renderChart();
         }
@@ -150,10 +161,14 @@ export default class Chart extends Vue {
         this.deactivate.next(true);
         this.deactivate.unsubscribe();
 
-        // push destroy even into the pipe
-        chartDestroyed.next({ chartId: this.id });
+        if (!this.dismountOnly) {
+            // push destroy even into the pipe
+            chartDestroyed.next({ chartId: this.id, dvchart: this.dvchart });
 
-        log.info(`${this.logMarker} chart component destroyed`);
+            log.info(`${this.logMarker} chart component dismounted and destroyed`);
+        } else {
+            log.info(`${this.logMarker} chart component dismounted only`);
+        }
     }
 
     // buid key is used to force remount adjunct component of the DVChart like zoom slider
