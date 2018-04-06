@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import loglevel from 'loglevel';
 
-import Section from './../components/section.vue';
+import Section from '@/components/section.vue';
 import { DVChart } from './chart';
-import Chart from './../components/chart.vue';
-import ChartTable from './../components/chart-table.vue';
+import Chart from '@/components/chart.vue';
+import ChartTable from '@/components/chart-table.vue';
 
-import { sectionCreated } from './../observable-bus';
+import { sectionCreated, sectionDismounted } from '@/observable-bus';
 
-import { isPromise, isFunction, isString, isObject } from './../utils';
+import { isPromise, isFunction, isString, isObject } from '@/utils';
 // TODO: constrain logging to 'warn' in production builds
 // TODO: add a runtime `debug` switch to enable full logging
 
@@ -28,6 +28,7 @@ export class DVSection {
     private _mount: HTMLElement | null = null;
     private _automount: boolean;
     private _isMounted: boolean = false;
+    private _isDestroyed: boolean = false;
 
     private _vm: Vue;
 
@@ -171,6 +172,11 @@ export class DVSection {
     }
 
     private get _isMountable(): boolean {
+        if (this.isDestroyed) {
+            // TODO: add a log message here since the section was destroyed
+            return false;
+        }
+
         if (!this.template) {
             return false;
         }
@@ -192,6 +198,28 @@ export class DVSection {
         // TODO: check for charts present and their configs
 
         return true;
+    }
+
+    /**
+     * Returns true is the section is currently mounted.
+     *
+     * @readonly
+     * @type {boolean}
+     * @memberof DVSection
+     */
+    get isMounted(): boolean {
+        return this._isMounted;
+    }
+
+    /**
+     * Returns true is the section and all its child components have been destoryed, removed from the DQV store, and can no longer be mounted again.
+     *
+     * @readonly
+     * @type {boolean}
+     * @memberof DVSection
+     */
+    get isDestroyed(): boolean {
+        return this._isDestroyed;
     }
 
     mount(element?: HTMLElement): DVSection {
@@ -264,31 +292,50 @@ export class DVSection {
         return this;
     }
 
+    /**
+     * Dismounts the section and all its child components from the DOM, destroys them, and removes their references from the DQV store.
+     * After this, the section can no longer be mounted at all and all references to it should be discarded.
+     *
+     * @returns {DVSection}
+     * @memberof DVSection
+     */
     destroy(): DVSection {
         log.info(`[section='${this.id}'] attempting to destroy`);
 
-        if (!this._mount) {
-            // TODO: complain in the console that you can't destroy a not yet mounted instance
+        if (this._isDestroyed) {
+            log.warn(`[section='${this.id}'] is already destroyed`);
 
+            return this;
+        }
+
+        if (!this.isMounted) {
+            // TODO: complain in the console that you can't destroy a not yet mounted instance
+            // to properly destroy a dismounted section, you need to remove references to it and all the charts belonging to this section from the store
+            // and the section does not keep track of its charts - one would need to pars section's template to get them, or mount it again
+            // TODO: allow to destroy a dismounted section
             log.warn(`[section='${this.id}'] cannot destroy - the section is not mounted`);
 
             return this;
         }
 
-        this.dismount();
+        this._isDestroyed = true;
 
-        if (this._mount.parentNode) {
-            // .remove() is not supported in IE
-            this._mount.parentNode!.removeChild(this._mount);
-        }
-        this._mount = null;
+        this.dismount(true);
 
         log.info(`[section='${this.id}'] destroyed successfully`);
 
         return this;
     }
 
-    dismount(clear: boolean = true): DVSection {
+    /**
+     * Dismounts the section and removes it from the DOM.
+     * If the parent node is also removed from the DOM, the section can only be remounted when a new mount is supplied.
+     *
+     * @param {boolean} [removeMount=false] if true, the mount node is also removed from the DOM
+     * @returns {DVSection}
+     * @memberof DVSection
+     */
+    dismount(removeMount: boolean = false): DVSection {
         log.info(`[section='${this.id}'] attempting to dismount`);
 
         if (!this._mount) {
@@ -299,12 +346,27 @@ export class DVSection {
 
         // TODO: when dismouning a section, remove all the chart tables originating from charts in this section, even ones that are in different sections
         // TODO: maybe instead of removing all the chart tables in other sections, just hide them and reactivate them if the section with their parent chart is remounted
+
+        // fire internal dismount event
+        sectionDismounted.next({ sectionId: this.id, dismountOnly: !this.isDestroyed });
+
         this._vm.$destroy();
         this._isMounted = false;
 
         // removing guts of the section but leaving the mount element
         while (this._mount.firstChild) {
             this._mount.removeChild(this._mount.firstChild);
+        }
+
+        // if requested, remove the mount node as well
+        // the section cannot be remounted after that without
+        if (removeMount) {
+            if (this._mount.parentNode) {
+                // .remove() is not supported in IE
+                this._mount.parentNode!.removeChild(this._mount);
+            }
+
+            this._mount = null;
         }
 
         log.info(`[section='${this.id}'] dismounted successfully`);
