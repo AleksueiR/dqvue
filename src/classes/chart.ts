@@ -124,6 +124,9 @@ export class DVChart {
     setConfig(value: Promise<DVHighcharts.Options>): DVChart {
         log.info(`[chart='${this.id}'] waiting for config promise to resolve`);
 
+        // TODO: set config to 'null', to remove the chart until the config is resolved
+        // this.config = null;
+
         this._configPromise = value;
         value.then(config => {
             if (value === this._configPromise) {
@@ -190,7 +193,11 @@ export class DVChart {
         if (!this.config) {
             // TODO: complain that chart config is missing
 
-            log.warn(`[chart='${this.id}'] invalid config - chart config is missing`);
+            log.warn(`[chart='${this.id}'] chart config is not set (or set to a \`null\` value)`);
+
+            // since the config has been explicitly set to `null/undefined`, fire the configUpdated event
+            // this will revert the chart state to waiting for a proper config to resolve
+            chartConfigUpdated.next({ chartId: this.id, dvchart: this });
 
             return;
         }
