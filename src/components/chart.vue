@@ -2,7 +2,7 @@
     <div dv-chart :class="{ 'dv-loading': isLoading }">
         <div dv-chart-container></div>
 
-        <dv-chart-slider axis="xAxis" :key="buildKey" v-if="buildKey > 0"></dv-chart-slider><!--  :key="buildKey" -->
+        <dv-chart-slider axis="xAxis" :key="buildKey" v-if="!isLoading && buildKey > 0"></dv-chart-slider>
         <slot></slot>
     </div>
 </template>
@@ -143,7 +143,7 @@ export default class Chart extends Vue {
         chartConfigUpdated
             .filter((event: ChartConfigUpdatedEvent) => event.chartId === this.id)
             .takeUntil(this.deactivate)
-            .subscribe(() => this.renderChart());
+            .subscribe(() => (this.dvchart.config ? this.renderChart() : this.removeChart()));
 
         // track dismount event and mark this components as dismounted when a corresponding event is fired
         sectionDismounted
@@ -174,6 +174,31 @@ export default class Chart extends Vue {
     // buid key is used to force remount adjunct component of the DVChart like zoom slider
     // every time the chart is rendered, the slider is destroyed and rebuilt
     buildKey: number = 0;
+
+    /**
+     * if the config value has been set to `null/undefined`,
+     * revert chart to the initial condition of waiting for the config to resolve
+     */
+    removeChart(): void {
+        log.info(`${this.logMarker} removing chart until a valid config is provided`);
+
+        this.isLoading = true;
+
+        const node = this._chartContainer;
+
+        // remove all the nodes inside the chart container
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+
+        // remove all the attributes set by Highcharts onto the chart container
+        while (node.attributes.length > 0) {
+            node.removeAttribute(node.attributes[0].name);
+        }
+
+        // reset the `dv-chart-container` attribute onto the chart container
+        node.setAttribute('dv-chart-container', '');
+    }
 
     renderChart(): void {
         log.info(`${this.logMarker} rendering chart`);
