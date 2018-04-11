@@ -158,6 +158,13 @@ export default class ChartSlider extends Vue {
             return;
         }
 
+        // chart's config is not set
+        if (!this.dvchart!.config) {
+            log.info(`${this.logMarker} ${this.axis} config isn't set - zoom slider can't be used`);
+            this.destroyItself();
+            return;
+        }
+
         // get `chart` section from the config chart
         const chartChartConfig: DVHighcharts.ChartOptions | undefined = this.dvchart!.config!.chart;
 

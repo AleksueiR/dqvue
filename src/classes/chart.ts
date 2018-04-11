@@ -124,10 +124,11 @@ export class DVChart {
     setConfig(value: Promise<DVHighcharts.Options>): DVChart {
         log.info(`[chart='${this.id}'] waiting for config promise to resolve`);
 
-        // TODO: set config to 'null', to remove the chart until the config is resolved
-        // this.config = null;
+        // set config to 'null', to remove the chart until the config is resolved
+        this.config = null;
 
         this._configPromise = value;
+        
         value.then(config => {
             if (value === this._configPromise) {
                 this.config = config;

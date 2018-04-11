@@ -1,6 +1,6 @@
 {
     "name": "dqvue",
-    "version": "0.4.7",
+    "version": "0.4.8",
     "description": "",
     "main": "./dist/dqvue.js",
     "types": "./index.d.ts",
