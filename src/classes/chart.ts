@@ -128,7 +128,7 @@ export class DVChart {
         this.config = null;
 
         this._configPromise = value;
-        
+
         value.then(config => {
             if (value === this._configPromise) {
                 this.config = config;
