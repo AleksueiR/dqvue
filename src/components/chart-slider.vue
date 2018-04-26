@@ -151,48 +151,17 @@ export default class ChartSlider extends Vue {
             this.sliderNode.classList.add('noUi-target');
         }
 
-        // TODO: vet using a list of chart types that can have extremes sliders
-        if (typeof this.extremes.dataMin === 'undefined') {
-            log.info(`${this.logMarker} ${this.axis} zoom slider cannot be used with this chart`);
-            this.destroyItself();
-            return;
-        }
-
-        // chart's config is not set
-        if (!this.dvchart!.config) {
-            log.info(`${this.logMarker} ${this.axis} config isn't set - zoom slider can't be used`);
-            this.destroyItself();
-            return;
-        }
+        // cached the slider node after all checks succeed
+        this.sliderNode = this.$el.querySelector(CHART_SLIDER_CLASS) as noUiSlider.Instance;
 
         // get `chart` section from the config chart
-        const chartChartConfig: DVHighcharts.ChartOptions | undefined = this.dvchart!.config!.chart;
-
-        // get zoomType from the chart config
-        // if zoomType doesn't match this slider axis, self-destruct
-        const zoomType = chartChartConfig ? chartChartConfig.zoomType || '' : '';
-        if (zoomType.indexOf(this.axis.charAt(0)) === -1) {
-            log.info(`${this.logMarker} ${this.axis} zoom is not enabled for this chart`);
-            this.destroyItself();
-            return;
-        }
-
+        const chartChartConfig: DVHighcharts.ChartOptions = this.dvchart!.config!.chart!;
         // get the user-defined zoom slider config
         // if null, the slider will not be rendered
         // if undefined, the default slider config is used
-        const userSliderConfig: noUiSlider.Options | null | undefined | {} = chartChartConfig
+        const userSliderConfig: noUiSlider.Options | {} = chartChartConfig
             ? (<any>chartChartConfig).zoomSlider
             : {};
-
-        // kill the slider node if the slider option is explicitly set to null
-        if (userSliderConfig === null) {
-            log.info(`${this.logMarker} ${this.axis} zoom slider is disabled in the chart config`);
-            this.destroyItself();
-            return;
-        }
-
-        // cached the slider node after all checks succeed
-        this.sliderNode = this.$el.querySelector(CHART_SLIDER_CLASS) as noUiSlider.Instance;
 
         noUiSlider.create(
             this.sliderNode,

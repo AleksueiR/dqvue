@@ -2,7 +2,7 @@
     <div dv-chart :class="{ 'dv-loading': isLoading }">
         <div dv-chart-container></div>
 
-        <dv-chart-slider axis="xAxis" :key="buildKey" v-if="buildKey > 0"></dv-chart-slider>
+        <dv-chart-slider axis="xAxis" :key="buildKey" v-if="buildKey > 0 && sliderExists"></dv-chart-slider>
 
         <slot></slot>
     </div>
@@ -52,6 +52,8 @@ export default class Chart extends Vue {
 
     dvchart: DVChart;
     isLoading: boolean = true;
+
+    sliderExists: boolean = false;
 
     highchartObject: Highcharts.ChartObject;
 
@@ -267,11 +269,67 @@ export default class Chart extends Vue {
         });
 
         log.info(`${this.logMarker} chart rendered`);
+
+        this.validateSlider('xAxis');
         this.buildKey++;
 
         if (this.autoGenerateTable) {
             this.simulateViewDataClick();
         }
+    }
+
+    validateSlider(axis: string) {
+        // returns a highcharts from the current dvchart object
+        // this should only be called after the chart is rendered
+        let highchart: any = this.dvchart!.highchart!;
+
+        // axis linked to the slider
+        let axisObject = highchart[axis][0] as DVHighcharts.AxisObject;
+
+        // extremes of the axis linked to the slider
+        let extremes = axisObject.getExtremes();
+
+        // TODO: vet using a list of chart types that can have extremes sliders
+        if (typeof extremes.dataMin === 'undefined') {
+            log.info(`${this.logMarker} ${axis} zoom slider cannot be used with this chart`);
+            this.sliderExists = false;
+            return;
+        }
+
+        // chart's config is not set
+        if (!this.dvchart!.config) {
+            log.info(`${this.logMarker} ${axis} config isn't set - zoom slider can't be used`);
+            this.sliderExists = false;
+            return;
+        }
+
+        // get `chart` section from the config chart
+        const chartChartConfig: DVHighcharts.ChartOptions | undefined = this.dvchart!.config!.chart;
+
+        // get zoomType from the chart config
+        // if zoomType doesn't match this slider axis, self-destruct
+        const zoomType = chartChartConfig ? chartChartConfig.zoomType || '' : '';
+        if (zoomType.indexOf(axis.charAt(0)) === -1) {
+            log.info(`${this.logMarker} ${axis} zoom is not enabled for this chart`);
+            this.sliderExists = false;
+            return;
+        }
+
+        // get the user-defined zoom slider config
+        // if null, the slider will not be rendered
+        // if undefined, the default slider config is used
+        const userSliderConfig: noUiSlider.Options | null | undefined | {} = chartChartConfig
+            ? (<any>chartChartConfig).zoomSlider
+            : {};
+
+        // kill the slider node if the slider option is explicitly set to null
+        if (userSliderConfig === null) {
+            log.info(`${this.logMarker} ${axis} zoom slider is disabled in the chart config`);
+            this.sliderExists = false;
+            return;
+        }
+
+        this.sliderExists = true;
     }
 
     // execute the original `setExtremes` handler specified in the chart config and push a `setExtremes` event into the corresponding stream
@@ -303,5 +361,4 @@ export default class Chart extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
