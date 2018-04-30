@@ -165,7 +165,10 @@ export default class ChartSlider extends Vue {
 
         noUiSlider.create(
             this.sliderNode,
-            deepmerge(this.defaultSliderConfig, userSliderConfig || {})
+            deepmerge(this.defaultSliderConfig, userSliderConfig || {}, {
+                // overwrite arrays rather than merging
+                arrayMerge: (destination, source) => source
+            })
         );
 
         this.enableKeyboardSupport();
