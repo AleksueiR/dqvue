@@ -32,6 +32,9 @@ import { takeUntil } from 'rxjs/operator/takeUntil';
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 
 const HIGHCHARTS_DATA_TABLE_CLASS = '.highcharts-data-table';
+const CHART_ID_ATTR = 'dv-chart-id';
+const AUTO_RENDER_ATTR = 'dv-auto-render';
+const TABLE_CLASS_ATTR = 'dv-table-class';
 
 @Component
 export default class ChartTable extends Vue {
@@ -48,17 +51,17 @@ export default class ChartTable extends Vue {
     dvchart: DVChart;
 
     get chartId(): string {
-        return this.rootChartId || this.$attrs['dv-chart-id'];
+        return this.rootChartId || this.$attrs[CHART_ID_ATTR];
     }
 
     // --- TODO: deprecated; should be removed when `dv-auto-render` attribute is removed
     get autoRender(): boolean {
-        return typeof this.$attrs['dv-auto-render'] !== 'undefined';
+        return typeof this.$attrs[AUTO_RENDER_ATTR] !== 'undefined';
     }
     // ---
 
     get tableClass(): string {
-        return this.$attrs['dv-table-class'];
+        return this.$attrs[TABLE_CLASS_ATTR];
     }
 
     // a subject used to stop all other observable subscriptions
@@ -134,7 +137,7 @@ export default class ChartTable extends Vue {
         }
 
         //check to make sure at least one series is visible, if not don't return a table at all
-        if (!this.dvchart.highchart.series.some(series => series.visible)){
+        if (!this.dvchart.highchart.series.some(series => series.visible)) {
             this.highchartsDataTable.innerHTML = '';
             return;
         }
@@ -148,6 +151,17 @@ export default class ChartTable extends Vue {
                 this.highchartsDataTable.querySelector('table')!.classList.add(element);
             });
         }
+
+        Object.keys(this.$attrs).forEach(key => {
+            // check if it isn't an already used attr
+            if (key !== TABLE_CLASS_ATTR && key !== CHART_ID_ATTR && key !== AUTO_RENDER_ATTR) {
+                // apply the attribute to the table tag
+                this.highchartsDataTable.querySelector('table')!.setAttribute(
+                    key,
+                    this.$attrs[key]
+                );
+            }
+        });
 
         log.info(`${this.logMarker} rendering chart table on`, this.highchartsDataTable);
     }
