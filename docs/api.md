@@ -80,7 +80,7 @@ to the `dv-section`:
 ```html
 // index.html
 <script>
-window.getDVChartConfig4_1 = () => ({
+window.dvChartConfig4_1 = {
       xAxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ]
@@ -91,11 +91,11 @@ window.getDVChartConfig4_1 = () => ({
         type: 'column'
       }]
     }
-  });
+  };
 </script>
 
 <dv-section>
-  <dv-chart dv-config="getDVChartConfig4_1()"></dv-chart>
+  <dv-chart dv-config="dvChartConfig4_1"></dv-chart>
 </dv-section>
 ```
 
@@ -104,7 +104,7 @@ Just a template, without a chart:
 ```html
 // index.html
 <script>
-window.getDVData4_2 = {
+window.dvData4_2 = {
     title: "Hi",
     message: "This is the first DV instance and a simple chart."
 };
@@ -116,8 +116,7 @@ window.getDVData4_2 = {
 </dv-section>
 ```
 
-No extra JavaScript code is required with this setup - DV Sections will be auto-bootstrapped when
-their respective data/configs become available.
+No extra JavaScript code is required with this setup - DV Sections will be auto-bootstrapped (data or its promise has to be added to the global scope before the template is parsed).
 
 DV Sections can be retrieved using their ids specified in the template:
 
@@ -452,23 +451,21 @@ Chart table nodes can be placed inside their parent `dv-chart` nodes. In such ca
 ```html
 <dv-section id="section1">
     <dv-chart id="chartId" dv-config="configObject">
-        <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
+        <dv-chart-table></dv-chart-table>
     </dv-chart>
 </dv-section>
 ```
 
 ##### dv-chart-id: attribute
 
-This links a `dv-chart-table` node to its parent chart. It's possible to link multiple chart tables to a single chart, and all chart table nodes will be populated with the same data.
+This links a `dv-chart-table` node to its parent chart. Only one table can be rendered for any given chart. This is limitation of Highcharts.
 
 ```html
 <dv-section id="section1">
-    <!-- this will render a table before and after the chart node -->
+    <!-- this will render a table in front of the chart node -->
     <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
 
     <dv-chart id="chartId" dv-config="configObject"></dv-chart>
-
-    <dv-chart-table dv-chart-id="chartId"></dv-chart-table>
 </dv-section>
 ```
 
@@ -479,7 +476,7 @@ A space separated list of CSS class names which will be applied to the actual `t
 ```html
 <dv-section id="section1">
     <dv-chart id="chartId" dv-config="configObject">
-        <dv-chart-table dv-table-class="fancy-table zebra"></dv-chart-table>    
+        <dv-chart-table dv-table-class="fancy-table zebra"></dv-chart-table>
     </dv-chart>
 </dv-section>
 ```
@@ -601,10 +598,14 @@ const dv: DVSection = new DQV.Section({ ..., mount: element });
 dv.mount();
 ```
 
-##### dismount(): DVSection
+##### dismount(removeMount): DVSection
 
 Removes the DV Section from the page (the mount element is left intact); after dismounting, the
-instance is available to be mounted on the new target.
+instance is available to be mounted on the old (if the old mount node is not removed) or new target.
+
+```ts
+removeMount: boolean = false // if true, the mount node is also removed from the DOM
+```
 
 ```js
 // index.js
@@ -665,6 +666,7 @@ options: {
     id: string, // must be provided and match id on one of the <dv-chart> nodes in the template
     config: object | Promise<object>,
     data: object | Promise<object>
+}
 ```
 
 ```js
@@ -879,7 +881,7 @@ If no slider options are provided, it configuration defaults to the following:
     // axisObject = highchart.xAxis;
     // extremes = axisObject.getExtremes();
     // https://api.highcharts.com/class-reference/Highcharts.Axis#getExtremes
-    
+
     start: [extremes.dataMin, extremes.dataMax],
     connect: true,
     behaviour: 'tap-drag',
@@ -898,20 +900,20 @@ Focus on a slider handle by clicking on or tabbing to it to activate keyboard su
 
 ##### Movement Keys
 
-- `Right` and `Up` keys move the focused handle to the right by a single step
-- `Left` and `Down` keys move the focused handle to the left by a single step
-- `Home` key moves the focused handle all the way to the left
-- `End` key moves the focused handles all the way to the right
+*   `Right` and `Up` keys move the focused handle to the right by a single step
+*   `Left` and `Down` keys move the focused handle to the left by a single step
+*   `Home` key moves the focused handle all the way to the left
+*   `End` key moves the focused handles all the way to the right
 
 ##### Modifier Keys
 
-- holding `Shift` key while pressing a movement key moves the focused handle by ten steps at a time
-- holding `Ctrl` key while pressing a moment key moves both handles at the same time effectively shifting the current range
+*   holding `Shift` key while pressing a movement key moves the focused handle by ten steps at a time
+*   holding `Ctrl` key while pressing a moment key moves both handles at the same time effectively shifting the current range
 
 ##### Key Combinations
 
-- `Ctrl` + `Home|End`  moves the selected range all the way to the left|right
-- `Shift` + `Ctrl` + `Right|Up|Left|Down` moves the selected range left|right by ten steps
+*   `Ctrl` + `Home|End` moves the selected range all the way to the left|right
+*   `Shift` + `Ctrl` + `Right|Up|Left|Down` moves the selected range left|right by ten steps
 
 ## Future Enhancements
 
