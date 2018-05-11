@@ -359,7 +359,7 @@ export class DVSection {
         }
 
         // if requested, remove the mount node as well
-        // the section cannot be remounted after that without
+        // the section cannot be remounted after that without supplying the mount node
         if (removeMount) {
             if (this._mount.parentNode) {
                 // .remove() is not supported in IE
