@@ -41,14 +41,6 @@ export class DVChart {
                 setExtremes: () => {}
             }
         },
-        plotOptions: {
-            series: {
-                events: {
-                    hide: () => {},
-                    show: () => {}
-                }
-            }
-        },
         exporting: {
             menuItemDefinitions: {}
         }
@@ -268,5 +260,9 @@ export class DVChart {
 
     private _filterStream(event: ChartEvent): boolean {
         return event.chartId === this.id;
+    }
+
+    updateTable(): void {
+        chartViewData.next({ chartId: this.id, dvchart: this });
     }
 }
