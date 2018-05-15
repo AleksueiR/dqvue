@@ -351,7 +351,9 @@ export default class ChartSlider extends Vue {
             }
         }
 
-        this.axisObject.setExtremes(this.minValue, this.maxValue, true, false);
+        window.setTimeout(() => {
+            this.axisObject.setExtremes(this.minValue, this.maxValue, true, false);
+        }, 0);
     }
 
     // update slider value with the currently selected range
