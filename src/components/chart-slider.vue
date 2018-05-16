@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Inject } from 'vue-property-decorator';
 import loglevel from 'loglevel';
-import { DVHighcharts } from './../api/main';
+import { DVHighcharts, DQVSliderOptions } from './../api/main';
 
 import noUiSlider from 'nouislider';
 import wNumb from 'wnumb';
@@ -165,12 +165,12 @@ export default class ChartSlider extends Vue {
         // get the user-defined zoom slider config
         // if null, the slider will not be rendered
         // if undefined, the default slider config is used
-        const userSliderConfig: noUiSlider.Options | {} = chartChartConfig
+        const userSliderConfig: DQVSliderOptions = chartChartConfig
             ? (<any>chartChartConfig).zoomSlider
             : {};
 
-        if (userSliderConfig && (<any>userSliderConfig).labels) {
-            this.labels = (<any>userSliderConfig).labels;
+        if (userSliderConfig && userSliderConfig.labels) {
+            this.labels = userSliderConfig.labels;
         }
 
         noUiSlider.create(

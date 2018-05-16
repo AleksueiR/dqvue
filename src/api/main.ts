@@ -58,7 +58,7 @@ export namespace DVHighcharts {
     }
 
     export interface ChartOptions extends Highcharts.ChartOptions {
-        zoomSlider?: noUiSlider.Options;
+        zoomSlider?: DQVSliderOptions;
     }
 
     export interface AxisObject extends Highcharts.AxisObject {
@@ -73,6 +73,11 @@ export namespace DVHighcharts {
         text: string;
         onclick: (highchartObject?: Highcharts.ChartObject) => void;
     }
+}
+
+export interface DQVSliderOptions extends noUiSlider.Options {
+    // labels for the slider input fields
+    labels?: string[];
 }
 
 export default {
