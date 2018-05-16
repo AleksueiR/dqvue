@@ -1,21 +1,23 @@
 <template>
     <div dv-chart-slider-container>
-        <input type="text" v-model.number="minValue" pattern="[0-9]"
+        <label class="dv-slider-input-label" :for="'min-slider-input-' + dvchart.id">{{labels[0]}}</label>
+        <input :id="'min-slider-input-' + dvchart.id" type="text" v-model.number="minValue" pattern="[0-9]"
             @change="updateRange"
             class="dv-slider-input dv-slider-min">
 
         <div class="noUi-target"></div>
 
-        <input type="text" v-model.number="maxValue" pattern="[0-9]"
+        <input :id="'max-slider-input-' + dvchart.id" type="text" v-model.number="maxValue" pattern="[0-9]"
             @change="updateRange"
             class="dv-slider-input dv-slider-max">
+        <label class="dv-slider-input-label" :for="'max-slider-input-' + dvchart.id">{{labels[1]}}</label>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Inject } from 'vue-property-decorator';
 import loglevel from 'loglevel';
-import { DVHighcharts } from './../api/main';
+import { DVHighcharts, DQVSliderOptions } from './../api/main';
 
 import noUiSlider from 'nouislider';
 import wNumb from 'wnumb';
@@ -44,6 +46,8 @@ import { DVChart } from './../classes/chart';
 import { keyCodes } from './../utils';
 
 const CHART_SLIDER_CLASS = '.noUi-target';
+
+const LABEL_DEFAULTS = ['Minimum', 'Maximum'];
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-slider');
 
@@ -93,6 +97,8 @@ export default class ChartSlider extends Vue {
 
     minValue: number = 0;
     maxValue: number = 0;
+
+    labels: string[] = LABEL_DEFAULTS;
 
     // a subject used to stop all other observable subscriptions
     deactivate: Subject<boolean> = new Subject<boolean>();
@@ -159,9 +165,13 @@ export default class ChartSlider extends Vue {
         // get the user-defined zoom slider config
         // if null, the slider will not be rendered
         // if undefined, the default slider config is used
-        const userSliderConfig: noUiSlider.Options | {} = chartChartConfig
+        const userSliderConfig: DQVSliderOptions = chartChartConfig
             ? (<any>chartChartConfig).zoomSlider
             : {};
+
+        if (userSliderConfig && userSliderConfig.labels) {
+            this.labels = userSliderConfig.labels;
+        }
 
         noUiSlider.create(
             this.sliderNode,
@@ -446,6 +456,10 @@ div[dv-chart-slider-container] /deep/ {
         text-align: center;
         padding-top: 2px;
         padding-bottom: 2px;
+    }
+
+    .dv-slider-input-label {
+        margin: 0 4px;
     }
 
     // add a bit of padding around the slider container to accomodate for the entry field on the sides
