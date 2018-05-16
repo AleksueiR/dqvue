@@ -5,6 +5,7 @@ import loglevel from 'loglevel';
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
+import { langObjects } from '../lang';
 
 import {
     sectionCreated,
@@ -18,116 +19,6 @@ import { Observable } from 'rxjs/Observable';
 const version = require('./../../package.json').version;
 const log: loglevel.Logger = loglevel.getLogger('DQV');
 
-const langObjects = {
-    en: {
-        lang: {
-            loading: 'Loading...',
-            months: [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
-            ],
-            shortMonths: [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'
-            ],
-            weekdays: [
-                'Sunday',
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday'
-            ],
-            decimalPoint: '.',
-            numericSymbols: ['k', 'M', 'G', 'T', 'P', 'E'],
-            resetZoom: 'Reset zoom',
-            resetZoomTitle: 'Reset zoom level 1:1',
-            thousandsSep: ' ',
-            printChart: 'Print chart',
-            downloadPNG: 'Download PNG image',
-            downloadJPEG: 'Download JPEG image',
-            downloadPDF: 'Download PDF document',
-            downloadSVG: 'Download SVG vector image',
-            contextButtonTitle: 'Chart context menu',
-            downloadCSV: 'Download CSV',
-            downloadXLS: 'Download XLS',
-            viewData: 'View data table'
-        }
-    },
-    fr: {
-        lang: {
-            contextButtonTitle: 'Menu contextuel du graphique',
-            decimalPoint: ',',
-            downloadCSV: 'Télécharger en CSV',
-            downloadJPEG: 'Télécharger en JPEG',
-            downloadPDF: 'Télécharger en PDF',
-            downloadPNG: 'Télécharger en PNG',
-            downloadSVG: 'Télécharger en SVG',
-            downloadXLS: 'Télécharger en XLS',
-            exportButtonTitle: 'Exporter',
-            loading: 'Chargement...',
-            months: [
-                'Janvier',
-                'Février',
-                'Mars',
-                'Avril',
-                'Mai',
-                'Juin',
-                'Juillet',
-                'Août',
-                'Septembre',
-                'Octobre',
-                'Novembre',
-                'Décembre'
-            ],
-            numericSymbols: ['k', 'M', 'G', 'T', 'P', 'E'],
-            printChart: 'Imprimer',
-            rangeSelectorFrom: 'Du',
-            rangeSelectorTo: 'au',
-            rangeSelectorZoom: 'Période',
-            resetZoom: 'Réinitialiser le zoom',
-            resetZoomTitle: 'Réinitialiser le zoom',
-            shortMonths: [
-                'Jan',
-                'Fév',
-                'Mar',
-                'Avr',
-                'Mai',
-                'Juin',
-                'Juil',
-                'Aoû',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Déc'
-            ],
-            thousandsSep: ' ',
-            viewData: 'Voir les données',
-            weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-        }
-    }
-};
 interface EnhancedWindow extends Window {
     Highcharts: typeof Highcharts;
 }
