@@ -5,6 +5,7 @@ import loglevel from 'loglevel';
 import { DVSection } from './../classes/section';
 import { DVChart } from './../classes/chart';
 import { sections, charts } from './../store/main';
+import { langObjects } from '../lang';
 
 import {
     sectionCreated,
@@ -23,6 +24,7 @@ interface EnhancedWindow extends Window {
 }
 
 let hc: typeof Highcharts;
+let lang: string = 'en';
 
 function importHighcharts(): void {
     if ((<EnhancedWindow>window).Highcharts) {
@@ -101,5 +103,20 @@ export default {
 
     get charts(): { [name: string]: DVChart } {
         return charts;
+    },
+
+    set language(newLang: string) {
+        if (newLang !== 'en' && newLang !== 'fr') {
+            console.error(
+                "DQV does not support that language. We support 'en' (English/Anglais) and 'fr' (French/Francais)"
+            );
+            return;
+        }
+        lang = newLang;
+        hc.setOptions((<any>langObjects)[lang]);
+    },
+
+    get language(): string {
+        return lang;
     }
 };
