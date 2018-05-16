@@ -26,6 +26,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 
 import { DVChart } from './../classes/chart';
+import { takeUntil } from 'rxjs/operator/takeUntil';
 
 const log: loglevel.Logger = loglevel.getLogger('dv-chart-table');
 

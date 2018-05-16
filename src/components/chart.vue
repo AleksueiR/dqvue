@@ -333,5 +333,4 @@ export default class Chart extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
