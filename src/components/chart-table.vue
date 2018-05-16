@@ -15,8 +15,7 @@ import {
     chartViewData,
     ChartEvent,
     ChartRenderedEvent,
-    ChartViewDataEvent,
-    seriesHideShow
+    ChartViewDataEvent
 } from './../observable-bus';
 
 import { charts } from './../store/main';
@@ -116,10 +115,6 @@ export default class ChartTable extends Vue {
         // ---
 
         chartViewData
-            .filter(this._filterStream, this)
-            .takeUntil(this.deactivate)
-            .subscribe(this.generateTable);
-        seriesHideShow
             .filter(this._filterStream, this)
             .takeUntil(this.deactivate)
             .subscribe(this.generateTable);

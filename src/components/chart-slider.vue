@@ -351,7 +351,19 @@ export default class ChartSlider extends Vue {
             }
         }
 
-        this.axisObject.setExtremes(this.minValue, this.maxValue, true, false);
+        /**
+         * chart fires a setExtremes with total number of year fewer than 20 (say 1904, 1908)
+         * chart starts zoom in animation (minRange options refers to the minimum range displayed on the chart, but instead of starting with the min value and adding the min range after it, Highcharts pad the selected range on both sides up-to the minimumRange value)
+         * dqv tries to set the slider to the supplied extremes
+         * slider updates but respects the 20 year limit and fires its update event with new extremes (say 1904, 1924)
+         * dqv now tries to set the chart to new extremes (say 1904, 1924)
+         * chart just started animating the initial setExtremes, and ignores the second call
+         *
+         * This timeout makes the chart take the second (this) setExtremes call, and the slider stays properly synced with the chart
+         */
+        window.setTimeout(() => {
+            this.axisObject.setExtremes(this.minValue, this.maxValue, true, false);
+        }, 0);
     }
 
     // update slider value with the currently selected range

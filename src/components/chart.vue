@@ -26,8 +26,7 @@ import {
     sectionDismounted,
     chartSetExtremes,
     ChartConfigUpdatedEvent,
-    SectionDismountEvent,
-    seriesHideShow
+    SectionDismountEvent
 } from '@/observable-bus';
 
 import { DVChart } from '@/classes/chart';
@@ -234,23 +233,6 @@ export default class Chart extends Vue {
                             (<Highcharts.AxisOptions>originalConfig.xAxis!).events!.setExtremes!
                         )
                 }
-            },
-            plotOptions: {
-                series: {
-                    events: {
-                        // added to allow re-generating the table on series hide/show
-                        hide: () =>
-                            this._setHideShowHandler(
-                                (<DVHighcharts.Options>originalConfig).plotOptions.series!.events!
-                                    .hide!
-                            ),
-                        show: () =>
-                            this._setHideShowHandler(
-                                (<DVHighcharts.Options>originalConfig).plotOptions.series!.events!
-                                    .show!
-                            )
-                    }
-                }
             }
         };
 
@@ -345,16 +327,6 @@ export default class Chart extends Vue {
             axis: 'xAxis',
             max: event.max,
             min: event.min
-        });
-    }
-
-    // runs the original `hide` or `show` series event and then pushes an event into the stream
-    private _setHideShowHandler(originalHandler: () => void): void {
-        originalHandler.call(this);
-
-        seriesHideShow.next({
-            chartId: this.id,
-            dvchart: this.dvchart
         });
     }
 }

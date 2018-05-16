@@ -52,7 +52,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement): DVSection {
     const attributes: NamedNodeMap = sectionNode.attributes;
 
     // get section id; if not provided, it will be auto-generated
-    const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
+    const idAttr: Attr | null = attributes.getNamedItem(ID_ATTR);
     let idValue: string = uniqid.time();
     if (idAttr !== null) {
         if (sections[idAttr.value]) {
@@ -68,7 +68,7 @@ function bootSectionDeclaration(sectionNode: HTMLElement): DVSection {
     };
 
     // get data from the global scope
-    const dataAttr: Attr = attributes.getNamedItem(DV_SECTION_DATA_ATTR);
+    const dataAttr: Attr | null = attributes.getNamedItem(DV_SECTION_DATA_ATTR);
     if (dataAttr !== null) {
         // TODO: enforce data being either an object or a Promise; no functions allowed
         sectionOptions.data = (<any>window)[dataAttr.value];
@@ -97,21 +97,21 @@ function bootChartDeclaration(chartNode: HTMLElement): DVChart {
     const attributes: NamedNodeMap = chartNode.attributes;
 
     // get config from the global scope
-    const configAttr: Attr = attributes.getNamedItem(DV_CHART_CONFIG_ATTR);
+    const configAttr: Attr | null = attributes.getNamedItem(DV_CHART_CONFIG_ATTR);
     if (configAttr !== null) {
         // TODO: enforce config being either an object or a Promise; no functions allowed
         chartOptions.config = (<any>window)[configAttr.value];
     }
 
     // get data from the global scope
-    const dataAttr: Attr = attributes.getNamedItem(DV_CHART_DATA_ATTR);
+    const dataAttr: Attr | null = attributes.getNamedItem(DV_CHART_DATA_ATTR);
     if (dataAttr !== null) {
         // TODO: enforce data being either an object or a Promise; no functions allowed
         chartOptions.data = (<any>window)[dataAttr.value];
     }
 
     // get section id; if not provided, it will be auto-generated
-    const idAttr: Attr = attributes.getNamedItem(ID_ATTR);
+    const idAttr: Attr | null = attributes.getNamedItem(ID_ATTR);
     if (idAttr !== null) {
         if (charts[idAttr.value]) {
             return charts[idAttr.value];

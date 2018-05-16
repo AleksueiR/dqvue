@@ -39,7 +39,6 @@ function importHighcharts(): void {
 export namespace DVHighcharts {
     export interface Options extends Highcharts.Options {
         exporting: ExportingOptions;
-        plotOptions: Highcharts.PlotOptions;
     }
 
     export interface ExportingOptions extends Highcharts.ExportingOptions {
