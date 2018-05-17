@@ -264,7 +264,12 @@ data.title = 'Hi, there!';
 
 ##### `set` language
 
-Tells DQV which language to instantiate charts with.
+Tells DQV which language to instantiate charts with. This will only happen for charts created after language is set.
+
+Note: this uses Highcharts language option, meaning it will affect non-DQV Highcharts charts as well.
+
+https://api.highcharts.com/highcharts/lang
+
 
 ```js
 DQV.language = 'fr'; //or 'en'
