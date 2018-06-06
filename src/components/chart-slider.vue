@@ -1,16 +1,53 @@
 <template>
     <div dv-chart-slider-container>
-        <label class="dv-slider-input-label" :for="'min-slider-input-' + dvchart.id">{{labels[0]}}</label>
-        <input :id="'min-slider-input-' + dvchart.id" type="text" v-model.number="minValue" pattern="[0-9]"
+        <label class="dv-slider-input-label dv-slider-min" :for="`min-slider-input-${dvchart.id}`">{{labels[0]}}</label>
+        <input
+            :id="`min-slider-input-${dvchart.id}`"
+            :value="minValue"
             @change="updateRange"
+
+            type="month"
+
             class="dv-slider-input dv-slider-min">
+
+        <!-- <input
+            :id="`min-slider-input-${dvchart.id}`"
+            v-model.number="minValue"
+            @change="updateRange"
+
+            type="text"
+            pattern="[0-9]"
+
+            class="dv-slider-input dv-slider-min"> -->
 
         <div class="noUi-target"></div>
 
-        <input :id="'max-slider-input-' + dvchart.id" type="text" v-model.number="maxValue" pattern="[0-9]"
+<!--
+    year: text
+    month: month
+
+ -->
+
+        <input
+            :id="`max-slider-input-${dvchart.id}`"
+            :value="maxValue"
             @change="updateRange"
+
+            type="year"
+
             class="dv-slider-input dv-slider-max">
-        <label class="dv-slider-input-label" :for="'max-slider-input-' + dvchart.id">{{labels[1]}}</label>
+
+        <!-- <input
+            :id="`max-slider-input-${dvchart.id}`"
+            v-model.number="maxValue"
+            @change="updateRange"
+
+            type="text"
+            pattern="[0-9]"
+
+            class="dv-slider-input dv-slider-max"> -->
+
+        <label class="dv-slider-input-label dv-slider-max" :for="`max-slider-input-${dvchart.id}`">{{labels[1]}}</label>
     </div>
 </template>
 
